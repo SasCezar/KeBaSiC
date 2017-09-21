@@ -56,7 +56,7 @@ class WebPage(object):
 
     def download(self):
         with urlopen(self._url) as webpage:
-            self._html = BeautifulSoup(webpage, BS_PARSER).prettify()
+            self._html = str(BeautifulSoup(webpage, BS_PARSER))
 
         self._html = ' '.join(self.html.split())
         return self
