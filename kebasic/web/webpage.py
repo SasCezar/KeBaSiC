@@ -1,16 +1,7 @@
 import re
 from urllib.request import urlopen
 
-from bs4 import BeautifulSoup
-
-valid_url_re = re.compile(
-    r'^(?:http|ftp)s?://'  # http:// or https://
-    r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
-    r'localhost|'  # localhost...
-    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|'  # ...or ipv4
-    r'\[?[A-F0-9]*:[A-F0-9:]+\]?)'  # ...or ipv6
-    r'(?::\d+)?'  # optional port
-    r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+from bs4 import BeautifulSoup, Comment
 
 TAG_META = 'meta'
 TAG_ANCHOR = 'a'
@@ -28,10 +19,8 @@ class WebPage(object):
         :param url:
         :param html:
         """
-        if not url:
+        if not url and not html:
             raise NotValidURL("URL could not be empty")
-        if not valid_url_re.match(url):
-            raise NotValidURL("URL not conforms to URL formats")
         self._url = url
         self._html = html
         self._title = ""
@@ -59,24 +48,35 @@ class WebPage(object):
     def links(self):
         return self._links
 
+    @property
+    def text(self):
+        return self._text
+
     def download(self):
         with urlopen(self._url) as webpage:
-            self._html = webpage
+            self._html = BeautifulSoup(webpage, 'html.parser').prettify()
+
+        self._html = ' '.join(self.html.split())
+        return self
 
     def parse(self):
         if not self.html:
             self.download()
 
-        soup = BeautifulSoup(self.html)
+        soup = BeautifulSoup(self.html, 'html.parser')
 
-        self._title = soup.title.name
-        self._text = self.extract_text(soup)
-        self._metadata = self.extract_metadata(soup)
-        self._links = self.extract_links(soup)
+        self._extract_title(soup)
+        self._extract_text(soup)
+        self._extract_metadata(soup)
+        self._extract_links(soup)
+
+        return self
 
     @staticmethod
     def _tag_visible(element):
-        if element.parent.name in ['style', 'script', 'document', 'head', 'title']:
+        if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
+            return False
+        elif isinstance(element, Comment):
             return False
         elif re.match('<!--.*-->', str(element)):
             return False
@@ -85,12 +85,26 @@ class WebPage(object):
         else:
             return True
 
-    def extract_text(self, soup):
+    def _extract_text(self, soup):
+        """
+        Given a BeautifulSoup representation of the html page extracts the visible text of the page
+
+        :param soup:
+        :return:
+        """
         texts = soup.findAll(text=True)
         visible_texts = [text for text in texts if self._tag_visible(text)]
-        return " ".join(t.strip() for t in visible_texts)
+        cleaned_text = " ".join(t.strip() for t in visible_texts)
+        self._text = cleaned_text
 
-    def extract_metadata(self, soup):
+    def _extract_metadata(self, soup):
+        """
+
+        Given a BeautifulSoup representation of the html page extracts the page metadata values
+
+        :param soup:
+        :return:
+        """
         for meta in soup.find_all(TAG_META):
             meta_name = meta.name
             meta_description = meta.content
@@ -98,10 +112,21 @@ class WebPage(object):
             if meta_description:
                 self._metadata[meta_name] = meta_description
 
-        return self.metadata
+    def _extract_links(self, soup):
+        """
+        Given a BeautifulSoup representation of the html page extracts the links contained by the page
 
-    def extract_links(self, soup):
+        :param soup:
+        :return:
+        """
         for link in soup.find_all(TAG_ANCHOR):
             self.links.append(link.get(TAG_HREF))
 
-        return self.links
+    def _extract_title(self, soup):
+        """
+        Given a BeautifulSoup representation of the html page extracts the title of the page
+
+        :param soup:
+        :return:
+        """
+        self._title = soup.title.name
