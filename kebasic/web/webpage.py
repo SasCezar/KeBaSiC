@@ -7,6 +7,8 @@ TAG_META = 'meta'
 TAG_ANCHOR = 'a'
 TAG_HREF = 'href'
 
+BS_PARSER = 'html.parser'
+
 
 class NotValidURL(Exception):
     pass
@@ -54,7 +56,7 @@ class WebPage(object):
 
     def download(self):
         with urlopen(self._url) as webpage:
-            self._html = BeautifulSoup(webpage, 'html.parser').prettify()
+            self._html = BeautifulSoup(webpage, BS_PARSER).prettify()
 
         self._html = ' '.join(self.html.split())
         return self
@@ -63,7 +65,7 @@ class WebPage(object):
         if not self.html:
             self.download()
 
-        soup = BeautifulSoup(self.html, 'html.parser')
+        soup = BeautifulSoup(self.html, BS_PARSER)
 
         self._extract_title(soup)
         self._extract_text(soup)
@@ -99,7 +101,6 @@ class WebPage(object):
 
     def _extract_metadata(self, soup):
         """
-
         Given a BeautifulSoup representation of the html page extracts the page metadata values
 
         :param soup:

@@ -90,7 +90,6 @@ def build_graph(nodes):
     """
     Return a networkx graph instance.
 
-    :param distance:
     :param nodes: List of hashables that represent the nodes of a graph.
     """
     gr = nx.Graph()  # initialize an undirected graph
@@ -145,8 +144,9 @@ def postprocessing_key_phrases(keyphrases, textlist):
 
 
 class TextRank(AbstractKeywordExtractor):
-    def __init__(self, language):
+    def __init__(self, language, filter_pos_tags=None):
         super().__init__(language)
+        self._filter_tags = filter_pos_tags
 
     def run(self, text, limit=None):
         """
@@ -162,7 +162,7 @@ class TextRank(AbstractKeywordExtractor):
         tagged = nltk.pos_tag(word_tokens)
         textlist = [x[0] for x in tagged]
 
-        tagged = filter_for_tags(tagged)
+        tagged = filter_for_tags(tagged, tags=self._filter_tags)
         tagged = normalize(tagged)
 
         unique_word_set = unique_everseen([x[0] for x in tagged])
@@ -188,3 +188,6 @@ class TextRank(AbstractKeywordExtractor):
 
         sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
         return modified_key_phrases, sorted_scores
+
+    def configuration(self):
+        return self.__dict__

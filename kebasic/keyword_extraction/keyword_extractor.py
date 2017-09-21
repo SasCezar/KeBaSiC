@@ -35,3 +35,11 @@ class AbstractKeywordExtractor(ABC):
         :return: A list containing the extracted keywords
         """
         pass
+
+    @abstractmethod
+    def configuration(self):
+        """
+        Returns the model configurations
+        :return:
+        """
+        pass

@@ -12,7 +12,7 @@
 #
 # NOTE 3: The code published by zelandiya (https://github.com/zelandiya/RAKE-tutorial)
 # and subsequently edited by Marco Pegoraro has been wrapped and modified to conform
-# to our needs. This includes the extension of an abstract class and some minor edits to code
+# to our needs. This includes the extension of an abstract class and some minor edits to code.
 
 
 import operator
@@ -43,7 +43,8 @@ def separate_words(text, min_word_return_size):
     words = []
     for single_word in splitter.split(text):
         current_word = single_word.strip().lower()
-        # leave numbers in phrase, but don't count as words, since they tend to invalidate scores of their phrases
+        # leave numbers in phrase, but don't count as words, since they tend to invalidate
+        # textrank_scores of their phrases
         if len(current_word) > min_word_return_size and current_word != '' and not is_number(current_word):
             words.append(current_word)
     return words
@@ -219,7 +220,7 @@ def calculate_word_scores(phrase_list):
     for item in word_frequency:
         word_degree[item] = word_degree[item] + word_frequency[item]
 
-    # Calculate Word scores = deg(w)/frew(w)
+    # Calculate Word textrank_scores = deg(w)/frew(w)
     word_score = {}
     for item in word_frequency:
         word_score.setdefault(item, 0)
@@ -280,12 +281,43 @@ class RAKE(AbstractKeywordExtractor):
         super().__init__(language, stopwords)
         if not stopwords:
             self._stop_words = nltk.corpus.stopwords.words(language)
-        self.__min_char_length = min_char_length
-        self.__max_words_length = max_words_length
-        self.__min_keyword_frequency = min_keyword_frequency
-        self.__min_words_length_adj = min_words_length_adj
-        self.__max_words_length_adj = max_words_length_adj
-        self.__min_phrase_freq_adj = min_phrase_freq_adj
+        self._min_char_length = min_char_length
+        self._max_words_length = max_words_length
+        self._min_keyword_frequency = min_keyword_frequency
+        self._min_words_length_adj = min_words_length_adj
+        self._max_words_length_adj = max_words_length_adj
+        self._min_phrase_freq_adj = min_phrase_freq_adj
+
+    def configuration(self, extended=False):
+        config_dict = self.__dict__
+        if not extended:
+            config_dict.pop("_stop_words", None)
+
+        return config_dict
+
+    @property
+    def min_char_length(self):
+        return self._min_char_length
+
+    @property
+    def max_words_length(self):
+        return self._max_words_length
+
+    @property
+    def min_keyword_frequency(self):
+        return self._min_keyword_frequency
+
+    @property
+    def min_words_length_adj(self):
+        return self.min_words_length_adj
+
+    @property
+    def max_words_length_adj(self):
+        return self._min_words_length_adj
+
+    @property
+    def min_phrase_freq_adj(self):
+        return self._min_phrase_freq_adj
 
     def run(self, text):
         sentence_list = split_sentences(text)
@@ -293,13 +325,13 @@ class RAKE(AbstractKeywordExtractor):
         stop_words_pattern = build_stop_word_regex(self._stop_words)
 
         phrase_list = generate_candidate_keywords(sentence_list, stop_words_pattern, self._stop_words,
-                                                  self.__min_char_length, self.__max_words_length,
-                                                  self.__min_words_length_adj, self.__max_words_length_adj,
-                                                  self.__min_phrase_freq_adj)
+                                                  self._min_char_length, self._max_words_length,
+                                                  self._min_words_length_adj, self._max_words_length_adj,
+                                                  self._min_phrase_freq_adj)
 
         word_scores = calculate_word_scores(phrase_list)
 
-        keyword_candidates = generate_candidate_keyword_scores(phrase_list, word_scores, self.__min_keyword_frequency)
+        keyword_candidates = generate_candidate_keyword_scores(phrase_list, word_scores, self._min_keyword_frequency)
 
         sorted_keywords = sorted(keyword_candidates.items(), key=operator.itemgetter(1), reverse=True)
         return sorted_keywords
