@@ -188,6 +188,3 @@ class TextRank(AbstractKeywordExtractor):
 
         sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
         return modified_key_phrases, sorted_scores
-
-    def configuration(self):
-        return self.__dict__

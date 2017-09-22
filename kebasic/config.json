@@ -1,0 +1,27 @@
+{
+  "language": "spanish",
+  "mode": "full",
+  "resources": "../resources/",
+  "stopwords": "../resources/stopwords/es.stop",
+  "keywords_extraction_algorithms": [
+    "rake",
+    "text_rank"
+  ],
+  "rake": {
+    "language": "spanish",
+    "stopwords": null,
+    "min_char_length": 1,
+    "max_words_length": 5,
+    "min_keyword_frequency": 1,
+    "min_words_length_adj": 1,
+    "max_words_length_adj": 1,
+    "min_phrase_freq_adj": 2
+  },
+  "text_rank": {
+    "language": "spanish",
+    "filter_pos_tags": [
+      "NN"
+    ],
+    "limit": null
+  }
+}
