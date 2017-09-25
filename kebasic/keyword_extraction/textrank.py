@@ -144,11 +144,12 @@ def postprocessing_key_phrases(keyphrases, textlist):
 
 
 class TextRank(AbstractKeywordExtractor):
-    def __init__(self, language, filter_pos_tags=None):
+    def __init__(self, language, limit=None, filter_pos_tags=None):
         super().__init__(language)
         self._filter_tags = filter_pos_tags
+        self._limit = limit
 
-    def run(self, text, limit=None):
+    def run(self, text):
         """
         Return a set of key phrases.
 
@@ -181,7 +182,7 @@ class TextRank(AbstractKeywordExtractor):
 
         # the number of keyphrases returned will be relative to the size of the
         # text (a third of the number of vertices)
-        one_third = len(word_set_list) // 3 if not limit else limit
+        one_third = len(word_set_list) // 3 if not self._limit else self._limit
         keyphrases = keyphrases[0:one_third + 1]
 
         modified_key_phrases = postprocessing_key_phrases(keyphrases, textlist)

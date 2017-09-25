@@ -2,26 +2,32 @@
   "language": "spanish",
   "mode": "full",
   "resources": "../resources/",
-  "stopwords": "../resources/stopwords/es.stop",
-  "keywords_extraction_algorithms": [
-    "rake",
-    "text_rank"
+  "ke_algorithms": [
+    "RAKE",
+    "TextRank"
   ],
-  "rake": {
-    "language": "spanish",
-    "stopwords": null,
-    "min_char_length": 1,
-    "max_words_length": 5,
-    "min_keyword_frequency": 1,
-    "min_words_length_adj": 1,
-    "max_words_length_adj": 1,
-    "min_phrase_freq_adj": 2
+  "dataset": "../resources/dataset/",
+  "out_path": "../results/",
+  "ke_parameters": {
+    "RAKE": {
+      "language": "spanish",
+      "stopwords": "../resources/stopwords/es.stop",
+      "min_char_length": 1,
+      "max_words_length": 5,
+      "min_keyword_frequency": 1,
+      "min_words_length_adj": 1,
+      "max_words_length_adj": 1,
+      "min_phrase_freq_adj": 2
+    },
+    "TextRank": {
+      "language": "spanish",
+      "limit": null,
+      "filter_pos_tags": [
+        "NN"
+      ]
+    }
   },
-  "text_rank": {
-    "language": "spanish",
-    "filter_pos_tags": [
-      "NN"
-    ],
-    "limit": null
+  "classifiers": [],
+  "classifiers_parameters": {
   }
 }

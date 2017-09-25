@@ -18,7 +18,7 @@ class AbstractExecutor(ABC):
     def execute(self):
         pass
 
-    def initialize(self):
+    def _initialize(self):
         # initialize all allowed keys to false
         for key in self._allowed:
             self.__setattr__(key, False)
