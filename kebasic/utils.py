@@ -11,13 +11,13 @@ def camel_case_split(identifier):
     return " ".join([m.group(0) for m in matches])
 
 
-def reformat_taxonomy(taxonomy_path, out_path):
+def translate_taxonomy(taxonomy_path, out_path):
     with open(taxonomy_path, "rt", encoding="utf8") as inf, \
             open(out_path, "wt", newline="", encoding="utf8") as outf:
         writer = csv.writer(outf)
         reader = csv.reader(inf)
         next(reader)
-        category = ["ID", "N1", "N2", "SN1", "SPN2"]
+        category = ["ID", "N1", "N2", "SN1", "SN2"]
         writer.writerow(category)
         for category_id, n1, n2 in reader:
             n1 = camel_case_split(n1)
@@ -31,6 +31,13 @@ def reformat_taxonomy(taxonomy_path, out_path):
             outf.flush()
 
 
+def create_queries(taxonomy, templates, out_path):
+    with open(taxonomy, "rt", encoding="utf8") as inf:
+        reader = csv.reader(inf)
+        for id, lvl1, lvl2 in reader:
+            pass
+
+
 if __name__ == "__main__":
     base_path = "../resources/taxonomy/"
     verticals_path = base_path + "verticals.csv"
@@ -39,4 +46,4 @@ if __name__ == "__main__":
 
     out = base_path + "taxonomy.csv"
 
-    reformat_taxonomy(filtered_path, out)
+    translate_taxonomy(filtered_path, out)

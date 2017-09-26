@@ -4,7 +4,7 @@ import logging
 import networkx as nx
 import nltk
 
-from kebasic.keyword_extraction.keyword_extractor import AbstractKeywordExtractor
+from kebasic.keyword_extraction.keywordextractor import AbstractKeywordExtractor
 
 
 def setup_environment():
