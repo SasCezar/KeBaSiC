@@ -1,3 +1,6 @@
+import os
+
+
 class QueryGenerator(object):
     def __init__(self, template_path):
         self._site_templates, self._query_templates = self._read_template(template_path)
@@ -13,26 +16,24 @@ class QueryGenerator(object):
 
         return site_templates, query_templates
 
-    def write_queries(self, out_path, keywords=None, sites=None):
-        queries = self.generate_queries(keywords, sites)
-
-        with open(out_path, "wt", encoding="utf8") as inf:
-            for query in queries:
-                inf.write(query)
-
     @staticmethod
     def _generate_queries(keywords, templates):
         queries = set()
         for keyword in keywords:
             for template in templates:
-                query = template.format(**keyword)
+                query = template.format(**keyword).strip()
                 queries.add(query)
 
         return queries
 
-    def generate_queries(self, keywords, sites):
-        keyword_queries = self._generate_queries(keywords, self._query_templates)
-        sites_query = self._generate_queries(sites, self._site_templates)
-        keyword_queries.union(sites_query)
+    def generate_queries(self, keywords=None, sites=None):
+        keyword_queries = self._generate_queries(keywords, self._query_templates) if keywords else set()
+        sites_query = self._generate_queries(sites, self._site_templates) if sites else set()
+        queries = keyword_queries.union(sites_query)
 
-        return list(keyword_queries)  # TODO Check if is necessary to cast to list
+        return queries
+
+    @staticmethod
+    def save_queries(out_path, queries):
+        with open(out_path, "wt", encoding="utf8", newline='') as inf:
+            inf.write(os.linesep.join(queries))

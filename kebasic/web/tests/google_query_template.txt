@@ -1,0 +1,3 @@
+site:es.wikipedia.com {lvl1} {lvl2} -filetype:pdf
+allintitle: {lvl2} site:.es -filetype:pdf
+related:{site}
