@@ -16,20 +16,24 @@ class QueryGenerator(object):
 
         return site_templates, query_templates
 
-    @staticmethod
-    def _generate_queries(keywords, templates):
+    def generate_queries(self, keywords=None, sites=None):
         queries = set()
         for keyword in keywords:
-            for template in templates:
-                query = template.format(**keyword).strip()
-                queries.add(query)
+            keyword_queries = self._generate_query(keyword, self._query_templates)
+            queries |= keyword_queries
 
-        return queries
+        for site in sites:
+            sites_query = self._generate_query(site, self._site_templates)
+            queries |= sites_query
 
-    def generate_queries(self, keywords=None, sites=None):
-        keyword_queries = self._generate_queries(keywords, self._query_templates) if keywords else set()
-        sites_query = self._generate_queries(sites, self._site_templates) if sites else set()
-        queries = keyword_queries.union(sites_query)
+        return list(queries)
+
+    @staticmethod
+    def _generate_query(keyword, templates):
+        queries = set()
+        for template in templates:
+            query = template.format(**keyword).strip()
+            queries.add(query)
 
         return queries
 

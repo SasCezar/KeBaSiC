@@ -13,14 +13,31 @@ query_result = ['allintitle: category22 site:.es -filetype:pdf',
                 'site:es.wikipedia.com category11 category12 -filetype:pdf',
                 'allintitle: category12 site:.es -filetype:pdf', 'related:random.org', 'related:fb.com']
 
+site_query_result = ['related:random.org', 'related:fb.com']
+keywords_query_result = ['allintitle: category22 site:.es -filetype:pdf',
+                         'site:es.wikipedia.com category21 category22 -filetype:pdf',
+                         'site:es.wikipedia.com category11 category12 -filetype:pdf',
+                         'allintitle: category12 site:.es -filetype:pdf']
+
+google_query_generator = QueryGenerator(template_path)
+
 
 class TestQueryGenerator(unittest.TestCase):
     def test_query_generation(self):
-        google_query_generator = QueryGenerator(template_path)
-
         queries = google_query_generator.generate_queries(keywords, sites)
-
         self.assertListEqual(sorted(queries), sorted(query_result))
+
+    def test_empty_site_query_generation(self):
+        queries = google_query_generator.generate_queries(keywords, [])
+        self.assertListEqual(sorted(queries), sorted(keywords_query_result))
+
+    def test_empty_keywords_query_generation(self):
+        queries = google_query_generator.generate_queries([], sites)
+        self.assertListEqual(sorted(queries), sorted(site_query_result))
+
+    def test_emty_query_generation(self):
+        queries = google_query_generator.generate_queries([], [])
+        self.assertListEqual(queries, [])
 
     def test_save_queries(self):
         query_path = "queries_result.txt"
