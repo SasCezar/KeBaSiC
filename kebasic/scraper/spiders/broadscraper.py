@@ -17,12 +17,12 @@ class BroadScraper(scrapy.Spider):
     name = 'BroadScraper'
     rotate_user_agent = True
     with open(get_project_settings()['ALLOWED_DOMAINS_PATH'], 'rt') as f:
-        allowed_domains = list(f)
+        allowed_domains = [row.strip() for row in set(f)]
 
     def start_requests(self):
         with open(get_project_settings()['URLS_PATH'], 'rt') as urls:
             for url in urls:
-                yield scrapy.Request(url, self.parse)
+                yield scrapy.Request(url.strip(), self.parse)
 
     def parse(self, response):
         web_page = response.text
