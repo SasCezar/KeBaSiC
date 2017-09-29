@@ -20,7 +20,7 @@ class DuplicatesPipeline(object):
             return item
 
 
-class InformationExtractPipeline(object):
+class SQLAlchemyPipeline(object):
     def __init__(self):
         pass
 
