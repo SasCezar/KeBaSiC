@@ -13,15 +13,19 @@ BOT_NAME = 'KeBaSiC-Broad'
 SPIDER_MODULES = ['scraper.spiders']
 NEWSPIDER_MODULE = 'scraper.spiders'
 
-DOWNLOAD_DELAY = 0  # default 0
+DOWNLOAD_DELAY = 1  # default 0
 RANDOMIZE_DOWNLOAD_DELAY = False
-CONCURRENT_REQUESTS_PER_DOMAIN = 25  # number of tor instances?!
+CONCURRENT_REQUESTS_PER_DOMAIN = 10
 AUTOTHROTTLE_ENABLED = False
+ROBOTSTXT_OBEY = True
 
 # Broad Crawl Setting
 CONCURRENT_REQUESTS = 1000
 REACTOR_THREADPOOL_MAXSIZE = 20
+
+# LOG_ENABLED = False
 LOG_LEVEL = 'INFO'
+
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
 DOWNLOAD_TIMEOUT = 30
@@ -29,23 +33,17 @@ REDIRECT_ENABLED = True
 AJAXCRAWL_ENABLED = True
 
 """
-DOWNLOADER_MIDDLEWARES = {
-    'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
-    'example.scrapy_util.downloadermiddleware.rotate_useragent.RotateUserAgentMiddleware': 500,
-    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
-    'example.scrapy_util.downloadermiddleware.http_proxy.HttpProxyMiddleware': 751
-}
-
-
 ITEM_PIPELINES = {
     'scraper.pipelines.DuplicatesPipeline': 100,
-    'scraper.pipelines.InformationExtractPipeline': 200,
     'scraper.pipelines.SQLPipeline': 300,
 }
 """
 
 DOWNLOADER_MIDDLEWARES = {
+    # 'scraper.middlewares.RandomProxyMiddleware': 100,
     'scraper.middlewares.RotateUserAgentMiddleware': 110,
+    'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 500,
+    'scraper.middlewares.FilterResponsesMiddleware': 900
 }
 
 USER_AGENTS = [
@@ -88,3 +86,12 @@ USER_AGENTS = [
 URLS_PATH = "resources/starts_url.txt"
 
 ALLOWED_DOMAINS_PATH = "resources/allowed_domains.txt"
+
+PROXY_LIST = 'resources/proxies.txt'
+# Proxy mode
+# 0 = Every requests have different proxy
+# 1 = Take only one proxy from the list and assign it to every requests
+# 2 = Put a custom proxy to use in the settings
+PROXY_MODE = 0
+
+ALLOWED_MIME = [b'text', b'application']

@@ -1,4 +1,6 @@
+import logging
 import re
+from urllib.parse import urljoin
 
 import scrapy
 from bs4 import BeautifulSoup, Comment
@@ -19,6 +21,8 @@ class BroadScraper(scrapy.Spider):
     with open(get_project_settings()['ALLOWED_DOMAINS_PATH'], 'rt') as f:
         allowed_domains = [row.strip() for row in set(f)]
 
+    response_type_whitelist = get_project_settings()['ALLOWED_MIME']
+
     def start_requests(self):
         with open(get_project_settings()['URLS_PATH'], 'rt') as urls:
             for url in urls:
@@ -27,6 +31,7 @@ class BroadScraper(scrapy.Spider):
     def parse(self, response):
         web_page = response.text
         soup = BeautifulSoup(web_page, BS_PARSER)
+        print(response.url)
         title = self._extract_title(soup)
         html = web_page
         text = self._extract_text(soup)
@@ -35,11 +40,9 @@ class BroadScraper(scrapy.Spider):
 
         yield page
 
-        urls = self._extract_urls(soup)
+        urls = self._extract_urls(response.url, soup)
 
         for url in urls:
-            if url is None or not url.startswith('http'):
-                continue
             yield scrapy.Request(url, callback=self.parse)
 
     def _extract_text(self, soup):
@@ -86,7 +89,7 @@ class BroadScraper(scrapy.Spider):
         return metadata
 
     @staticmethod
-    def _extract_urls(soup):
+    def _extract_urls(url, soup):
         """
         Given a BeautifulSoup representation of the html page extracts the links contained by the page
 
@@ -94,8 +97,21 @@ class BroadScraper(scrapy.Spider):
         :return:
         """
         links = []
-        for link in soup.find_all(TAG_ANCHOR):
-            links.append(link.get(TAG_HREF))
+        for anchor in soup.find_all(TAG_ANCHOR):
+            href = anchor.get(TAG_HREF)
+            href = href.strip() if href else None
+            if not href or href.startswith('#') or len(href) == 1:
+                continue
+
+            if not href.startswith('http'):
+                link = urljoin(url, href)
+                if link == href:
+                    continue
+                logging.debug("URL = {} - HREF = {} - Joined = {}".format(url, href, link))
+            else:
+                link = href
+
+            links.append(link)
 
         return links
 
@@ -107,5 +123,5 @@ class BroadScraper(scrapy.Spider):
         :param soup:
         :return:
         """
-        title = soup.title.name
-        return title
+        title = soup.title.text
+        return " ".join(title.split())
