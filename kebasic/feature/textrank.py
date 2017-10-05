@@ -4,7 +4,7 @@ import logging
 import networkx as nx
 import nltk
 
-from kebasic.keyword_extraction.keywordextractor import AbstractKeywordExtractor
+from kebasic.feature.keywordextractor import AbstractKeywordExtractor
 
 
 def setup_environment():
@@ -144,6 +144,9 @@ def postprocessing_key_phrases(keyphrases, textlist):
 
 
 class TextRank(AbstractKeywordExtractor):
+    """
+    A NLTK based implementation of TextRank as defined in: "TextRank: Bringing Order into Texts" by Mihalcea et al. (2004)
+    """
     def __init__(self, language, limit=None, filter_pos_tags=None):
         super().__init__(language)
         self._filter_tags = filter_pos_tags
@@ -154,7 +157,6 @@ class TextRank(AbstractKeywordExtractor):
         Return a set of key phrases.
 
         :param text: A string.
-        :param limit:
         """
         # tokenize the text using nltk
         word_tokens = nltk.word_tokenize(text, language=self._language)

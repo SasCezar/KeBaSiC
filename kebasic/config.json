@@ -1,15 +1,13 @@
 {
   "language": "spanish",
-  "mode": "full",
-  "resources": "../resources/",
+
   "ke_algorithms": [
-    "RAKE",
-    "TextRank"
+    "feature.rake.RAKE",
+    "feature.textrank.TextRank"
   ],
-  "dataset": "../resources/dataset/",
-  "out_path": "../results/",
+
   "ke_parameters": {
-    "RAKE": {
+    "feature.rake.RAKE": {
       "language": "spanish",
       "stopwords": "../resources/stopwords/es.stop",
       "min_char_length": 1,
@@ -19,7 +17,7 @@
       "max_words_length_adj": 1,
       "min_phrase_freq_adj": 2
     },
-    "TextRank": {
+    "feature.textrank.TextRank": {
       "language": "spanish",
       "limit": null,
       "filter_pos_tags": [
@@ -29,5 +27,9 @@
   },
   "classifiers": [],
   "classifiers_parameters": {
-  }
+  },
+  "template_path": "../resources/templates/bing.txt",
+  "queries_out_path": "../output/queries/bing.txt",
+  "keywords_path": "../resources/query/keywords.txt",
+  "sites_path": "../resources/query/sites.txt"
 }

@@ -1,8 +1,10 @@
 import argparse
-import json
 import logging
+import os
 
 from kebasic.execution.basic import BasicExecution
+from kebasic.utils import utils
+from kebasic.web import querygeneration
 
 
 def main(configs):
@@ -23,7 +25,14 @@ if __name__ == "__main__":
     logging.basicConfig(level=log_level, format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                         datefmt='%m-%d %H:%M', filename='kebasic.log', filemode='a')
 
-    with open(args.config_file) as config_file:
-        configs = json.load(config_file)
+    configs = utils.load_configs(args.config_file)
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
+    template_path = configs['template_path']
+    out_path = configs['queries_out_path']
+    keywords_path = configs['keywords_path']
+    sites_path = configs['sites_path']
+
+    querygeneration.generate_queries(template_path, out_path, keywords_path, sites_path)
 
     main(configs)

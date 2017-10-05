@@ -1,5 +1,4 @@
 import logging
-from importlib import import_module
 
 from kebasic.execution.executor import AbstractExecutor
 
@@ -14,12 +13,10 @@ class BasicExecution(AbstractExecutor):
         logging.info("Loading KE modules ...")
         # TODO: Extract method
         for ke_algorithm in self.ke_algorithms:
-            attribute_name = ke_algorithm.lower()
-            logging.debug("Loading {}".format(attribute_name))
-            my_module = import_module("keyword_extraction.{}".format(attribute_name))
-            model = getattr(my_module, ke_algorithm)
+            logging.debug("Loading {}".format(ke_algorithm))
+            ke_name, ke_class = self._import_classes(ke_algorithm)
             model_parameters = self.ke_parameters[ke_algorithm]
-            self.__setattr__(attribute_name, model(**model_parameters))
+            self.__setattr__(ke_name, ke_class(**model_parameters))
 
         logging.info("KE modules loaded")
         #  logging.info("Loading classifiers ...")

@@ -21,7 +21,7 @@ from collections import Counter
 
 import nltk
 
-from kebasic.keyword_extraction.keywordextractor import AbstractKeywordExtractor
+from kebasic.feature.keywordextractor import AbstractKeywordExtractor
 
 
 def is_number(s):
