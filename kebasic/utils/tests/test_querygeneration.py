@@ -1,6 +1,6 @@
 import unittest
 
-from kebasic.web.querygeneration import QueryGenerator
+from kebasic.utils.querygeneration import QueryGenerator
 
 template_path = 'google_query_template.txt'
 keywords = [{'lvl1': 'category11', 'lvl2': 'category12'},

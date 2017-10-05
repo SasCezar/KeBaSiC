@@ -3,8 +3,7 @@ import logging
 import os
 
 from kebasic.execution.basic import BasicExecution
-from kebasic.utils import utils
-from kebasic.web import querygeneration
+from kebasic.utils import utils, querygeneration
 
 
 def main(configs):
