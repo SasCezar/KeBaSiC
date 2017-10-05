@@ -1,6 +1,8 @@
 import csv
 import os
 
+from kebasic.utils.utils import load_configs
+
 
 def read_dict_csv(file_path):
     """
@@ -39,6 +41,7 @@ class QueryGenerator(object):
     """
     Defines a query generator based on templates strings
     """
+
     def __init__(self, template_path):
         self._site_templates, self._query_templates = self._read_template(template_path)
 
@@ -104,3 +107,20 @@ class QueryGenerator(object):
         """
         with open(out_path, "wt", encoding="utf8", newline='') as inf:
             inf.write(os.linesep.join(queries))
+
+
+def main():
+    config_path = "../config.json"
+
+    config = load_configs(config_path)
+    os.chdir("..")
+    template_path = config["template_path"]
+    queries_out_path = config["queries_out_path"]
+    keywords_path = config["keywords_path"]
+    sites_path = config["sites_path"]
+
+    generate_queries(template_path, queries_out_path, keywords_path, sites_path)
+
+
+if __name__ == "__main__":
+    main()

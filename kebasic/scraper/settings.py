@@ -96,8 +96,6 @@ PROXY_MODE = 0
 
 ALLOWED_MIME = [b'text', b'application']
 
-QUERIES = "resources/bing.txt"
-
 FEED_FORMAT = 'jsonlines'
 FEED_URI = 'result.json'
 

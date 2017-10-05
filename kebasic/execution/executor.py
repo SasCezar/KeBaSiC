@@ -10,7 +10,7 @@ class Context(object):
         self._strategy.execute()
 
 
-class AbstractExecutor(ABC):
+class AbstractExecution(ABC):
     """
     Defines an abstract execution class. Implements the common function that are needed to perform a generic computation
     """
@@ -42,7 +42,8 @@ class AbstractExecutor(ABC):
 
         return self
 
-    def _import_classes(self, package):
+    @staticmethod
+    def _import_classes(package):
         """
         Imports the packages needed for the execution
         :param package:

@@ -1,6 +1,6 @@
 {
   "language": "spanish",
-
+  // Keyword Extraction
   "ke_algorithms": [
     "feature.rake.RAKE",
     "feature.textrank.TextRank"
@@ -25,9 +25,28 @@
       ]
     }
   },
+  // Classifiers
   "classifiers": [],
   "classifiers_parameters": {
   },
+  // Taxonomy
+  "original_taxonomy": "../resources/taxonomy/original_taxonomy.csv",
+  "taxonomy_path": "../resources/taxonomy/taxonomy.csv",
+  "taxonomy_translate_from": "en",
+  "taxonomy_translate_to": "es",
+  "taxonomy_header": [
+    "id",
+    "lvl1",
+    "lvl2"
+  ],
+  "taxonomy_mask": [
+    1,
+    0,
+    0,
+    1,
+    1
+  ],
+  // Crawling
   "template_path": "../resources/templates/bing.txt",
   "queries_out_path": "../output/queries/bing.txt",
   "keywords_path": "../resources/query/keywords.txt",

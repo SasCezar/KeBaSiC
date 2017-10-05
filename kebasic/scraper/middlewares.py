@@ -54,7 +54,7 @@ class FilterResponsesMiddleware(object):
     def process_response(self, request, response, spider):
         """
         Only allow HTTP response types that that match the given list of
-        filtering regexs
+        filtering regexp
         """
         # each spider must define the variable response_type_whitelist as an
         # iterable of regular expressions. ex. (r'text', )

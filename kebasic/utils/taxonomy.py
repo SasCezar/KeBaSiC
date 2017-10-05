@@ -1,17 +1,21 @@
 import csv
-import json
+import os
 
 from googletrans import Translator
 
-from kebasic.utils.utils import camel_case_split
-
-translator = Translator()
-
-SRC_LANG = "en"
-DST_LANG = "es"
+from kebasic.utils.utils import camel_case_split, load_configs
 
 
-def translate_taxonomy(taxonomy_path):
+def translate_taxonomy(taxonomy_path, src_lang="en", dst_lang="es"):
+    """
+    Given a taxonomy of second level, translates the categories using Google Translate
+
+    :param taxonomy_path:
+    :param src_lang:
+    :param dst_lang:
+    :return:
+    """
+    translator = Translator()
     with open(taxonomy_path, "rt", encoding="utf8") as inf:
         reader = csv.reader(inf)
         next(reader)
@@ -20,8 +24,8 @@ def translate_taxonomy(taxonomy_path):
         for category_id, n1, n2 in reader:
             n1 = camel_case_split(n1)
             n2 = camel_case_split(n2)
-            translated_n1 = translator.translate(n1, src=SRC_LANG, dest=DST_LANG).text if n1 else ""
-            translated_n2 = translator.translate(n2, src=SRC_LANG, dest=DST_LANG).text if n1 else ""
+            translated_n1 = translator.translate(n1, src=src_lang, dest=dst_lang).text if n1 else ""
+            translated_n2 = translator.translate(n2, src=src_lang, dest=dst_lang).text if n1 else ""
 
             category = [category_id, n1, n2, translated_n1, translated_n2]
 
@@ -40,18 +44,21 @@ def write_taxonomy(categories, out_path, header=None, mask=None):
             writer.writerow(row)
 
 
-def load_configs(config_file):
-    with open(config_file) as config_file:
-        configs = json.load(config_file)
+def main():
+    config_path = "../config.json"
 
-    return configs
+    config = load_configs(config_path)
+
+    os.chdir("..")
+
+    src = config.get("taxonomy_translate_from", None)
+    dst = config.get("taxonomy_translate_to", "es")
+    taxonomy = translate_taxonomy(config['original_taxonomy'], src_lang=src, dst_lang=dst)
+
+    header = config.get("taxonomy_header", ["id", "lvl1", "lvl2"])
+    mask = config.get("taxonomy_mask", [1, 0, 0, 1, 1])
+    write_taxonomy(taxonomy, config['taxonomy_path'], header=header, mask=mask)
 
 
 if __name__ == "__main__":
-    base_path = "../../resources/taxonomy/"
-    filtered_path = base_path + "clean_update_categories.csv"
-    out = base_path + "spanish_taxonomy.csv"
-
-    taxonomy = translate_taxonomy(filtered_path)
-
-    write_taxonomy(taxonomy, out, header=['id', 'lvl1', 'lvl2'], mask=[1, 0, 0, 1, 1])
+    main()

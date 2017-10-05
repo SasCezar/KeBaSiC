@@ -3,7 +3,7 @@ import logging
 import os
 
 from kebasic.execution.basic import BasicExecution
-from kebasic.utils import utils, querygeneration
+from kebasic.utils import utils
 
 
 def main(configs):
@@ -26,12 +26,5 @@ if __name__ == "__main__":
 
     configs = utils.load_configs(args.config_file)
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
-
-    template_path = configs['template_path']
-    out_path = configs['queries_out_path']
-    keywords_path = configs['keywords_path']
-    sites_path = configs['sites_path']
-
-    querygeneration.generate_queries(template_path, out_path, keywords_path, sites_path)
 
     main(configs)

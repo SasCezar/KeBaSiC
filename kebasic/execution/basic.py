@@ -1,9 +1,9 @@
 import logging
 
-from kebasic.execution.executor import AbstractExecutor
+from kebasic.execution.executor import AbstractExecution
 
 
-class BasicExecution(AbstractExecutor):
+class BasicExecution(AbstractExecution):
     def __init__(self, config):
         super().__init__(config)
         self._allowed = {"language", "resources", "stopwords", "ke_algorithms", "ke_parameters"}
