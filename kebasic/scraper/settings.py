@@ -15,16 +15,16 @@ NEWSPIDER_MODULE = 'scraper.spiders'
 
 DOWNLOAD_DELAY = 1  # default 0
 RANDOMIZE_DOWNLOAD_DELAY = False
-CONCURRENT_REQUESTS_PER_DOMAIN = 10
+CONCURRENT_REQUESTS_PER_DOMAIN = 25
 AUTOTHROTTLE_ENABLED = False
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Broad Crawl Setting
 CONCURRENT_REQUESTS = 1000
 REACTOR_THREADPOOL_MAXSIZE = 20
 
 # LOG_ENABLED = False
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
@@ -95,3 +95,10 @@ ALLOWED_DOMAINS_PATH = "resources/allowed_domains.txt"
 PROXY_MODE = 0
 
 ALLOWED_MIME = [b'text', b'application']
+
+QUERIES = "resources/bing.txt"
+
+FEED_FORMAT = 'jsonlines'
+FEED_URI = 'result.json'
+
+METADATA_KEY = ['keywords', 'description']

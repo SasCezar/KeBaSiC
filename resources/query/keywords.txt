@@ -1,0 +1,248 @@
+id,lvl1,lvl2
+1,Vestir,
+2,Vestir,Joyería
+3,Vestir,Calzado
+4,Vestir,Ropa
+5,Vestir,Ropa y accesorios
+6,Vestir,Alteraciones en la limpieza en seco
+7,Vestir,Ropa de lluvia
+8,Arte y entretenimiento,
+9,Arte y entretenimiento,Video de TV
+10,Arte y entretenimiento,Entretenimiento
+11,Arte y entretenimiento,Industria del entretenimiento
+12,Arte y entretenimiento,Bromas del humor
+13,Arte y entretenimiento,Música Audio
+14,Arte y entretenimiento,Entretenimiento Deportivo
+15,Arte y entretenimiento,Eventos culturales
+16,Arte y entretenimiento,Películas
+17,Arte y entretenimiento,Comics Novelas gráficas
+18,Arte y entretenimiento,Diseño Visual
+19,Arte y entretenimiento,Diversión divertida
+20,Arte y entretenimiento,Premios Arts Entertainment
+21,Arte y entretenimiento,Excéntrico
+22,Arte y entretenimiento,Entretenimiento Media Tiendas
+23,Arte y entretenimiento,Dibujos animados
+24,Belleza Cuidado Personal,
+25,Belleza Cuidado Personal,Protección de la piel
+26,Belleza Cuidado Personal,Cuidado solar bronceado
+27,Belleza Cuidado Personal,Balneario Spa Médico
+28,Belleza Cuidado Personal,Anti-Envejecimiento
+29,Belleza Cuidado Personal,Cuidado de uñas
+30,Belleza Cuidado Personal,Cuidado de los labios
+31,Belleza Cuidado Personal,Maquillaje Cosmética
+32,Belleza Cuidado Personal,Cuidado del cabello
+33,Belleza Cuidado Personal,Perfumes Fragancias
+34,Belleza Cuidado Personal,Afeitado
+35,Belleza Cuidado Personal,Cuidado bucal
+36,Belleza Cuidado Personal,Artículos de higiene
+37,Belleza Cuidado Personal,Arte Corporal
+38,Belleza Cuidado Personal,Estilo de moda
+39,Belleza Cuidado Personal,Repelente de insectos
+40,Negocio e industria,
+41,Negocio e industria,Fabricación
+42,Negocio e industria,Ingeniería de diseño
+43,Negocio e industria,Administración de Empresas
+44,Negocio e industria,Fabricación de Bienes Industriales
+45,Negocio e industria,Mantenimiento de la Construcción
+46,Negocio e industria,Comercio al por menor
+47,Negocio e industria,Servicios de Equipo Científico
+48,Negocio e industria,Industria energética
+49,Negocio e industria,Servicios de equipos de seguridad
+50,Negocio e industria,Oficina
+51,Negocio e industria,Industria de Servicios Alimentarios
+52,Negocio e industria,Embalaje de envío
+53,Negocio e industria,Impresión industrial comercial
+54,Negocio e industria,Productos de limpieza Servicios
+55,Negocio e industria,Agricultura
+56,Negocio e industria,Industria química
+57,Negocio e industria,Suministros para equipos veterinarios
+58,Negocio e industria,Industria pesquera
+59,Negocio e industria,Importación y exportación
+60,Negocio e industria,La producción de alimentos
+61,Negocio e industria,Aeroespacial
+62,Electrónica,
+63,Electrónica,Ordenadores
+64,Electrónica,Electrónica de consumo
+65,Vida nocturna,
+66,Vida nocturna,Restaurantes y Bares
+67,Vida nocturna,Restaurantes Vida nocturna
+68,Vida nocturna,Discotecas Bares Music Clubs
+69,Comunidad Familiar,
+70,Comunidad Familiar,Organizaciones sociales de servicios comunitarios
+71,Comunidad Familiar,Recursos personales domésticos
+72,Comunidad Familiar,Familia de crianza de bebés
+73,Comunidad Familiar,Relaciones románticas
+74,Comunidad Familiar,Fe creencia
+75,Financiar,
+76,Financiar,Gestión de Planificación Financiera
+77,Financiar,Bancario
+78,Financiar,Transferencia de dinero Wire Services
+79,Financiar,Invertir
+80,Financiar,Financiación de las empresas
+81,Financiar,Préstamos de crédito
+82,Financiar,Noticias empresariales
+83,Financiar,Becas Becas Ayuda Financiera
+84,Financiar,Procesamiento de Ventas ATM
+85,Financiar,Seguro
+86,Financiar,Auditoría contable
+87,Comestibles,
+88,Comestibles,Artículos de uso doméstico
+89,Comestibles,Comida
+90,Comestibles,Bebidas
+91,Comestibles,Compras de supermercado en línea
+92,Salud,
+93,Salud,Problemas de salud
+94,Salud,Dieta Nutricional
+95,Salud,Dispositivos médicos Suministros de equipo
+96,Salud,Biotecnología Farmacéutica
+97,Salud,Farmacia
+98,Salud,Recursos médicos profesionales
+99,Salud,Servicios de atención médica
+100,Pasatiempos Ocio,
+101,Pasatiempos Ocio,Recreación Al Aire Libre
+102,Pasatiempos Ocio,Juguetes Juegos
+103,Pasatiempos Ocio,Cerveza del vino que recoge la elaboración de cerveza
+104,Pasatiempos Ocio,Cocina
+105,Pasatiempos Ocio,Modelos a Escala
+106,Pasatiempos Ocio,Animales de compañía
+107,Pasatiempos Ocio,Arte y Artesanía
+108,Pasatiempos Ocio,Foto Video
+109,Pasatiempos Ocio,Ancestry Genealogía
+110,Pasatiempos Ocio,Observación de aves
+111,Pasatiempos Ocio,Antigüedades Coleccionables
+112,Pasatiempos Ocio,Educación de Actividades Recreativas
+113,Pasatiempos Ocio,Jardinería
+114,Pasatiempos Ocio,Premios Competiciones
+115,Pasatiempos Ocio,Astronomía
+116,Hogar & Jardín,
+117,Hogar & Jardín,Limpieza Residencial
+118,Hogar & Jardín,Reloj Reloj Reparación
+119,Hogar & Jardín,Muebles del hogar
+120,Hogar & Jardín,Mantenimiento De Mejoras Para El Hogar
+121,Hogar & Jardín,Decoración del hogar Decoración del interior
+122,Hogar & Jardín,Patio Jardín Patio
+123,Hogar & Jardín,Filtros de agua
+124,Hogar & Jardín,Organización de Almacenamiento en Casa
+125,Hogar & Jardín,Comedor de la cocina
+126,Hogar & Jardín,Seguridad en el hogar Seguridad
+127,Hogar & Jardín,Electrodomésticos
+128,Hogar & Jardín,Home Garden Media Publicaciones
+129,Hogar & Jardín,Baño
+130,Hogar & Jardín,Lavandería en el hogar
+131,Hogar & Jardín,Calefacción en el hogar
+132,Hogar & Jardín,Luces e Iluminación
+133,Hogar & Jardín,Cocina Gabinetes de Baño
+134,Hogar & Jardín,Ropa de cama Ropa de cama
+135,Hogar & Jardín,Doorbells Alambre de puerta
+136,Internet Telecom,
+137,Internet Telecom,Internet
+138,Internet Telecom,Telefonía
+139,Internet Telecom,VOIP
+140,Internet Telecom,Teleconferencia
+141,Internet Telecom,Tarjetas de llamadas
+142,Internet Telecom,Servicios de Cable
+143,Internet Telecom,Servicios de satélite
+144,Internet Telecom,Telegramas
+145,Empleos Educación,
+146,Empleos Educación,Empleos
+147,Empleos Educación,Recursos para los alumnos de la Escuela Secundaria
+148,Empleos Educación,Entrenamiento Educativo
+149,Gobierno de la ley,
+150,Gobierno de la ley,Política
+151,Gobierno de la ley,Legal
+152,Gobierno de la ley,Servicios de emergencia
+153,Gobierno de la ley,Militar
+154,Gobierno de la ley,Servicios públicos
+155,Gobierno de la ley,Servicios de protección de la aplicación de la ley
+156,Gobierno de la ley,Contrataciones de consultoría gubernamental
+157,Gobierno de la ley,Gobierno
+158,Gobierno de la ley,Servicios de Censo
+159,Noticias,Publicaciones de medios de vehículos
+160,Noticias,
+161,Noticias,Libros Literatura
+162,Noticias,Medios en línea
+163,Noticias,Intereses Masculinos Media Publicaciones
+164,Noticias,Publicaciones de Medios de Salud
+165,Noticias,Intereses de la Mujer Media Publicaciones
+166,Noticias,Noticias de entretenimiento
+167,Noticias,Ropa Medios Publicaciones
+168,Noticias,Recursos de Materiales de Referencia
+169,Noticias,Revistas Suscripciones a revistas
+170,Noticias,Publicación
+171,Noticias,Clima
+172,Noticias,World News Media
+173,Noticias,Periódicos
+174,Noticias,Noticias Políticas
+175,Noticias,Publicaciones locales
+176,Noticias,Publicaciones de medios para adolescentes
+177,Regalos Ocasiones,
+178,Regalos Ocasiones,Tarjetas Saludos
+179,Regalos Ocasiones,Arreglos florales
+180,Regalos Ocasiones,Vacaciones
+181,Regalos Ocasiones,Regalos
+182,Regalos Ocasiones,Ocasiones especiales
+183,Regalos Ocasiones,Partes Suministros de Fiesta
+184,Regalos Ocasiones,Canto de telegramas
+185,Bienes raíces,
+186,Bienes raíces,Listados de Bienes Raíces
+187,Bienes raíces,Propiedad administrativa
+188,Bienes raíces,Tasaciones de inspecciones de propiedades
+189,Bienes raíces,Mudanza de Hogar Mudanza
+190,Bienes raíces,Comunidades Privadas
+191,Bienes raíces,Planos de la casa
+192,Bienes raíces,Propiedades vacacionales Second Homes
+193,Bienes raíces,Desarrollo Inmobiliario
+194,Bienes raíces,Corredores de bienes raíces
+195,Bienes raíces,Títulos Inmobiliarios Escrow
+196,Bienes raíces,Inversiones Comerciales Bienes Raíces
+197,Bienes raíces,Subastas Inmobiliarias
+198,Bienes raíces,Precios inmobiliarios del mercado inmobiliario
+199,Minoristas Mercancía General,Cupones de descuento
+200,Minoristas Mercancía General,
+201,Minoristas Mercancía General,Vendedores al por mayor
+202,Minoristas Mercancía General,Intercambio de ventas informal
+203,Minoristas Mercancía General,Servicios de Alquiler
+204,Minoristas Mercancía General,Motores de búsqueda
+205,Deportes Fitness,
+206,Deportes Fitness,Noticias de deportes
+207,Deportes Fitness,Ropa deportiva de fitness
+208,Deportes Fitness,Ropa del engranaje del ventilador de deportes
+209,Deportes Fitness,Recreación del agua del canotaje
+210,Deportes Fitness,Programas Deportivos Campamentos
+211,Deportes Fitness,Servicios de alquiler de equipos deportivos
+212,Deportes Fitness,Artículos deportivos
+213,Deportes Fitness,Entrenamiento Deportivo
+214,Deportes Fitness,Aptitud
+215,Deportes Fitness,Deportes
+216,Viajes Turismo,
+217,Viajes Turismo,Alojamientos
+218,Viajes Turismo,Accesorios de viaje de equipaje
+219,Viajes Turismo,Viaje aéreo
+220,Viajes Turismo,Destinos turísticos
+221,Viajes Turismo,Excursiones de transporte
+222,Viajes Turismo,Viajes de última hora
+223,Viajes Turismo,Operadores turísticos
+224,Viajes Turismo,Publicaciones de Medios de Viaje
+225,Viajes Turismo,Viajes especiales
+226,Viajes Turismo,Servicios de reserva de viajes
+227,Viajes Turismo,Servicios de equipajes
+228,Viajes Turismo,Cruceros Servicios de Cruceros
+229,Viajes Turismo,Paquetes vacacionales
+230,Viajes Turismo,Documentos de viaje
+231,Viajes Turismo,Viajes de Lujo
+232,Vehículos,
+233,Vehículos,Aviones personales aviones
+234,Vehículos,Vehículos de motor
+235,Vehículos,Accesorios Vehículos
+236,Vehículos,Embarcaciones
+237,Vehículos,Planes de Protección de Garantías de Vehículos
+238,Vehículos,Subastas de Vehículos
+239,Vehículos,Instrucción de conducción
+240,Vehículos,Mantenimiento de reparación de vehículos
+241,Vehículos,Remolque de Vehículos
+242,Vehículos,Emisiones de vehiculos
+243,Vehículos,Especificaciones del vehículo
+244,Vehículos,Remoción de donaciones de vehículos
+245,Vehículos,Informes de historial de vehículos
+246,Vehículos,Teñido de ventanas de vehículos
+247,Vehículos,Distribuidores de Vehículos

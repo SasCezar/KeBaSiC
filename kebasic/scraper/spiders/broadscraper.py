@@ -31,12 +31,11 @@ class BroadScraper(scrapy.Spider):
     def parse(self, response):
         web_page = response.text
         soup = BeautifulSoup(web_page, BS_PARSER)
-        print(response.url)
         title = self._extract_title(soup)
         html = web_page
         text = self._extract_text(soup)
         metadata = self._extract_metadata(soup)
-        page = Page(title=title, html=html, text=text, metadata=metadata)
+        page = Page(url=response.url, title=title, html=html, text=text, metadata=metadata)
 
         yield page
 
@@ -80,11 +79,11 @@ class BroadScraper(scrapy.Spider):
         """
         metadata = {}
         for meta in soup.find_all(TAG_META):
-            meta_name = meta.name
-            meta_description = meta.content
+            meta_name = meta.get('name', None)
+            meta_content = meta.get('content', None)
 
-            if meta_description:
-                metadata[meta_name] = meta_description
+            if meta_name and meta_name.lower() in get_project_settings()['METADATA_KEY'] and meta_content:
+                metadata[meta_name.lower()] = meta_content
 
         return metadata
 
