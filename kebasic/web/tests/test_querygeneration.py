@@ -35,7 +35,7 @@ class TestQueryGenerator(unittest.TestCase):
         queries = google_query_generator.generate_queries([], sites)
         self.assertListEqual(sorted(queries), sorted(site_query_result))
 
-    def test_emty_query_generation(self):
+    def test_empty_query_generation(self):
         queries = google_query_generator.generate_queries([], [])
         self.assertListEqual(queries, [])
 

@@ -1,4 +1,27 @@
+import csv
 import os
+
+
+def read_dict_csv(file_path):
+    if not file_path:
+        return None
+    with open(file_path, "rt", encoding="utf8") as inf:
+        r = [{k: v.strip() for k, v in row.items()}
+             for row in csv.DictReader(inf, skipinitialspace=True)]
+
+    return r
+
+
+def generate_queries(template_path, out_path, keywords_path=None, sites_path=None):
+    query_generator = QueryGenerator(template_path)
+
+    keywords = read_dict_csv(keywords_path)
+
+    sites = read_dict_csv(sites_path)
+
+    queries = query_generator.generate_queries(keywords=keywords, sites=sites)
+
+    query_generator.save_queries(out_path, queries)
 
 
 class QueryGenerator(object):
