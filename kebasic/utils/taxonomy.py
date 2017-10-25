@@ -35,6 +35,15 @@ def translate_taxonomy(taxonomy_path, src_lang="en", dst_lang="es"):
 
 
 def write_taxonomy(categories, out_path, header=None, mask=None):
+    """
+    Saves the taxonomy to files
+
+    :param categories: Taxonomy :param out_path: Path where to save the file
+    :param header: An optional header
+    :param mask: Filter some values of categories (eg categories=[id, lvl1, lvl2, es_lvl1, es_lvl2], mask=[1,0,0,1,1],
+        result=[id, es_lvl1, es_lvl2]
+    :return:
+    """
     with open(out_path, "wt", newline="", encoding="utf8") as outf:
         writer = csv.writer(outf)
         writer.writerow(header) if header else None

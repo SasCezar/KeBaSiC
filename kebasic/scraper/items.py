@@ -10,17 +10,12 @@ from scrapy import Item, Field
 
 
 class Page(Item):
-    url = Field()
-    html = Field()
-    title = Field()
-    text = Field()
-    metadata = Field()
-
-
-class GoogleSearchItem(Item):
-    name = Field()
-    region = Field()
-    url = Field()
-    html = Field()
-    query = Field()
-    crawled = Field()
+    """
+    Defines a item for Scrapy, this item is a web page
+    """
+    url = Field()  # Is the URL of the web page
+    html = Field()  # Contains the HTML text of the web page
+    title = Field()  # Is the title of the web page
+    text = Field()  # Is the visible tex contained in the page
+    meta_keywords = Field()  # Contains the value of the meta-tag "keywords"
+    meta_description = Field()  # Contains the value of the meta-tag "description"

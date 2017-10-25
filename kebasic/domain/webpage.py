@@ -1,35 +1,18 @@
-import json
-
-from sqlalchemy import Column, String, Text
+from sqlalchemy import Column, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-from sqlalchemy.types import TypeDecorator
-
-SIZE = 256
-
-
-class TextPickleType(TypeDecorator):
-    impl = Text(SIZE)
-
-    def process_bind_param(self, value, dialect):
-        if value is not None:
-            value = json.dumps(value)
-
-        return value
-
-    def process_result_value(self, value, dialect):
-        if value is not None:
-            value = json.loads(value)
-        return value
-
 
 class WebPage(Base):
+    """
+    Defines a serializable SQLAlchemy object describing a web-page
+    """
     __table_name__ = 'web_pages'
     url = Column(String, primary_key=True)
     domain = Column(String)
     html = Column(String)
     title = Column(String)
     text = Column(String)
-    metadata = Column(TextPickleType)
+    meta_keywords = Column(String)
+    meta_description = Column(String)

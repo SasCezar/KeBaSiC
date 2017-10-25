@@ -70,6 +70,11 @@ class QueryGenerator(object):
         :param sites:
         :return:
         """
+        if keywords is None:
+            keywords = []
+        if sites is None:
+            sites = []
+
         queries = set()
         for keyword in keywords:
             keyword_queries = self._generate_query(keyword, self._query_templates)
@@ -85,6 +90,7 @@ class QueryGenerator(object):
     def _generate_query(keyword, templates):
         """
         Given a keyword and a list of templates returns a list of formatted queries
+
         :param keyword:
         :param templates:
         :return:
@@ -115,11 +121,11 @@ def main():
     config = load_configs(config_path)
     os.chdir("..")
     template_path = config["template_path"]
-    queries_out_path = config["queries_out_path"]
-    keywords_path = config["keywords_path"]
-    sites_path = config["sites_path"]
+    query_out_path = config["query_out_path"]
+    keywords_path = config["taxonomy_path"]
+    sites_path = None
 
-    generate_queries(template_path, queries_out_path, keywords_path, sites_path)
+    generate_queries(template_path, query_out_path, keywords_path, sites_path)
 
 
 if __name__ == "__main__":

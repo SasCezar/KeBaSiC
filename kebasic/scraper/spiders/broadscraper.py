@@ -35,7 +35,10 @@ class BroadScraper(scrapy.Spider):
         html = web_page
         text = self._extract_text(soup)
         metadata = self._extract_metadata(soup)
-        page = Page(url=response.url, title=title, html=html, text=text, metadata=metadata)
+        keywords = metadata.get('keywords', "")
+        description = metadata.get('description', "")
+        page = Page(url=response.url, title=title, html=html, text=text,
+                    meta_keywords=keywords, meta_description=description)
 
         yield page
 

@@ -1,3 +1,4 @@
+domain:es.wikipedia.com {lvl1} {lvl2} -ext:pdf
+domain:es.wikipedia.com {lvl2} -ext:pdf
 inbody: {lvl1} {lvl2} language:es -ext:pdf
 intitle: {lvl1} {lvl2} language:es -ext:pdf
-TODO see if word1 near word2 is useful
