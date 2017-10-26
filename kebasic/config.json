@@ -1,20 +1,21 @@
 {
   "language": "spanish",
-  "mode": 1,
-  // See doc for values
-
-  // Keyword Extraction
-  "ke_algorithms": [
+  "websites_path": "../input/test_sites.csv",
+  // Feature Extraction
+  "extractor_algorithms": [
     "feature.rake.RAKE",
-    "feature.textrank.TextRank"
+    "feature.textrank.TextRank",
+    "feature.termfreq.TermFrequencies"
   ],
-  "ke_parameters": {
+  "extractor_parameters": {
     "feature.rake.RAKE": {
       "language": "spanish",
       "stopwords": "../resources/stopwords/es.stop",
-      "min_char_length": 1,
-      "max_words_length": 5,
-      "min_keyword_frequency": 1,
+      "min_char_length": 3,
+      // 3
+      "max_words_length": 2,
+      //
+      "min_keyword_frequency": 2,
       "min_words_length_adj": 1,
       "max_words_length_adj": 1,
       "min_phrase_freq_adj": 2
@@ -23,7 +24,8 @@
       "language": "spanish",
       "limit": null,
       "filter_pos_tags": [
-        "NN"
+        "NN",
+        "VB"
       ]
     }
   },

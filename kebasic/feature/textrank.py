@@ -190,4 +190,4 @@ class TextRank(AbstractKeywordExtractor):
         modified_key_phrases = postprocessing_key_phrases(keyphrases, textlist)
 
         sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
-        return modified_key_phrases, sorted_scores
+        return modified_key_phrases

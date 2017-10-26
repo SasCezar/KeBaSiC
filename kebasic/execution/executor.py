@@ -16,7 +16,7 @@ class AbstractExecution(ABC):
     """
     def __init__(self, config):
         """
-        Constructor of the class. Accepts a dicionary of configurations that will be used to define the workflow of the
+        Constructor of the class. Accepts a dictionary of configurations that will be used to define the workflow of the
         class.
 
         :param config:
@@ -25,7 +25,15 @@ class AbstractExecution(ABC):
         self._allowed = set()  # all those keys will be initialized as class attributes
 
     @abstractmethod
-    def execute(self):
+    def _build(self):
+        """
+        Builds the objects that the class will use
+        :return:
+        """
+        pass
+
+    @abstractmethod
+    def execute(self, webpages):
         pass
 
     def _initialize(self):
@@ -43,14 +51,14 @@ class AbstractExecution(ABC):
         return self
 
     @staticmethod
-    def _import_classes(package):
+    def _import_class(module):
         """
-        Imports the packages needed for the execution
-        :param package:
+        Imports the class from the specified module needed for the execution
+        :param module:
         :return:
         """
-        module_name = ".".join(package.split('.')[:-1])
+        module_name = ".".join(module.split('.')[:-1])
         my_module = import_module("{}".format(module_name))
-        class_name = package.split('.')[-1]
+        class_name = module.split('.')[-1]
         model = getattr(my_module, class_name)
         return class_name, model
