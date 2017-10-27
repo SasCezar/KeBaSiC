@@ -5,7 +5,7 @@ import os
 from kebasic.dao.webpagedao import CSVWebPageDAO
 from kebasic.execution.basic import FeatureExtractionExecution
 from kebasic.utils import utils
-from kebasic.utils.logger import initilize_logger
+from kebasic.utils.logger import initialize_logger
 
 
 def write_csv(result):
@@ -32,6 +32,6 @@ if __name__ == "__main__":
     configs = utils.load_configs(args.config_file)
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-    initilize_logger(configs['log_path'])
+    initialize_logger(configs['log_path'])
 
     main(configs)
