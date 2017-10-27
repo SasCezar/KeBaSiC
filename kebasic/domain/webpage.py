@@ -64,7 +64,7 @@ class WebPage(object):
         with urlopen(request) as webpage:
             self._html = BeautifulSoup(webpage, 'html.parser').prettify()
 
-        self._html = ' '.join(self.html.split())
+        self._html = ' '.join(self.html.split()).strip()
         return self
 
     def _parse(self):
@@ -101,7 +101,7 @@ class WebPage(object):
         texts = soup.findAll(text=True)
         visible_texts = [text for text in texts if self._tag_visible(text)]
         cleaned_text = " ".join(t.strip() for t in visible_texts if t.strip())
-        self._text = cleaned_text
+        self._text = cleaned_text.strip()
 
     def _extract_metadata(self, soup):
         """
@@ -121,4 +121,4 @@ class WebPage(object):
         :param soup:
         :return:
         """
-        self._title = soup.title.name
+        self._title = soup.title.name.strip()

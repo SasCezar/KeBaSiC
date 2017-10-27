@@ -23,21 +23,21 @@ class FeatureExtractionExecution(AbstractExecution):
         result = []
         for webpage in webpages:
             logging.info("Extracting features from site: {}".format(webpage.url))
-            if not webpage.text.strip():
-                print("Empty text webpage: {}".format(webpage.url))
+            if not webpage.text:
+                logging.info("Empty text webpage: {}".format(webpage.url))
                 continue
-            keywords = self.extract_feature(webpage.text)
+            keywords = self.extract_features(webpage.text)
             keywords['url'] = webpage.url
             keywords['site_keywords'] = webpage.meta_keywords
             result.append(keywords)
 
         return result
 
-    def extract_feature(self, webpage):
+    def extract_features(self, webpage):
         result = {}
-        for ke_algorithm in self.feature_extractors:
-            ke_object = ke_algorithm[1]
-            keywords = ke_object.run(webpage)
-            result[ke_algorithm[0]] = keywords
+        for extractor_algorithm in self.feature_extractors:
+            extractor = extractor_algorithm[1]
+            feature = extractor.run(webpage)
+            result[extractor_algorithm[0]] = feature
 
         return result

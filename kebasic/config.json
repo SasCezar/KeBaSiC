@@ -12,9 +12,7 @@
       "language": "spanish",
       "stopwords": "../resources/stopwords/es.stop",
       "min_char_length": 3,
-      // 3
       "max_words_length": 2,
-      //
       "min_keyword_frequency": 2,
       "min_words_length_adj": 1,
       "max_words_length_adj": 1,
@@ -54,5 +52,7 @@
   "template_path": "../resources/templates/bing.txt",
   "query_out_path": "../output/query/bing.txt",
   "keywords_path": "../resources/query/keywords.txt",
-  "sites_path": "../resources/query/sites.txt"
+  "sites_path": "../resources/query/sites.txt",
+  //Logger
+  "log_path": "../log"
 }

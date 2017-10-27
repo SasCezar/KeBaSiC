@@ -40,7 +40,6 @@ ITEM_PIPELINES = {
 """
 
 DOWNLOADER_MIDDLEWARES = {
-    # 'scraper.middlewares.RandomProxyMiddleware': 100,
     'scraper.middlewares.RotateUserAgentMiddleware': 110,
     'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 500,
     'scraper.middlewares.FilterResponsesMiddleware': 900
@@ -86,13 +85,6 @@ USER_AGENTS = [
 URLS_PATH = "resources/starts_url.txt"
 
 ALLOWED_DOMAINS_PATH = "resources/allowed_domains.txt"
-
-# PROXY_LIST = 'resources/proxies.txt'
-# Proxy mode
-# 0 = Every requests have different proxy
-# 1 = Take only one proxy from the list and assign it to every requests
-# 2 = Put a custom proxy to use in the settings
-PROXY_MODE = 0
 
 ALLOWED_MIME = [b'text', b'application']
 
