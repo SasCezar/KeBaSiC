@@ -12,7 +12,7 @@ class FeatureExtractionExecution(AbstractExecution):
         self._build()
 
     def _build(self):
-        logging.info("Loading KE modules ...")
+        logging.info("Loading Feature Extraction modules ...")
         for ke_algorithm in self.extractor_algorithms:
             logging.debug("Loading {}".format(ke_algorithm))
             ke_name, ke_class = self._import_class(ke_algorithm)
@@ -26,10 +26,10 @@ class FeatureExtractionExecution(AbstractExecution):
             if not webpage.text:
                 logging.info("Empty text webpage: {}".format(webpage.url))
                 continue
-            keywords = self.extract_features(webpage.text)
-            keywords['url'] = webpage.url
-            keywords['site_keywords'] = webpage.meta_keywords
-            result.append(keywords)
+            features = self.extract_features(webpage.text)
+            features['url'] = webpage.url
+            features['site_keywords'] = webpage.meta_keywords
+            result.append(features)
 
         return result
 
