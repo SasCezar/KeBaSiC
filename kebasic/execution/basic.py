@@ -12,9 +12,9 @@ class FeatureExtractionExecution(AbstractExecution):
         self._build()
 
     def _build(self):
-        logging.info("Loading Feature Extraction modules ...")
+        logging.info("Loading Feature Extraction modules...")
         for ke_algorithm in self.extractor_algorithms:
-            logging.debug("Loading {}".format(ke_algorithm))
+            logging.info("Loading {}".format(ke_algorithm))
             ke_name, ke_class = self._import_class(ke_algorithm)
             model_parameters = self.extractor_parameters.get(ke_algorithm, {})
             self.feature_extractors.append((ke_name, ke_class(**model_parameters)))

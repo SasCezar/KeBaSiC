@@ -51,6 +51,7 @@ USER_AGENTS = [
 ]
 USER_AGENTS_LEN = len(USER_AGENTS)
 
+
 class NotValidURL(Exception):
     pass
 
@@ -98,7 +99,7 @@ class WebPage(object):
 
     def _download(self):
         print(self._url)
-        request = Request(self._url, headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN)]})
+        request = Request(self._url, headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)]})
         with urlopen(request) as webpage:
             self._html = BeautifulSoup(webpage, 'html.parser').prettify()
 
@@ -119,6 +120,8 @@ class WebPage(object):
 
     @staticmethod
     def _tag_visible(element):
+        if 'class' in element.parent.attrs and any(['blog-categories', 'minor-meta']) in element.parent['class']:
+            print(element.parent['class'])
         if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
             return False
         elif isinstance(element, Comment):

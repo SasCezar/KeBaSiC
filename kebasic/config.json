@@ -25,6 +25,9 @@
         "NN",
         "VB"
       ]
+    },
+    "feature.termfreq.TermFrequencies": {
+      "language": "spanish"
     }
   },
   // Classifiers

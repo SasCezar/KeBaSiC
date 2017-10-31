@@ -1,6 +1,7 @@
 import argparse
 import csv
 import os
+import pprint
 
 from kebasic.dao.webpagedao import CSVWebPageDAO
 from kebasic.execution.basic import FeatureExtractionExecution
@@ -9,11 +10,17 @@ from kebasic.utils.logger import initialize_logger
 
 
 def write_csv(result):
-    with open('keywords.csv', 'wt', encoding="utf8", newline="") as output_file:
+    with open('keywords_1.csv', 'wt', encoding="utf8", newline="") as output_file:
         dict_writer = csv.DictWriter(output_file,
                                      fieldnames=["url", "site_keywords", "RAKE", "TextRank", "TermFrequencies"])
         dict_writer.writeheader()
         dict_writer.writerows(result)
+
+
+def write_json(results):
+    with open('keywords_1.json', 'wt', encoding="utf8", ) as fp:
+        pp = pprint.PrettyPrinter(indent=4, stream=fp)
+        pp.pprint(results)
 
 
 def main(configs):
@@ -21,6 +28,7 @@ def main(configs):
     webpages = CSVWebPageDAO(configs['websites_path']).load_webpages()
     result = executor.execute(webpages)
     write_csv(result)
+    write_json(result)
     return
 
 
