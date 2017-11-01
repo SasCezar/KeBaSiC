@@ -15,3 +15,4 @@ def load_configs(config_file):
         configs = json.loads(minified)
 
     return configs
+

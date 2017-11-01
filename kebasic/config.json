@@ -10,7 +10,7 @@
   "extractor_parameters": {
     "feature.rake.RAKE": {
       "language": "spanish",
-      "stopwords": "../resources/stopwords/es.stop",
+      "stopwords": "../resources/ES/stopwords/stopwords.txt",
       "min_char_length": 3,
       "max_words_length": 2,
       "min_keyword_frequency": 2,
@@ -27,7 +27,9 @@
       ]
     },
     "feature.termfreq.TermFrequencies": {
-      "language": "spanish"
+      "language": "spanish",
+      "stopwords": "../resources/ES/stopwords/stopwords.txt",
+      "min_count": 2
     }
   },
   // Classifiers
@@ -35,8 +37,8 @@
   "classifiers_parameters": {
   },
   // Taxonomy
-  "original_taxonomy": "../resources/taxonomy/original_taxonomy.csv",
-  "taxonomy_path": "../resources/taxonomy/taxonomy.csv",
+  "original_taxonomy": "../resources/ES/taxonomy/original_taxonomy.csv",
+  "taxonomy_path": "../resources/ES/taxonomy/taxonomy.csv",
   "taxonomy_translate_from": "en",
   "taxonomy_translate_to": "es",
   "taxonomy_header": [
