@@ -1,0 +1,4 @@
+domain:wikipedia.com {lvl1} {lvl2} -ext:pdf
+domain:wikipedia.com {lvl2} -ext:pdf
+inbody: {lvl1} {lvl2} language:en -ext:pdf
+intitle: {lvl1} {lvl2} language:en -ext:pdf

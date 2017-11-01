@@ -1,0 +1,248 @@
+﻿id   ,lvl1                            ,lvl2
+10021,Apparel                         ,
+10178,Apparel                         ,Apparel Accessories
+10176,Apparel                         ,Clothing
+10907,Apparel                         ,Dry Cleaning & Alterations
+10177,Apparel                         ,Footwear
+10171,Apparel                         ,Jewelry
+13355,Apparel                         ,Rain Gear
+10013,Arts & Entertainment            ,
+13530,Arts & Entertainment            ,Arts & Entertainment Awards
+13760,Arts & Entertainment            ,Cartoons
+10723,Arts & Entertainment            ,Comics & Graphic Novels
+10105,Arts & Entertainment            ,Entertainment Industry
+13670,Arts & Entertainment            ,Entertainment Media Retailers
+10104,Arts & Entertainment            ,Event Entertainment
+10111,Arts & Entertainment            ,"Events, Shows & Cultural Attractions"
+13425,Arts & Entertainment            ,Fun & Trivia
+10106,Arts & Entertainment            ,Humor & Jokes
+13417,Arts & Entertainment            ,Movies & Films
+10109,Arts & Entertainment            ,Music & Audio
+13566,Arts & Entertainment            ,Offbeat
+10110,Arts & Entertainment            ,Sports Entertainment
+10103,Arts & Entertainment            ,TV & Video
+13388,Arts & Entertainment            ,Visual Art & Design
+10005,Beauty & Personal Care          ,
+10050,Beauty & Personal Care          ,Anti-Aging
+13422,Beauty & Personal Care          ,Body Art
+13636,Beauty & Personal Care          ,Fashion & Style
+10055,Beauty & Personal Care          ,Hair Care
+10060,Beauty & Personal Care          ,Hygiene & Toiletries
+13866,Beauty & Personal Care          ,Insect Repellent
+10053,Beauty & Personal Care          ,Lip Care
+10054,Beauty & Personal Care          ,Make-Up & Cosmetics
+10051,Beauty & Personal Care          ,Nail Care
+10059,Beauty & Personal Care          ,Oral Care
+10057,Beauty & Personal Care          ,Perfumes & Fragrances
+10058,Beauty & Personal Care          ,Shaving & Grooming
+10047,Beauty & Personal Care          ,Skin Care
+10049,Beauty & Personal Care          ,Spa & Medical Spa
+10048,Beauty & Personal Care          ,Tanning & Sun Care
+10004,Business & Industrial           ,
+13864,Business & Industrial           ,Aerospace & Defense
+13460,Business & Industrial           ,Agriculture
+10282,Business & Industrial           ,Building Construction & Maintenance
+10276,Business & Industrial           ,Business Management
+13491,Business & Industrial           ,Chemical Industry
+10307,Business & Industrial           ,Commercial & Industrial Printing
+10273,Business & Industrial           ,Design & Engineering
+10295,Business & Industrial           ,Energy Industry
+13676,Business & Industrial           ,Fishing Industry
+13844,Business & Industrial           ,Food Production
+10301,Business & Industrial           ,Food Service Industry
+13841,Business & Industrial           ,Import & Export
+13464,Business & Industrial           ,Industrial Goods & Manufacturing
+10308,Business & Industrial           ,Janitorial Products & Services
+13804,Business & Industrial           ,Manufacturing
+10300,Business & Industrial           ,Office
+10290,Business & Industrial           ,Retail Trade
+10294,Business & Industrial           ,Scientific Equipment & Services
+10299,Business & Industrial           ,Security Equipment & Services
+10305,Business & Industrial           ,Shipping & Packing
+11235,Business & Industrial           ,Veterinary Equipment & Supplies
+10019,Computers & Consumer Electronics,
+10168,Computers & Consumer Electronics,Computers
+10167,Computers & Consumer Electronics,Consumer Electronics
+10020,Dining & Nightlife              ,
+11870,Dining & Nightlife              ,"Dining & Nightlife Reviews, Guides & Listings"
+13439,Dining & Nightlife              ,"Nightclubs, Bars & Music Clubs"
+10169,Dining & Nightlife              ,Restaurants
+10002,Family & Community              ,
+10030,Family & Community              ,"Baby, Parenting & Family"
+10028,Family & Community              ,Community Service & Social Organizations
+10029,Family & Community              ,Domestic & Personal Resources
+10231,Family & Community              ,Faith & Belief
+10031,Family & Community              ,Romance & Relationships
+10012,Finance                         ,
+10100,Finance                         ,ATM Sales & Processing
+11093,Finance                         ,Accounting & Auditing
+10093,Finance                         ,Banking
+10096,Finance                         ,Business Finance
+10098,Finance                         ,Business News & Media
+10097,Finance                         ,Credit & Lending
+10092,Finance                         ,Financial Planning & Management
+10099,Finance                         ,"Grants, Scholarships & Financial Aid"
+10102,Finance                         ,Insurance
+10095,Finance                         ,Investing
+10094,Finance                         ,Money Transfer & Wire Services
+10010,Food & Groceries                ,
+10083,Food & Groceries                ,Beverages
+10082,Food & Groceries                ,Food
+10081,Food & Groceries                ,Household Supplies
+10084,Food & Groceries                ,Online Grocery Shopping & Grocery Delivery
+10011,Health                          ,
+10088,Health                          ,Biotech & Pharmaceutical
+10091,Health                          ,Health Care Services
+10085,Health                          ,Health Conditions & Concerns
+10087,Health                          ,"Medical Devices, Equipment & Supplies"
+10086,Health                          ,Nutrition & Dieting
+10089,Health                          ,Pharmacy
+10090,Health                          ,Professional Medical Resources
+10015,Hobbies & Leisure               ,
+10133,Hobbies & Leisure               ,Ancestry & Genealogy
+10135,Hobbies & Leisure               ,Antiques & Collectibles
+10131,Hobbies & Leisure               ,Arts & Crafts
+13569,Hobbies & Leisure               ,Astronomy
+10134,Hobbies & Leisure               ,Birding
+10113,Hobbies & Leisure               ,Camping & Outdoor Recreation
+10128,Hobbies & Leisure               ,Cooking
+13658,Hobbies & Leisure               ,Gardening
+10130,Hobbies & Leisure               ,Pets & Animals
+10132,Hobbies & Leisure               ,Photo & Video
+13405,Hobbies & Leisure               ,Prizes & Competitions
+10136,Hobbies & Leisure               ,Recreational Activity Education
+10129,Hobbies & Leisure               ,Scale Models & Model Building
+10125,Hobbies & Leisure               ,Toys & Games
+10126,Hobbies & Leisure               ,Wine & Beer Collecting & Brewing
+10009,Home & Garden                   ,
+10415,Home & Garden                   ,Bathroom
+11589,Home & Garden                   ,Bedding & Linens
+13650,Home & Garden                   ,Doorbells & Door Knockers
+10414,Home & Garden                   ,Home & Garden Media & Publications
+10412,Home & Garden                   ,Home Appliances
+10405,Home & Garden                   ,Home Decor & Interior Decorating
+10413,Home & Garden                   ,Home Furniture
+10418,Home & Garden                   ,Home Heating & Cooling
+10404,Home & Garden                   ,Home Improvement & Maintenance
+10417,Home & Garden                   ,Home Laundry
+10411,Home & Garden                   ,Home Safety & Security
+10408,Home & Garden                   ,Home Storage & Organization
+11282,Home & Garden                   ,Kitchen & Bathroom Cabinets
+10410,Home & Garden                   ,Kitchen & Dining
+10419,Home & Garden                   ,Lights & Lighting
+10399,Home & Garden                   ,Residential Cleaning
+10400,Home & Garden                   ,Watch & Clock Repair
+10407,Home & Garden                   ,Water Filters
+10406,Home & Garden                   ,"Yard, Garden & Patio"
+10007,Internet & Telecom              ,
+13420,Internet & Telecom              ,Cable Services
+11509,Internet & Telecom              ,Calling Cards
+13418,Internet & Telecom              ,Internet
+13421,Internet & Telecom              ,Satellite Services
+11507,Internet & Telecom              ,Teleconferencing
+13662,Internet & Telecom              ,Telegrams
+10878,Internet & Telecom              ,Telephony
+11506,Internet & Telecom              ,VOIP
+10016,Jobs & Education                ,
+10140,Jobs & Education                ,Alumni & Classmate Resources
+10141,Jobs & Education                ,Education & Training
+10139,Jobs & Education                ,Jobs & Careers
+10018,Law & Government                ,
+13661,Law & Government                ,Census Services
+10158,Law & Government                ,Emergency Services
+13414,Law & Government                ,Government
+13343,Law & Government                ,Government Consulting & Contracting
+10162,Law & Government                ,Law Enforcement & Protective Services
+10163,Law & Government                ,Legal
+10159,Law & Government                ,Military
+10156,Law & Government                ,Politics
+10160,Law & Government                ,Public Services
+10108,"News, Media & Publications"    ,
+10586,"News, Media & Publications"    ,Apparel Media & Publications
+10112,"News, Media & Publications"    ,Books & Literature
+10584,"News, Media & Publications"    ,Celebrities & Entertainment News
+10576,"News, Media & Publications"    ,Health Media & Publications
+13700,"News, Media & Publications"    ,"Local News, Media & Publications"
+11866,"News, Media & Publications"    ,Magazines & Magazine Subscriptions
+10573,"News, Media & Publications"    ,Men's Interests Media & Publications
+13647,"News, Media & Publications"    ,Newspapers
+13691,"News, Media & Publications"    ,Online Media
+13648,"News, Media & Publications"    ,Political News & Media
+11867,"News, Media & Publications"    ,Publishing
+10756,"News, Media & Publications"    ,Reference Materials & Resources
+13777,"News, Media & Publications"    ,Teen Media & Publications
+10023,"News, Media & Publications"    ,Vehicle Media & Publications
+13426,"News, Media & Publications"    ,Weather
+10581,"News, Media & Publications"    ,Women's Interests Media & Publications
+13451,"News, Media & Publications"    ,World News & Media
+10006,Occasions & Gifts               ,
+10364,Occasions & Gifts               ,Cards & Greetings
+10362,Occasions & Gifts               ,Flower Arrangements
+10365,Occasions & Gifts               ,Gifts
+13509,Occasions & Gifts               ,Holidays & Seasonal Events
+10368,Occasions & Gifts               ,Parties & Party Supplies
+10372,Occasions & Gifts               ,Singing Telegrams
+13493,Occasions & Gifts               ,Special Occasions
+10003,Real Estate                     ,
+10043,Real Estate                     ,Commercial & Investment Real Estate
+10041,Real Estate                     ,Escrow & Real Estate Titling
+10037,Real Estate                     ,House Plans & Floor Plans
+13784,Real Estate                     ,Housing Market & Real Estate Prices
+10036,Real Estate                     ,Private Communities
+10039,Real Estate                     ,Property Development
+10034,Real Estate                     ,Property Inspections & Appraisals
+10033,Real Estate                     ,Property Management
+10040,Real Estate                     ,Real Estate Agents & Brokerages
+13649,Real Estate                     ,Real Estate Auctions
+10042,Real Estate                     ,Real Estate Listings
+10035,Real Estate                     ,Relocation & Household Moving
+10038,Real Estate                     ,Vacation Properties & Second Homes
+13575,Retailers & General Merchandise ,
+13441,Retailers & General Merchandise ,Coupons & Rebates
+13810,Retailers & General Merchandise ,Informal Selling & Exchanging
+13842,Retailers & General Merchandise ,Rental Services
+13860,Retailers & General Merchandise ,Shopping Portals & Search Engines
+13719,Retailers & General Merchandise ,Wholesalers & Liquidators
+10014,Sports & Fitness                ,
+10117,Sports & Fitness                ,Boating & Water Recreation
+10123,Sports & Fitness                ,Fitness
+10121,Sports & Fitness                ,Sporting Goods
+13605,Sports & Fitness                ,Sports
+10115,Sports & Fitness                ,Sports & Fitness Apparel
+10120,Sports & Fitness                ,Sports Equipment Rental Services
+10116,Sports & Fitness                ,Sports Fan Gear & Apparel
+10122,Sports & Fitness                ,Sports Instruction & Coaching
+10114,Sports & Fitness                ,Sports News & Media
+10119,Sports & Fitness                ,Sports Programs & Camps
+10017,Travel & Tourism                ,
+10142,Travel & Tourism                ,Accommodations
+10144,Travel & Tourism                ,Air Travel
+10153,Travel & Tourism                ,Cruises & Cruise Services
+10147,Travel & Tourism                ,Last Minute Travel
+10143,Travel & Tourism                ,Luggage & Travel Accessories
+10152,Travel & Tourism                ,Luggage Services
+13594,Travel & Tourism                ,Luxury Travel
+10150,Travel & Tourism                ,Specialty Travel
+10148,Travel & Tourism                ,Tour Operators
+10145,Travel & Tourism                ,Tourist Attractions & Destinations
+10146,Travel & Tourism                ,Transportation & Excursions
+10151,Travel & Tourism                ,Travel Booking Services
+10843,Travel & Tourism                ,Travel Documents
+10578,Travel & Tourism                ,Travel Media & Publications
+10154,Travel & Tourism                ,Vacation Packages
+10001,Vehicles                        ,
+10027,Vehicles                        ,Boats & Watercraft
+10191,Vehicles                        ,Driving Instruction & Driver Education
+10024,Vehicles                        ,Motor Vehicles
+10022,Vehicles                        ,Personal Airplanes & Aircraft
+10190,Vehicles                        ,Vehicle Auctions
+13655,Vehicles                        ,Vehicle Dealers
+10198,Vehicles                        ,Vehicle Donation & Removal
+10195,Vehicles                        ,Vehicle Emissions
+10978,Vehicles                        ,Vehicle History Reports
+10026,Vehicles                        ,Vehicle Parts & Accessories
+10193,Vehicles                        ,Vehicle Repair & Maintenance
+10196,Vehicles                        ,"Vehicle Specs, Reviews & Comparisons"
+10194,Vehicles                        ,Vehicle Towing
+10188,Vehicles                        ,Vehicle Warranties & Protection Plans
+10980,Vehicles                        ,Vehicle Window Tinting
