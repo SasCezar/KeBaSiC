@@ -256,7 +256,7 @@ def split_sentences(text):
 
 
 class RAKE(AbstractKeywordExtractor):
-    def __init__(self, language, stopwords, min_char_length=1, max_words_length=5,
+    def __init__(self, language, stopwords=None, min_char_length=1, max_words_length=5,
                  min_keyword_frequency=1, min_words_length_adj=1, max_words_length_adj=1,
                  min_phrase_freq_adj=2):
         """
@@ -279,8 +279,8 @@ class RAKE(AbstractKeywordExtractor):
         """
 
         super().__init__(language, stopwords)
-        if not stopwords:
-            self._stop_words = nltk.corpus.stopwords.words(language)
+        if not self._stopwords:
+            self._stopwords = nltk.corpus.stopwords.words(language)
         self._min_char_length = min_char_length
         self._max_words_length = max_words_length
         self._min_keyword_frequency = min_keyword_frequency
@@ -291,7 +291,7 @@ class RAKE(AbstractKeywordExtractor):
     def configuration(self, extended=False):
         config_dict = self.__dict__
         if not extended:
-            config_dict.pop("_stop_words", None)
+            config_dict.pop("_stopwords", None)
 
         return config_dict
 
@@ -319,27 +319,12 @@ class RAKE(AbstractKeywordExtractor):
     def min_phrase_freq_adj(self):
         return self._min_phrase_freq_adj
 
-    @staticmethod
-    def load_stop_words(stop_word_file):
-        """
-        Utility function to load stop words from a file and return as a list of words
-
-        :param stop_word_file: Path and file name of a file containing stop words.
-        :return list: A list of stop words.
-        """
-        stop_words = []
-        for line in open(stop_word_file, "r"):
-            if line.strip()[0:1] != "#":
-                for word in line.split():  # in case more than one per line
-                    stop_words.append(word)
-        return stop_words
-
     def run(self, text):
         sentence_list = split_sentences(text)
 
-        stop_words_pattern = build_stop_word_regex(self._stop_words)
+        stop_words_pattern = build_stop_word_regex(self._stopwords)
 
-        phrase_list = generate_candidate_keywords(sentence_list, stop_words_pattern, self._stop_words,
+        phrase_list = generate_candidate_keywords(sentence_list, stop_words_pattern, self._stopwords,
                                                   self._min_char_length, self._max_words_length,
                                                   self._min_words_length_adj, self._max_words_length_adj,
                                                   self._min_phrase_freq_adj)

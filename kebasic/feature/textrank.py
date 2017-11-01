@@ -143,10 +143,28 @@ def postprocessing_key_phrases(keyphrases, textlist):
     return modified_key_phrases
 
 
+def mean_scores(scores, keywords):
+    result = []
+    for keyword in keywords:
+        weight = 0
+        words = keyword.split()
+        elements = 0
+        for word in words:
+            weight += scores.get(word, 0)
+            elements += 1
+
+        mean = weight / elements if weight else 0
+        result.append((keyword, mean))
+
+    sorted_result = sorted([(k, v) for k, v in result], key=lambda x: x[1], reverse=True)
+    return sorted_result
+
+
 class TextRank(AbstractKeywordExtractor):
     """
     A NLTK based implementation of TextRank as defined in: "TextRank: Bringing Order into Texts" by Mihalcea et al. (2004)
     """
+
     def __init__(self, language, limit=None, filter_pos_tags=None):
         super().__init__(language)
         self._filter_tags = filter_pos_tags
@@ -189,5 +207,7 @@ class TextRank(AbstractKeywordExtractor):
 
         modified_key_phrases = postprocessing_key_phrases(keyphrases, textlist)
 
-        sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
-        return modified_key_phrases
+        # sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
+        result = mean_scores(calculated_page_rank, modified_key_phrases)
+
+        return result
