@@ -15,11 +15,8 @@
 # to our needs. This includes the extension of an abstract class and some minor edits to code.
 
 
-import operator
 import re
 from collections import Counter
-
-import nltk
 
 from kebasic.feature.keywordextractor import AbstractKeywordExtractor
 
@@ -58,19 +55,19 @@ def build_stop_word_regex(stop_word_list):
     :return:
     """
     stop_word_regex_list = []
-    for word in stop_word_list:
+    for word in set(stop_word_list):
         word_regex = '\\b' + word + '\\b'
         stop_word_regex_list.append(word_regex)
     stop_word_pattern = re.compile('|'.join(stop_word_regex_list), re.IGNORECASE)
     return stop_word_pattern
 
 
-def extract_adjoined_candidates(sentence_list, stoplist, min_keywords, max_keywords, min_freq):
+def extract_adjoined_candidates(sentence_list, keywords_separator, min_keywords, max_keywords, min_freq):
     """
     Extracts the adjoined candidates from a list of sentences and filters them by frequency
 
     :param sentence_list:
-    :param stoplist:
+    :param keywords_separator:
     :param min_keywords:
     :param max_keywords:
     :param min_freq:
@@ -79,17 +76,17 @@ def extract_adjoined_candidates(sentence_list, stoplist, min_keywords, max_keywo
     adjoined_candidates = []
     for s in sentence_list:
         # Extracts the candidates from each single sentence and adds them to the list
-        adjoined_candidates += adjoined_candidates_from_sentence(s, stoplist, min_keywords, max_keywords)
+        adjoined_candidates += adjoined_candidates_from_sentence(s, keywords_separator, min_keywords, max_keywords)
     # Filters the candidates and returns them
     return filter_adjoined_candidates(adjoined_candidates, min_freq)
 
 
-def adjoined_candidates_from_sentence(sentence, stoplist, min_keywords, max_keywords):
+def adjoined_candidates_from_sentence(sentence, keywords_separator, min_keywords, max_keywords):
     """
     Extracts the adjoined candidates from a single sentence
 
     :param sentence:
-    :param stoplist:
+    :param keywords_separator:
     :param min_keywords:
     :param max_keywords:
     :return:
@@ -103,7 +100,7 @@ def adjoined_candidates_from_sentence(sentence, stoplist, min_keywords, max_keyw
         # Until the third-last word
         for i in range(0, len(sl) - num_keywords):
             # Position i marks the first word of the candidate. Proceeds only if it'sentence not a stopword
-            if sl[i] not in stoplist:
+            if sl[i] not in keywords_separator:
                 candidate = sl[i]
                 # Initializes j (the pointer to the next word) to 1
                 j = 1
@@ -115,7 +112,7 @@ def adjoined_candidates_from_sentence(sentence, stoplist, min_keywords, max_keyw
                     # Adds the next word to the candidate
                     candidate = candidate + ' ' + sl[i + j]
                     # If it'sentence not a stopword, increase the word counter. If it is, turn on the flag
-                    if sl[i + j] not in stoplist:
+                    if sl[i + j] not in keywords_separator:
                         keyword_counter += 1
                     else:
                         contains_stopword = True
@@ -128,7 +125,8 @@ def adjoined_candidates_from_sentence(sentence, stoplist, min_keywords, max_keyw
                 # 2) the last word is not a stopword
                 # AND
                 # 3) the adjoined candidate keyphrase contains exactly the correct number of keywords (to avoid doubles)
-                if contains_stopword and candidate.split()[-1] not in stoplist and keyword_counter == num_keywords:
+                if contains_stopword and candidate.split()[-1] not in keywords_separator \
+                        and keyword_counter == num_keywords:
                     candidates.append(candidate)
     return candidates
 
@@ -153,17 +151,17 @@ def filter_adjoined_candidates(candidates, min_freq):
     return filtered_candidates
 
 
-def generate_candidate_keywords(sentence_list, stopword_pattern, stop_word_list, min_char_length=1, max_words_length=5,
+def generate_candidate_keywords(sentence_list, keywords_separator, min_char_length=1, max_words_length=5,
                                 min_words_length_adj=1, max_words_length_adj=1, min_phrase_freq_adj=2):
     phrase_list = []
     for s in sentence_list:
-        tmp = re.sub(stopword_pattern, '|', s.strip())
+        tmp = re.sub(build_stop_word_regex(keywords_separator), '|', s.strip())
         phrases = tmp.split("|")
         for phrase in phrases:
             phrase = phrase.strip().lower()
             if phrase != "" and is_acceptable(phrase, min_char_length, max_words_length):
                 phrase_list.append(phrase)
-    phrase_list += extract_adjoined_candidates(sentence_list, stop_word_list, min_words_length_adj,
+    phrase_list += extract_adjoined_candidates(sentence_list, keywords_separator, min_words_length_adj,
                                                max_words_length_adj, min_phrase_freq_adj)
     return phrase_list
 
@@ -225,7 +223,7 @@ def calculate_word_scores(phrase_list):
     for item in word_frequency:
         word_score.setdefault(item, 0)
         word_score[item] = word_degree[item] / (word_frequency[item] * 1.0)  # orig.
-    # word_score[item] = word_frequency[item]/(word_degree[item] * 1.0) #exp.
+    # word_score[item] = word_frequency[item]/(word_degree[item] * 1.0) # exp.
     return word_score
 
 
@@ -250,7 +248,7 @@ def split_sentences(text):
 
     :param text: The text that must be split in to sentences.
     """
-    sentence_delimiters = re.compile(u'[\\[\\]\n.!?,;:\t\\-\\"\\(\\)\\\'\u2019\u2013]')
+    sentence_delimiters = re.compile(u'[\\[\\]\n&*.!?,;:\t\\-\\"\\(\\)\\\'\u2019\u2013]')  # Added chars: '&' and '*'
     sentences = sentence_delimiters.split(text)
     return sentences
 
@@ -258,17 +256,17 @@ def split_sentences(text):
 class RAKE(AbstractKeywordExtractor):
     def __init__(self, language, stopwords=None, min_char_length=1, max_words_length=5,
                  min_keyword_frequency=1, min_words_length_adj=1, max_words_length_adj=1,
-                 min_phrase_freq_adj=2):
+                 min_phrase_freq_adj=2, keyword_separator=None):
         """
 
         Implementation of RAKE - Rapid Automatic Keyword Extraction algorithm as described in:
         Rose, S., D. Engel, N. Cramer, and W. Cowley (2010).
         Automatic keyword extraction from individual documents.
-        In M. W. Berry and J. Kogan (Eds.), Text Mining: Applications and Theory.unknown: John Wiley and Sons, Ltd.
+        In M. W. Berry and J. Kogan (Eds.), Text Mining: Applications and Theory. Unknown: John Wiley and Sons, Ltd.
 
 
         :param language: Defines the text language, used to load NLTK stopwords in case no stopwords are passed
-        :param stopwords: Stopwords that the algorithm uses to delimit sentences and keywords as decribed in the
+        :param stopwords: Stopwords that the algorithm uses to delimit sentences and keywords as described in the
         original authors publication
         :param min_char_length: The minimum length for a word to be considered a keyword
         :param max_words_length: The maximum number of words that are considerate a keyword
@@ -279,8 +277,9 @@ class RAKE(AbstractKeywordExtractor):
         """
 
         super().__init__(language, stopwords)
-        if not self._stopwords:
-            self._stopwords = nltk.corpus.stopwords.words(language)
+        if keyword_separator is None:
+            keyword_separator = ['.,']
+        self._keywords_separator = keyword_separator
         self._min_char_length = min_char_length
         self._max_words_length = max_words_length
         self._min_keyword_frequency = min_keyword_frequency
@@ -288,7 +287,7 @@ class RAKE(AbstractKeywordExtractor):
         self._max_words_length_adj = max_words_length_adj
         self._min_phrase_freq_adj = min_phrase_freq_adj
 
-    def configuration(self, extended=False):
+    def configuration(self, extended=True):
         config_dict = self.__dict__
         if not extended:
             config_dict.pop("_stopwords", None)
@@ -322,9 +321,7 @@ class RAKE(AbstractKeywordExtractor):
     def run(self, text):
         sentence_list = split_sentences(text)
 
-        stop_words_pattern = build_stop_word_regex(self._stopwords)
-
-        phrase_list = generate_candidate_keywords(sentence_list, stop_words_pattern, self._stopwords,
+        phrase_list = generate_candidate_keywords(sentence_list, self._keywords_separator,
                                                   self._min_char_length, self._max_words_length,
                                                   self._min_words_length_adj, self._max_words_length_adj,
                                                   self._min_phrase_freq_adj)
@@ -332,6 +329,9 @@ class RAKE(AbstractKeywordExtractor):
         word_scores = calculate_word_scores(phrase_list)
 
         keyword_candidates = generate_candidate_keyword_scores(phrase_list, word_scores, self._min_keyword_frequency)
+        keyword_candidates = keyword_candidates.items()
 
-        sorted_keywords = sorted(keyword_candidates.items(), key=operator.itemgetter(1), reverse=True)
+        keywords = self._filter(keyword_candidates) if self._stopwords else keyword_candidates
+
+        sorted_keywords = self._sort(keywords)
         return sorted_keywords

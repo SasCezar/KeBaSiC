@@ -156,8 +156,7 @@ def mean_scores(scores, keywords):
         mean = weight / elements if weight else 0
         result.append((keyword, mean))
 
-    sorted_result = sorted([(k, v) for k, v in result], key=lambda x: x[1], reverse=True)
-    return sorted_result
+    return result
 
 
 class TextRank(AbstractKeywordExtractor):
@@ -208,6 +207,6 @@ class TextRank(AbstractKeywordExtractor):
         modified_key_phrases = postprocessing_key_phrases(keyphrases, textlist)
 
         # sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
-        result = mean_scores(calculated_page_rank, modified_key_phrases)
+        result = self._sort(mean_scores(calculated_page_rank, modified_key_phrases))
 
         return result

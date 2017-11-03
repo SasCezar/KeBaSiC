@@ -10,7 +10,7 @@ from kebasic.utils.logger import initialize_logger
 
 
 def write_csv(result):
-    with open('keywords_1.csv', 'wt', encoding="utf8", newline="") as output_file:
+    with open('keywords.csv', 'wt', encoding="utf8", newline="") as output_file:
         dict_writer = csv.DictWriter(output_file,
                                      fieldnames=["url", "site_keywords", "RAKE", "TextRank", "TermFrequencies"])
         dict_writer.writeheader()
@@ -18,7 +18,7 @@ def write_csv(result):
 
 
 def write_json(results):
-    with open('keywords_1.json', 'wt', encoding="utf8", ) as fp:
+    with open('keywords.json', 'wt', encoding="utf8") as fp:
         pp = pprint.PrettyPrinter(indent=4, stream=fp)
         pp.pprint(results)
 
