@@ -1,19 +1,13 @@
+import logging
 from abc import ABC, abstractmethod
 from importlib import import_module
-
-
-class Context(object):
-    def __init__(self, strategy):
-        self._strategy = strategy
-
-    def execute(self):
-        self._strategy.execute()
 
 
 class AbstractExecution(ABC):
     """
     Defines an abstract execution class. Implements the common function that are needed to perform a generic computation
     """
+
     def __init__(self, config):
         """
         Constructor of the class. Accepts a dictionary of configurations that will be used to define the workflow of the
@@ -23,14 +17,21 @@ class AbstractExecution(ABC):
         """
         self._config = config
         self._allowed = set()  # all those keys will be initialized as class attributes
+        self.algorithms = []
+        self.parameters = {}
+        self.callables = []
 
-    @abstractmethod
     def _build(self):
         """
         Builds the objects that the class will use
         :return:
         """
-        pass
+        logging.info("Loading modules...")
+        for algorithm in self.algorithms:
+            logging.info("Loading {}".format(algorithm))
+            algorithm_name, algorithm_object = self._import_class(algorithm)
+            algorithm_parameters = self.parameters.get(algorithm, {})
+            self.callables.append((algorithm_name, algorithm_object(**algorithm_parameters)))
 
     @abstractmethod
     def execute(self, webpages):

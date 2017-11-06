@@ -7,17 +7,10 @@ class FeatureExtractionExecution(AbstractExecution):
     def __init__(self, config):
         super().__init__(config)
         self._allowed = {"extractor_algorithms", "extractor_parameters"}
-        self.feature_extractors = []
         self._initialize()
+        self.algorithms = self.extractor_algorithms
+        self.parameters = self.extractor_parameters if self.extractor_parameters else {}
         self._build()
-
-    def _build(self):
-        logging.info("Loading Feature Extraction modules...")
-        for ke_algorithm in self.extractor_algorithms:
-            logging.info("Loading {}".format(ke_algorithm))
-            ke_name, ke_class = self._import_class(ke_algorithm)
-            model_parameters = self.extractor_parameters.get(ke_algorithm, {})
-            self.feature_extractors.append((ke_name, ke_class(**model_parameters)))
 
     def execute(self, webpages):
         result = []
@@ -35,9 +28,21 @@ class FeatureExtractionExecution(AbstractExecution):
 
     def extract_features(self, webpage):
         result = {}
-        for extractor_algorithm in self.feature_extractors:
+        for extractor_algorithm in self.callables:
             extractor = extractor_algorithm[1]
             feature = extractor.run(webpage)
             result[extractor_algorithm[0]] = feature
 
         return result
+
+
+class TextCleaningExecution(AbstractExecution):
+    def __init__(self, config):
+        super().__init__(config)
+        self._allowed = {"cleaner_algorithms", "cleaner_parameters"}
+        self._initialize()
+        self._cleaners = []
+        self._build()
+
+    def execute(self, webpages):
+        pass
