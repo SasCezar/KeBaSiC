@@ -331,7 +331,7 @@ class RAKE(AbstractKeywordExtractor):
         keyword_candidates = generate_candidate_keyword_scores(phrase_list, word_scores, self._min_keyword_frequency)
         keyword_candidates = keyword_candidates.items()
 
-        keywords = self._filter(keyword_candidates) if self._stopwords else keyword_candidates
+        keywords = self._filter(keyword_candidates)
 
         sorted_keywords = self._sort(keywords)
         return sorted_keywords

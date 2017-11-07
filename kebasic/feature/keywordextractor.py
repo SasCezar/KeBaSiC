@@ -43,6 +43,8 @@ class AbstractKeywordExtractor(ABC):
         pass
 
     def _filter(self, keywords):
+        if not self._stopwords:
+            return keywords
         return [(keyword, weight) for keyword, weight in keywords if keyword not in self._stopwords]
 
     @staticmethod
