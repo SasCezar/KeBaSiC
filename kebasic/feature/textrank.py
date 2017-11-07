@@ -28,7 +28,7 @@ def filter_for_tags(tagged, tags=None):
     if tags is []:
         return tagged
     if tags is None:
-        tags = ['NN']
+        raise Exception("Filter tags cannot be None")
     return [item for item in tagged if item[1] in tags]
 
 
@@ -184,11 +184,6 @@ class TextRank(AbstractKeywordExtractor):
 
         :param text: A string.
         """
-        # tokenize the text using nltk
-        # word_tokens = nltk.word_tokenize(text, language=self._language)
-
-        # assign POS tags to the words in the text
-        # tagged = nltk.pos_tag(word_tokens)
 
         tagged = self.nlp.pos_tag(text)
         textlist = [x[0] for x in tagged]
@@ -218,6 +213,8 @@ class TextRank(AbstractKeywordExtractor):
         modified_key_phrases = postprocessing_key_phrases(keyphrases, textlist)
 
         # sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
-        result = self._sort(mean_scores(calculated_page_rank, modified_key_phrases))
+        weighted_keywords = mean_scores(calculated_page_rank, modified_key_phrases)
+        result = self._filter(weighted_keywords)  # TODO Check if is better to filter based on any all methods
+        result = self._sort(result)
 
         return result
