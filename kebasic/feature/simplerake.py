@@ -4,7 +4,6 @@
 # Automatic keyword extraction from indi-vidual documents.
 # In M. W. Berry and J. Kogan (Eds.), Text Mining: Applications and Theory.unknown: John Wiley and Sons, Ltd.
 
-import operator
 import re
 
 from feature.keywordextractor import AbstractKeywordExtractor
@@ -119,6 +118,6 @@ class SimpleRAKE(AbstractKeywordExtractor):
         word_scores = calculate_word_scores(phrase_list)
 
         keyword_candidates = generate_candidate_keyword_scores(phrase_list, word_scores)
-
-        sorted_keywords = sorted(keyword_candidates.items(), key=operator.itemgetter(1), reverse=True)
+        filtered_candidates = self._filter(keyword_candidates.items())
+        sorted_keywords = self._sort(filtered_candidates)
         return sorted_keywords
