@@ -4,7 +4,7 @@ import os
 import pprint
 
 from kebasic.dao.webpagedao import CSVWebPageDAO
-from kebasic.execution.basic import FeatureExtractionExecution
+from kebasic.execution.basic import FeatureExtractionExecution, TextCleanerExecution
 from kebasic.utils import utils
 from kebasic.utils.logger import initialize_logger
 
@@ -24,10 +24,12 @@ def write_json(results):
 
 
 def main(configs):
+    cleaner = TextCleanerExecution(configs)
     executor = FeatureExtractionExecution(configs)
     webpages = CSVWebPageDAO(configs['websites_path']).load_webpages()
-    result = executor.execute(webpages)
-    write_csv(result)
+    cleaned_webages = cleaner.execute(webpages)
+    result = executor.execute(cleaned_webages)
+    # write_csv(result)
     write_json(result)
     return
 

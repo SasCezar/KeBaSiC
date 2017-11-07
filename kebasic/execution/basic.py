@@ -28,21 +28,31 @@ class FeatureExtractionExecution(AbstractExecution):
 
     def extract_features(self, webpage):
         result = {}
-        for extractor_algorithm in self.callables:
-            extractor = extractor_algorithm[1]
-            feature = extractor.run(webpage)
-            result[extractor_algorithm[0]] = feature
+        for name, callable_object in self.callables:
+            feature = callable_object.run(webpage)
+            result[name] = feature
 
         return result
 
 
-class TextCleaningExecution(AbstractExecution):
+class TextCleanerExecution(AbstractExecution):
     def __init__(self, config):
         super().__init__(config)
-        self._allowed = {"cleaner_algorithms", "cleaner_parameters"}
+        self._allowed = {"preprocessing_algorithms", "preprocessing_parameters"}
         self._initialize()
-        self._cleaners = []
+        self.algorithms = self.preprocessing_algorithms
+        self.parameters = self.preprocessing_parameters if self.preprocessing_parameters else {}
         self._build()
 
     def execute(self, webpages):
-        pass
+        result = []
+        for webpage in webpages:
+            logging.info("Cleaning: {}".format(webpage.url))
+            webpage.text = self.clean_text(webpage.text)
+            result.append(webpage)
+        return result
+
+    def clean_text(self, text):
+        for name, callable_object in self.callables:
+            text = callable_object.run(text)
+        return text
