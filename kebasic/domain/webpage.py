@@ -87,6 +87,10 @@ class WebPage(object):
     def text(self):
         return self._text
 
+    @text.setter
+    def text(self, value):
+        self._text = value
+
     def _download(self):
         print(self._url)
         request = Request(self._url, headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)]})
@@ -110,8 +114,6 @@ class WebPage(object):
 
     @staticmethod
     def _tag_visible(element):
-        if 'class' in element.parent.attrs and any(['blog-categories', 'minor-meta']) in element.parent['class']:
-            print(element.parent['class'])
         if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
             return False
         elif isinstance(element, Comment):
@@ -130,9 +132,9 @@ class WebPage(object):
         :return:
         """
         texts = soup.findAll(text=True)
-        visible_texts = [text for text in texts if self._tag_visible(text)]
-        cleaned_text = " ".join(t.strip() for t in visible_texts if t.strip())
-        self._text = cleaned_text.strip()
+        visible_texts = [text.strip() for text in texts if self._tag_visible(text)]
+        cleaned_text = " ".join(t for t in visible_texts if t)
+        self._text = cleaned_text
 
     def _extract_metadata(self, soup):
         """
