@@ -3,6 +3,7 @@ import logging
 
 import networkx as nx
 import nltk
+from stanfordcorenlp import StanfordCoreNLP
 
 from kebasic.feature.keywordextractor import AbstractKeywordExtractor
 
@@ -159,15 +160,23 @@ def mean_scores(scores, keywords):
     return result
 
 
+LANG_CODES = {"spanish": "es"}
+
+
 class TextRank(AbstractKeywordExtractor):
     """
     A NLTK based implementation of TextRank as defined in: "TextRank: Bringing Order into Texts" by Mihalcea et al. (2004)
     """
 
-    def __init__(self, language, limit=None, filter_pos_tags=None):
+    def __init__(self, language, limit=None, filter_pos_tags=None, core_nlp="http://127.0.0.1:9000"):
         super().__init__(language)
         self._filter_tags = filter_pos_tags
         self._limit = limit
+        if "http" in core_nlp:
+            server, port = core_nlp.rsplit(":", maxsplit=1)
+            self.nlp = StanfordCoreNLP(server, port=int(port), lang=LANG_CODES[language])
+        else:
+            self.nlp = StanfordCoreNLP(core_nlp, lang=LANG_CODES[language])
 
     def run(self, text):
         """
@@ -176,10 +185,12 @@ class TextRank(AbstractKeywordExtractor):
         :param text: A string.
         """
         # tokenize the text using nltk
-        word_tokens = nltk.word_tokenize(text, language=self._language)
+        # word_tokens = nltk.word_tokenize(text, language=self._language)
 
         # assign POS tags to the words in the text
-        tagged = nltk.pos_tag(word_tokens)
+        # tagged = nltk.pos_tag(word_tokens)
+
+        tagged = self.nlp.pos_tag(text)
         textlist = [x[0] for x in tagged]
 
         tagged = filter_for_tags(tagged, tags=self._filter_tags)
