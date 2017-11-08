@@ -1,6 +1,7 @@
 import html
 import random
 import re
+from urllib.parse import urljoin
 from urllib.request import urlopen, Request
 
 from bs4 import BeautifulSoup, Comment
@@ -107,7 +108,7 @@ class WebPage(object):
             self._download()
 
         soup = BeautifulSoup(self.html, 'html.parser')
-
+        soup = self._consolidate_external_css(soup)
         self._extract_title(soup)
         self._extract_text(soup)
         self._extract_metadata(soup)
@@ -157,3 +158,26 @@ class WebPage(object):
         :return:
         """
         self._title = soup.title.name.strip()
+
+    def _consolidate_external_css(self, soup):
+        stylesheets = soup.findAll("link", {"rel": "stylesheet"})
+        for s in stylesheets:
+            href = s[TAG_HREF]
+            css_url = self._normalize_url(href)
+            request = Request(css_url, headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)]})
+
+            with urlopen(request) as webpage:
+                css_file = webpage.read().decode('unicode_escape')
+            style_tag = BeautifulSoup("<style type=\"text/css\">{}</style>".format(css_file), "html.parser")
+            s.replaceWith(style_tag)
+
+        soup.renderContents()
+        return soup
+
+    def _normalize_url(self, href):
+        href = href.strip() if href else None
+        if not href or href.startswith('#') or len(href) == 1:
+            return False
+
+        link = urljoin(self.url, href) if not href.startswith('http') else href
+        return link
