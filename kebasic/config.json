@@ -26,8 +26,8 @@
   "extractor_parameters": {
     "feature.rake.RAKE": {
       "language": "spanish",
-      "keyword_separator": "., ",
       "stopwords": "../resources/ES/stopwords/stopwords.txt",
+      "keyword_separator": ".aeiouy",
       "min_char_length": 3,
       "max_words_length": 2,
       "min_keyword_frequency": 2,

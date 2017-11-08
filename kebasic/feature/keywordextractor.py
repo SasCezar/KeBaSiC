@@ -30,8 +30,7 @@ class AbstractKeywordExtractor(ABC):
     def __init__(self, language, stopwords=None):
         self._language = language
 
-        # self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
-        self._stop_words = stopwords
+        self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
 
     @abstractmethod
     def run(self, text):
@@ -44,9 +43,9 @@ class AbstractKeywordExtractor(ABC):
         pass
 
     def _filter(self, keywords):
-        if not self._stop_words:
+        if not self._stopwords:
             return keywords
-        return [(keyword, weight) for keyword, weight in keywords if keyword not in self._stop_words]
+        return [(keyword, weight) for keyword, weight in keywords if keyword not in self._stopwords]
 
     @staticmethod
     def _sort(keywords):

@@ -18,7 +18,7 @@ def write_csv(result):
 
 
 def write_json(results):
-    with open('keywords.json', 'wt', encoding="utf8") as fp:
+    with open('keywords_4.json', 'wt', encoding="utf8") as fp:
         pp = pprint.PrettyPrinter(indent=4, stream=fp)
         pp.pprint(results)
 
