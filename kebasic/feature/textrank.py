@@ -213,8 +213,8 @@ class TextRank(AbstractKeywordExtractor):
         modified_key_phrases = postprocessing_key_phrases(keyphrases, textlist)
 
         # sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
-        weighted_keywords = mean_scores(calculated_page_rank, modified_key_phrases)
-        result = self._filter(weighted_keywords)  # TODO Check if is better to filter based on any all methods
-        result = self._sort(result)
+        keyword_candidates = mean_scores(calculated_page_rank, modified_key_phrases)
+        keywords = self._filter(keyword_candidates)  # TODO Check if is better to filter based on any all methods
+        result = self._sort(keywords)
 
         return result

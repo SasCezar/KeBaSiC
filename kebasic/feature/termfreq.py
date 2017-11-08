@@ -13,9 +13,9 @@ class TermFrequencies(AbstractKeywordExtractor):
 
     def run(self, text):
         term_document = self._vectorizer.fit_transform([text])  # is a matrix
-        result = zip(self._vectorizer.get_feature_names(), term_document.A[0])
-        filtered = self._filter(result)
-        sorted_result = self._sort(filtered)
+        keyword_candidates = zip(self._vectorizer.get_feature_names(), term_document.A[0])
+        keywords = self._filter(keyword_candidates)
+        sorted_result = self._sort(keywords)
         return sorted_result
 
     def _filter(self, terms):
