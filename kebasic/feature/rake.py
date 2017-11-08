@@ -18,6 +18,8 @@
 import re
 from collections import Counter
 
+import nltk
+
 from kebasic.feature.keywordextractor import AbstractKeywordExtractor
 
 
@@ -151,17 +153,17 @@ def filter_adjoined_candidates(candidates, min_freq):
     return filtered_candidates
 
 
-def generate_candidate_keywords(sentence_list, keywords_separator, min_char_length=1, max_words_length=5,
+def generate_candidate_keywords(sentence_list, stopword_pattern, stop_word_list, min_char_length=1, max_words_length=5,
                                 min_words_length_adj=1, max_words_length_adj=1, min_phrase_freq_adj=2):
     phrase_list = []
     for s in sentence_list:
-        tmp = re.sub(build_stop_word_regex(keywords_separator), '|', s.strip())
+        tmp = re.sub(stopword_pattern, '|', s.strip())
         phrases = tmp.split("|")
         for phrase in phrases:
             phrase = phrase.strip().lower()
             if phrase != "" and is_acceptable(phrase, min_char_length, max_words_length):
                 phrase_list.append(phrase)
-    phrase_list += extract_adjoined_candidates(sentence_list, keywords_separator, min_words_length_adj,
+    phrase_list += extract_adjoined_candidates(sentence_list, stop_word_list, min_words_length_adj,
                                                max_words_length_adj, min_phrase_freq_adj)
     return phrase_list
 
@@ -254,9 +256,9 @@ def split_sentences(text):
 
 
 class RAKE(AbstractKeywordExtractor):
-    def __init__(self, language, stopwords=None, min_char_length=1, max_words_length=5,
+    def __init__(self, language, stopwords, min_char_length=1, max_words_length=5,
                  min_keyword_frequency=1, min_words_length_adj=1, max_words_length_adj=1,
-                 min_phrase_freq_adj=2, keyword_separator=None):
+                 min_phrase_freq_adj=2):
         """
 
         Implementation of RAKE - Rapid Automatic Keyword Extraction algorithm as described in:
@@ -277,9 +279,8 @@ class RAKE(AbstractKeywordExtractor):
         """
 
         super().__init__(language, stopwords)
-        if keyword_separator is None:
-            keyword_separator = ['.,']
-        self._keywords_separator = keyword_separator
+        if not stopwords:
+            self._stop_words = nltk.corpus.stopwords.words(language)
         self._min_char_length = min_char_length
         self._max_words_length = max_words_length
         self._min_keyword_frequency = min_keyword_frequency
@@ -321,7 +322,9 @@ class RAKE(AbstractKeywordExtractor):
     def run(self, text):
         sentence_list = split_sentences(text)
 
-        phrase_list = generate_candidate_keywords(sentence_list, self._keywords_separator,
+        stop_words_pattern = build_stop_word_regex(self._stop_words)
+
+        phrase_list = generate_candidate_keywords(sentence_list, stop_words_pattern, self._stop_words,
                                                   self._min_char_length, self._max_words_length,
                                                   self._min_words_length_adj, self._max_words_length_adj,
                                                   self._min_phrase_freq_adj)
