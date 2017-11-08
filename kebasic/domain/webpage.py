@@ -1,3 +1,4 @@
+import html
 import random
 import re
 from urllib.request import urlopen, Request
@@ -97,6 +98,7 @@ class WebPage(object):
         with urlopen(request) as webpage:
             self._html = BeautifulSoup(webpage, 'html.parser').prettify()
 
+        self._html = html.unescape(self._html)
         self._html = ' '.join(self.html.split()).strip()
         return self
 

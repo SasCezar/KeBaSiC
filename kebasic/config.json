@@ -20,8 +20,8 @@
   "extractor_algorithms": [
     "feature.rake.RAKE",
     "feature.textrank.TextRank",
-    "feature.termfreq.TermFrequencies",
-    "feature.simplerake.SimpleRAKE"
+    "feature.termfreq.TermFrequencies"
+    // "feature.simplerake.SimpleRAKE"
   ],
   "extractor_parameters": {
     "feature.rake.RAKE": {
