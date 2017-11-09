@@ -1,10 +1,13 @@
 import html
+import itertools
+import logging
 import random
 import re
 from urllib.parse import urljoin
 from urllib.request import urlopen, Request
 
 from bs4 import BeautifulSoup, Comment
+from premailer import transform
 
 TAG_META = 'meta'
 TAG_ANCHOR = 'a'
@@ -42,6 +45,8 @@ USER_AGENTS = [
     "Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) Gecko/20100922 Ubuntu/10.10 (maverick) Firefox/3.6.10"
 ]
 USER_AGENTS_LEN = len(USER_AGENTS)
+
+logging.getLogger('CSSUTILS').setLevel(logging.CRITICAL)
 
 
 class NotValidURL(Exception):
@@ -108,7 +113,11 @@ class WebPage(object):
             self._download()
 
         soup = BeautifulSoup(self.html, 'html.parser')
-        soup = self._consolidate_external_css(soup)
+        # soup = self._consolidate_external_css(soup)
+        # inlined_html = self._inline_css(soup.prettify())
+        # soup = BeautifulSoup(inlined_html, "html.parser")
+        soup = self._clean_style(soup)
+        soup = self._filter_tags(soup)
         self._extract_title(soup)
         self._extract_text(soup)
         self._extract_metadata(soup)
@@ -134,7 +143,7 @@ class WebPage(object):
         :param soup:
         :return:
         """
-        texts = soup.findAll(text=True)
+        texts = soup.find_all(text=True)
         visible_texts = [text.strip() for text in texts if self._tag_visible(text)]
         cleaned_text = " ".join(t for t in visible_texts if t)
         self._text = cleaned_text
@@ -157,10 +166,10 @@ class WebPage(object):
         :param soup:
         :return:
         """
-        self._title = soup.title.name.strip()
+        self._title = soup.title.name.strip() if soup.title else ""
 
     def _consolidate_external_css(self, soup):
-        stylesheets = soup.findAll("link", {"rel": "stylesheet"})
+        stylesheets = soup.find_all("link", {"rel": "stylesheet"})
         for s in stylesheets:
             href = s[TAG_HREF]
             css_url = self._normalize_url(href)
@@ -181,3 +190,26 @@ class WebPage(object):
 
         link = urljoin(self.url, href) if not href.startswith('http') else href
         return link
+
+    def _inline_css(self, html):
+        result = transform(html)
+        return result
+
+    def _clean_style(self, soup):
+        style_tags = soup.find_all('style')
+        for style_tag in style_tags:
+            style_tag.decompose()
+
+        soup.renderContents()
+        return soup
+
+    def _filter_tags(self, soup):
+        hidden_tags = soup.find_all('div', style=re.compile(r'(display:\s*none|visibility:\s*hidden)'))
+        unwanted_divs = soup.find_all(class_=re.compile(r"(footer|header|cookie)", re.IGNORECASE))  # Check menu
+        unwanted_sections = soup.find_all(['footer', 'header'])
+
+        for tag in itertools.chain(unwanted_divs, unwanted_sections):
+            tag.decompose()
+
+        soup.renderContents()
+        return soup
