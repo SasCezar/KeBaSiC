@@ -155,7 +155,7 @@ def mean_scores(scores, keywords):
             elements += 1
 
         mean = weight / elements if weight else 0
-        result.append((keyword, mean))
+        result.append((keyword, round(mean, 9)))
 
     return result
 
