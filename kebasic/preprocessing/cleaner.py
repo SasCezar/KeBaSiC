@@ -12,7 +12,7 @@ class AbstractCleaner(ABC):
         return cleaned_text
 
 
-class WordsNumbersCleaner(AbstractCleaner):
+class WordsWithNumbersCleaner(AbstractCleaner):
     def __init__(self):
         super().__init__()
         self.re_match = re.compile(r"\S*\d+\S*", re.IGNORECASE)
@@ -39,7 +39,7 @@ class MultipleSpacesCleaner(AbstractCleaner):
         return result
 
 
-class NonCharPunctuationCleaner(AbstractCleaner):
+class NonPunctuationSymbolsCleaner(AbstractCleaner):
     def __init__(self):
         super().__init__()
         self.re_match = re.compile(r"""[^!"&':;?,\.\w\d ]+""")

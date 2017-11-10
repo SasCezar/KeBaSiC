@@ -5,8 +5,8 @@
   "preprocessing_algorithms": [
     "preprocessing.cleaner.MailCleaner",
     "preprocessing.cleaner.URLCleaner",
-    "preprocessing.cleaner.WordsNumbersCleaner",
-    "preprocessing.cleaner.NonCharPunctuationCleaner",
+    "preprocessing.cleaner.WordsWithNumbersCleaner",
+    "preprocessing.cleaner.NonPunctuationSymbolsCleaner",
     "preprocessing.cleaner.CommonWords",
     "preprocessing.cleaner.MultipleSpacesCleaner"
   ],
