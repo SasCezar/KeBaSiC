@@ -191,7 +191,7 @@ class WebPage(object):
     def _filter_tags(self, soup):
         # hidden_tags = soup.find_all('div', style=re.compile(r'(display:\s*none|visibility:\s*hidden)'))
         unwanted_divs = soup.find_all(class_=re.compile(r"(footer|header|cookie)", re.IGNORECASE))  # Check menu
-        unwanted_sections = soup.find_all(['footer', 'header'])
+        unwanted_sections = soup.find_all(['footer', 'header', 'noscript'])
 
         for tag in itertools.chain(unwanted_divs, unwanted_sections):
             tag.decompose()
