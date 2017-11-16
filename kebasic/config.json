@@ -3,15 +3,16 @@
   "websites_path": "../input/test_sites.csv",
   // Preprocessing
   "preprocessing_algorithms": [
-    "preprocessing.cleaner.MailCleaner",
-    "preprocessing.cleaner.URLCleaner",
-    "preprocessing.cleaner.WordsWithNumbersCleaner",
-    "preprocessing.cleaner.NonPunctuationSymbolsCleaner",
-    "preprocessing.cleaner.CommonWords",
-    "preprocessing.cleaner.MultipleSpacesCleaner"
+    "textprocessing.cleaner.MailCleaner",
+    "textprocessing.cleaner.URLCleaner",
+    "textprocessing.cleaner.WordsWithNumbersCleaner",
+    "textprocessing.cleaner.NonPunctuationSymbolsCleaner",
+    "textprocessing.cleaner.CommonWords",
+    "textprocessing.cleaner.PunctuationSpacesCleaner",
+    "textprocessing.cleaner.MultipleSpacesCleaner"
   ],
   "preprocessing_parameters": {
-    "preprocessing.cleaner.CommonWords": {
+    "textprocessing.cleaner.CommonWords": {
       "words_path": "../resources/common_words.txt"
     }
   },
@@ -20,11 +21,23 @@
   "extractor_algorithms": [
     "feature.rake.RAKE",
     "feature.textrank.TextRank",
-    "feature.termfreq.TermFrequencies"
+    "feature.termfreq.TermFrequencies",
+    "feature.rake.MergingRAKE"
     // "feature.simplerake.SimpleRAKE"
   ],
   "extractor_parameters": {
     "feature.rake.RAKE": {
+      "language": "spanish",
+      "stopwords": "../resources/ES/stopwords/stopwords.txt",
+      "keyword_separator": ".aeiouy",
+      "min_char_length": 3,
+      "max_words_length": 2,
+      "min_keyword_frequency": 2,
+      "min_words_length_adj": 1,
+      "max_words_length_adj": 1,
+      "min_phrase_freq_adj": 2
+    },
+    "feature.rake.MergingRAKE": {
       "language": "spanish",
       "stopwords": "../resources/ES/stopwords/stopwords.txt",
       "keyword_separator": ".aeiouy",
