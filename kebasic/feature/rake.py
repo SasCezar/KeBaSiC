@@ -317,7 +317,7 @@ class RAKE(AbstractKeywordExtractor):
     def min_phrase_freq_adj(self):
         return self._min_phrase_freq_adj
 
-    def _extract_keyword(self, text):
+    def _extract_keywords(self, text):
         sentence_list = split_sentences(text)
         stop_words_pattern = build_stop_word_regex(self._keyword_separator)
         phrase_list = generate_candidate_keywords(sentence_list, stop_words_pattern, self._keyword_separator,
@@ -331,14 +331,14 @@ class RAKE(AbstractKeywordExtractor):
         return keywords
 
     def run(self, text):
-        keywords = self._extract_keyword(text)
+        keywords = self._extract_keywords(text)
         sorted_keywords = self._sort(keywords)
         return sorted_keywords
 
 
 class MergingRAKE(RAKE):
     def run(self, text):
-        keywords = self._extract_keyword(text)
+        keywords = self._extract_keywords(text)
         merged_keywords = self._merge_keywords(keywords, text)
         sorted_kewords = self._sort(merged_keywords)
         return sorted_kewords

@@ -180,11 +180,17 @@ class TextRank(AbstractKeywordExtractor):
 
     def run(self, text):
         """
-        Return a set of key phrases.
+        Return a set list of keyword sorted by score.
 
         :param text: A string.
         """
+        keyword_candidates = self._extract_keywords(text)
+        keywords = self._filter(keyword_candidates)
+        result = self._sort(keywords)
 
+        return result
+
+    def _extract_keywords(self, text):
         tagged = self.nlp.pos_tag(text)
         textlist = [x[0] for x in tagged]
 
@@ -212,9 +218,6 @@ class TextRank(AbstractKeywordExtractor):
 
         modified_key_phrases = postprocessing_key_phrases(keyphrases, textlist)
 
-        # sorted_scores = sorted([(k, v) for k, v in calculated_page_rank.items()], key=lambda x: x[1], reverse=True)
         keyword_candidates = mean_scores(calculated_page_rank, modified_key_phrases)
-        keywords = self._filter(keyword_candidates)  # TODO Check if is better to filter based on any all methods
-        result = self._sort(keywords)
 
-        return result
+        return keyword_candidates

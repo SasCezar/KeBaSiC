@@ -12,11 +12,15 @@ class TermFrequencies(AbstractKeywordExtractor):
         self._vectorizer = CountVectorizer()
 
     def run(self, text):
-        term_document = self._vectorizer.fit_transform([text])  # is a matrix
-        keyword_candidates = zip(self._vectorizer.get_feature_names(), term_document.A[0])
+        keyword_candidates = self._extract_keywords(text)
         keywords = self._filter(keyword_candidates)
         sorted_result = self._sort(keywords)
         return sorted_result
+
+    def _extract_keywords(self, text):
+        term_document = self._vectorizer.fit_transform([text])  # is a matrix
+        keyword_candidates = zip(self._vectorizer.get_feature_names(), term_document.A[0])
+        return keyword_candidates
 
     def _filter(self, terms):
         result = [(term, freq) for term, freq in terms if term not in self._stopwords and freq >= self._min_count]

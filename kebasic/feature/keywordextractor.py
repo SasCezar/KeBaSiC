@@ -69,6 +69,10 @@ class AbstractKeywordExtractor(ABC):
     def run(self, text):
         pass
 
+    @abstractmethod
+    def _extract_keywords(self, text):
+        pass
+
     def _merge_keywords(self, keywords, text):
 
         result = []

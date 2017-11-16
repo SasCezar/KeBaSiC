@@ -67,10 +67,10 @@ def generate_candidate_keywords(sentence_list, stopword_pattern):
     return phrase_list
 
 
-def calculate_word_scores(phraseList):
+def calculate_word_scores(phrase_list):
     word_frequency = {}
     word_degree = {}
-    for phrase in phraseList:
+    for phrase in phrase_list:
         word_list = separate_words(phrase, 0)
         word_list_length = len(word_list)
         word_list_degree = word_list_length - 1
@@ -111,13 +111,14 @@ class SimpleRAKE(AbstractKeywordExtractor):
         self.__stop_words_pattern = build_stop_word_regex(self._stopwords)
 
     def run(self, text):
-        sentence_list = split_sentences(text)
-
-        phrase_list = generate_candidate_keywords(sentence_list, self.__stop_words_pattern)
-
-        word_scores = calculate_word_scores(phrase_list)
-
-        keyword_candidates = generate_candidate_keyword_scores(phrase_list, word_scores)
-        filtered_candidates = self._filter(keyword_candidates.items())
+        keyword_candidates = self._extract_keywords(text)
+        filtered_candidates = self._filter(keyword_candidates)
         sorted_keywords = self._sort(filtered_candidates)
         return sorted_keywords
+
+    def _extract_keywords(self, text):
+        sentence_list = split_sentences(text)
+        phrase_list = generate_candidate_keywords(sentence_list, self.__stop_words_pattern)
+        word_scores = calculate_word_scores(phrase_list)
+        keyword_candidates = generate_candidate_keyword_scores(phrase_list, word_scores)
+        return keyword_candidates.items()
