@@ -3,6 +3,7 @@ import re
 from abc import ABC, abstractmethod
 
 import nltk
+import treetaggerwrapper
 
 
 def load_stop_words(stopwords):
@@ -24,6 +25,10 @@ def load_stop_words(stopwords):
     return stop_words
 
 
+LANGS = {"spanish": "es",
+         "english": "en"}
+
+
 class AbstractKeywordExtractor(ABC):
     """
     Implements an abstract keyword extraction algorithm
@@ -34,10 +39,10 @@ class AbstractKeywordExtractor(ABC):
 
         self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
         self._merging_template = "((({keys})\s+({stop}|\s){{0,2}})+\s*({keys}))"
-        # self._merging_template = "(({keys})\s*{stop}\s*({keys}))"
-        # self._merging_template = "({w_1}|{w_2})\W{{0,3}}({stop}){{0,2}}\W{{0,3}}({w_1}|{w_2})"
         self._stopwords_pattern = "(" + "|".join(
             [re.escape(word.strip()) for word in self._stopwords]) + "){0,2}"  # Check if 2 is a good values
+
+        self._lemmatizer = treetaggerwrapper.TreeTagger(TAGLANG=LANGS[self._language]).tag_text
 
     @abstractmethod
     def run(self, text):
@@ -74,26 +79,32 @@ class AbstractKeywordExtractor(ABC):
         pass
 
     def _merge_keywords(self, keywords, text):
-
+        """
+        Given a list of keywords, find all the adjacent combinations of keywords in the text. The keywords may be
+        separated by a stopword.
+        :param keywords:
+        :param text:
+        :return:
+        """
         result = []
 
-        scores = dict(keywords)
+        scores = dict([(k.lower(), score) for k, score in keywords])
         keys = scores.keys()
 
         keywords_pattern = "|".join(keys)
         pattern = self._merging_template.format(keys=keywords_pattern, stop=self._stopwords_pattern)
-        merged_keywords = re.findall(pattern, text)
+        merged_keywords = re.findall(pattern, text, re.IGNORECASE)
 
         seen = set()
         for merged_keyword in merged_keywords:
-            keywords_tuple = tuple(kw for kw in merged_keyword[0].split() if kw in scores)
+            keywords_tuple = tuple(kw.lower() for kw in merged_keyword[0].split() if kw.lower() in scores)
             if any(kwtuple in seen for kwtuple in itertools.permutations(keywords_tuple)):
                 continue
 
             seen.add(keywords_tuple)
 
-            score = sum([scores[kw] for kw in keywords_tuple])
-
+            score = sum([scores[kw.lower()] for kw in keywords_tuple])
+            score = scores[merged_keyword[0].lower()] if merged_keyword[0].lower() in scores and not score else score
             result.append((merged_keyword[0], score))
 
         """
@@ -101,30 +112,4 @@ class AbstractKeywordExtractor(ABC):
             merged_keywords.append((key, scores[key]))
 
         """
-
         return result
-
-    def old_merge_keywords(self, keywords, text):
-
-        merged_keywords = []
-
-        keys = {k for k, v in keywords}
-        scores = dict(keywords)
-        cartesian_keys = itertools.product(keys, repeat=2)
-        # cartesian_keys = list(itertools.combinations(keys, 2))
-        for keyword_a, keyword_b in cartesian_keys:
-            result = re.search(
-                self._merging_template.format(w_1=keyword_a, stop=self._stopwords_pattern, w_2=keyword_b), text)
-            if result:
-                merged_score = (scores[keyword_a] + scores[keyword_b]) / 2
-                merged_keywords.append((result.group(), merged_score))
-                keys.discard(keyword_a)
-                keys.discard(keyword_b)
-
-        """
-        for key in keys:
-            merged_keywords.append((key, scores[key]))
-
-        """
-
-        return merged_keywords

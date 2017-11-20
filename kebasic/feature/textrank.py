@@ -1,5 +1,6 @@
 import itertools
 import logging
+import re
 
 import networkx as nx
 import nltk
@@ -168,10 +169,9 @@ class TextRank(AbstractKeywordExtractor):
     A NLTK based implementation of TextRank as defined in: "TextRank: Bringing Order into Texts" by Mihalcea et al. (2004)
     """
 
-    def __init__(self, language, limit=None, filter_pos_tags=None, core_nlp="http://127.0.0.1:9000"):
+    def __init__(self, language, filter_pos_tags=None, core_nlp="http://127.0.0.1:9000"):
         super().__init__(language)
         self._filter_tags = filter_pos_tags
-        self._limit = limit
         if "http" in core_nlp:
             server, port = core_nlp.rsplit(":", maxsplit=1)
             self.nlp = StanfordCoreNLP(server, port=int(port), lang=LANG_CODES[language])
@@ -186,13 +186,13 @@ class TextRank(AbstractKeywordExtractor):
         """
         keyword_candidates = self._extract_keywords(text)
         keywords = self._filter(keyword_candidates)
-        result = self._sort(keywords)
+        merged_keywords = self._merge_keywords(keywords, text)
+        result = self._sort(merged_keywords)
 
         return result
 
     def _extract_keywords(self, text):
         tagged = self.nlp.pos_tag(text)
-        textlist = [x[0] for x in tagged]
 
         tagged = filter_for_tags(tagged, tags=self._filter_tags)
         tagged = normalize(tagged)
@@ -213,11 +213,26 @@ class TextRank(AbstractKeywordExtractor):
 
         # the number of keyphrases returned will be relative to the size of the
         # text (a third of the number of vertices)
-        one_third = len(word_set_list) // 3 if not self._limit else self._limit
+        one_third = len(word_set_list) // 3
         keyphrases = keyphrases[0:one_third + 1]
 
-        modified_key_phrases = postprocessing_key_phrases(keyphrases, textlist)
-
-        keyword_candidates = mean_scores(calculated_page_rank, modified_key_phrases)
+        keyword_candidates = [(k, calculated_page_rank[k]) for k in keyphrases if k in calculated_page_rank]
 
         return keyword_candidates
+
+    def _merge_keywords(self, keywords, text):
+        textlist = re.findall(r"(\w+)", text, re.UNICODE)
+        merged = postprocessing_key_phrases([k[0] for k in keywords], textlist)
+        calculated_page_rank = dict(keywords)
+        keyword_candidates = mean_scores(calculated_page_rank, merged)
+
+        return keyword_candidates
+
+
+class MergingTextRank(TextRank):
+    def run(self, text):
+        keywords = self._extract_keywords(text)
+        filtered_keywords = self._filter(keywords)
+        merged_keywords = super(TextRank, self)._merge_keywords(filtered_keywords, text)
+        sorted_keywords = self._sort(merged_keywords)
+        return sorted_keywords

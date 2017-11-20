@@ -21,6 +21,7 @@
   "extractor_algorithms": [
     "feature.rake.RAKE",
     "feature.textrank.TextRank",
+    "feature.textrank.MergingTextRank",
     "feature.termfreq.TermFrequencies",
     "feature.rake.MergingRAKE"
     // "feature.simplerake.SimpleRAKE"
@@ -50,7 +51,16 @@
     },
     "feature.textrank.TextRank": {
       "language": "spanish",
-      "limit": null,
+      "filter_pos_tags": [
+        "nc00000",
+        "nc0n000",
+        "nc0p000",
+        "nc0s000",
+        "np00000"
+      ]
+    },
+    "feature.textrank.MergingTextRank": {
+      "language": "spanish",
       "filter_pos_tags": [
         "nc00000",
         "nc0n000",

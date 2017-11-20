@@ -2,6 +2,7 @@ import argparse
 import csv
 import os
 import pprint
+from time import gmtime, strftime
 
 from kebasic.dao.webpagedao import CSVWebPageDAO
 from kebasic.execution.basic import FeatureExtractionExecution, TextCleanerExecution
@@ -18,7 +19,8 @@ def write_csv(result):
 
 
 def write_json(results):
-    with open('keywords_10.json', 'wt', encoding="utf8") as fp:
+    now = strftime("%Y_%m_%d-%H_%M", gmtime())
+    with open('keywords_{}.json'.format(now), 'wt', encoding="utf8") as fp:
         pp = pprint.PrettyPrinter(indent=4, stream=fp)
         pp.pprint(results)
 

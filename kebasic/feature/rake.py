@@ -327,18 +327,19 @@ class RAKE(AbstractKeywordExtractor):
         word_scores = calculate_word_scores(phrase_list)
         keyword_candidates = generate_candidate_keyword_scores(phrase_list, word_scores, self._min_keyword_frequency)
         keyword_candidates = keyword_candidates.items()
-        keywords = self._filter(keyword_candidates)
-        return keywords
+        return keyword_candidates
 
     def run(self, text):
         keywords = self._extract_keywords(text)
-        sorted_keywords = self._sort(keywords)
+        filtered_keywords = self._filter(keywords)
+        sorted_keywords = self._sort(filtered_keywords)
         return sorted_keywords
 
 
 class MergingRAKE(RAKE):
     def run(self, text):
         keywords = self._extract_keywords(text)
-        merged_keywords = self._merge_keywords(keywords, text)
-        sorted_kewords = self._sort(merged_keywords)
-        return sorted_kewords
+        filtered_keywords = self._filter(keywords)
+        merged_keywords = self._merge_keywords(filtered_keywords, text)
+        sorted_keywords = self._sort(merged_keywords)
+        return sorted_keywords
