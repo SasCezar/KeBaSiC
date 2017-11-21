@@ -19,14 +19,14 @@ class FeatureExtractionExecution(AbstractExecution):
             if not webpage.text:
                 logging.info("Empty text webpage: {}".format(webpage.url))
                 continue
-            features = self.extract_features(webpage.text)
+            features = self._extract_features(webpage.text)
             features['url'] = webpage.url
             features['site_keywords'] = webpage.meta_keywords
             result.append(features)
 
         return result
 
-    def extract_features(self, webpage):
+    def _extract_features(self, webpage):
         result = {}
         for name, callable_object in self.callables:
             feature = callable_object.run(webpage)
@@ -48,11 +48,11 @@ class TextCleanerExecution(AbstractExecution):
         result = []
         for webpage in webpages:
             logging.info("Cleaning: {}".format(webpage.url))
-            webpage.text = self.clean_text(webpage.text)
+            webpage.text = self._clean_text(webpage.text)
             result.append(webpage)
         return result
 
-    def clean_text(self, text):
+    def _clean_text(self, text):
         for name, callable_object in self.callables:
             text = callable_object.run(text)
         return text
