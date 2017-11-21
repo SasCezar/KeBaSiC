@@ -66,11 +66,19 @@ class AbstractKeywordExtractor(ABC):
 
     @staticmethod
     def _sort(keywords):
+        """
+        Sorts the keywords based on the results in descending order. In two keywords have the same score, they are
+        sorted in alphabetical order.
+
+        :param keywords:
+        :return:
+        """
         return sorted(keywords, key=lambda x: (-x[1], x[0]))
 
     def configuration(self):
         """
-        Returns the model configurations
+        Returns the model configurations as a dictionary
+
         :return:
         """
         return self.__dict__
@@ -87,6 +95,7 @@ class AbstractKeywordExtractor(ABC):
         """
         Given a list of keywords, find all the adjacent combinations of keywords in the text. The keywords may be
         separated by a stopword.
+
         :param keywords:
         :param text:
         :return:
@@ -118,6 +127,12 @@ class AbstractKeywordExtractor(ABC):
         return result
 
     def _text_lemmatization(self, text):
+        """
+        Given a text returns the lemmized version using the TreeTagger lemmatizer.
+
+        :param text:
+        :return:
+        """
         lemmed_text = ""
         tagged_text = self._lemmatizer(text)
         for lemmed_word in tagged_text:
@@ -129,6 +144,12 @@ class AbstractKeywordExtractor(ABC):
         return lemmed_text
 
     def _keywords_lemmatization(self, keywords):
+        """
+        Given a list of keywords, for each of them evaluates the lemma
+
+        :param keywords:
+        :return:
+        """
         result = []
         for keyword, score in keywords:
             lemmed_keyword = self._keyword_lemmatization(keyword)
@@ -137,6 +158,13 @@ class AbstractKeywordExtractor(ABC):
         return result
 
     def _keyword_lemmatization(self, keyword):
+        """
+        Given a keywords, simple or composed, returns the lemma of all its component.
+
+        :param keyword:
+        :return:
+        """
+
         lemmed_keyword = ""
         lemming_result = self._lemmatizer(keyword)
         for lemma in lemming_result:
