@@ -109,5 +109,5 @@ class PunctuationSpacesCleaner(AbstractCleaner):
 
     def __init__(self):
         super().__init__()
-        self.re_match = re.compile(r"""(\s*(?P<punctuation>[!\"&':;?,\.]+))""")
+        self.re_match = re.compile(r"""(\s*(?P<punctuation>[!\"&':;?,\.]+))+""")
         self.sub = lambda x: x.group("punctuation").strip()[0]
