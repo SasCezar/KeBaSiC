@@ -2,6 +2,7 @@ import argparse
 import csv
 import os
 import pprint
+from collections import OrderedDict
 from time import gmtime, strftime
 
 from kebasic.dao.webpagedao import CSVWebPageDAO
@@ -25,6 +26,18 @@ def write_json(results):
         pp.pprint(results)
 
 
+def write_sorted_json(results, order=None):
+    if order is None:
+        order = ["url", "site_keywords", "MergingRAKE", "MergingTextRank", "MergingTermFrequencies"]
+
+    sorted_results = []
+    for result in results:
+        sorted_result = OrderedDict([(i, result[i]) for i in order])
+        sorted_results.append(sorted_result)
+
+    write_json(sorted_results)
+
+
 def main(configs):
     cleaner = TextCleanerExecution(configs)
     executor = FeatureExtractionExecution(configs)
@@ -32,7 +45,7 @@ def main(configs):
     cleaned_webages = cleaner.execute(webpages)
     result = executor.execute(cleaned_webages)
     # write_csv(result)
-    write_json(result)
+    write_sorted_json(result)
     return
 
 

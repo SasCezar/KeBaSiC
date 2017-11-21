@@ -19,18 +19,20 @@
 
   // Feature Extraction
   "extractor_algorithms": [
-    "feature.rake.RAKE",
-    "feature.textrank.TextRank",
+    // "feature.rake.RAKE",
+    // "feature.simplerake.SimpleRAKE",
+    "feature.rake.MergingRAKE",
+    // "feature.textrank.TextRank",
     "feature.textrank.MergingTextRank",
-    "feature.termfreq.TermFrequencies",
-    "feature.rake.MergingRAKE"
-    // "feature.simplerake.SimpleRAKE"
+    // "feature.termfreq.TermFrequencies",
+    "feature.termfreq.MergingTermFrequencies"
   ],
   "extractor_parameters": {
     "feature.rake.RAKE": {
       "language": "spanish",
       "stopwords": "../resources/ES/stopwords/stopwords.txt",
       "keyword_separator": ".aeiouy",
+      "lemmize": true,
       "min_char_length": 3,
       "max_words_length": 2,
       "min_keyword_frequency": 2,
@@ -42,6 +44,7 @@
       "language": "spanish",
       "stopwords": "../resources/ES/stopwords/stopwords.txt",
       "keyword_separator": ".aeiouy",
+      "lemmize": true,
       "min_char_length": 3,
       "max_words_length": 2,
       "min_keyword_frequency": 2,
@@ -51,6 +54,7 @@
     },
     "feature.textrank.TextRank": {
       "language": "spanish",
+      "lemmize": true,
       "filter_pos_tags": [
         "nc00000",
         "nc0n000",
@@ -61,6 +65,7 @@
     },
     "feature.textrank.MergingTextRank": {
       "language": "spanish",
+      "lemmize": true,
       "filter_pos_tags": [
         "nc00000",
         "nc0n000",
@@ -71,6 +76,13 @@
     },
     "feature.termfreq.TermFrequencies": {
       "language": "spanish",
+      "lemmize": true,
+      "stopwords": "../resources/ES/stopwords/stopwords.txt",
+      "min_count": 2
+    },
+    "feature.termfreq.MergingTermFrequencies": {
+      "language": "spanish",
+      "lemmize": true,
       "stopwords": "../resources/ES/stopwords/stopwords.txt",
       "min_count": 2
     },
