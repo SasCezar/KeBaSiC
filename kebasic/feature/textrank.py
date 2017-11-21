@@ -169,8 +169,8 @@ class TextRank(AbstractKeywordExtractor):
     A NLTK based implementation of TextRank as defined in: "TextRank: Bringing Order into Texts" by Mihalcea et al. (2004)
     """
 
-    def __init__(self, language, filter_pos_tags=None, core_nlp="http://127.0.0.1:9000"):
-        super().__init__(language)
+    def __init__(self, language, filter_pos_tags=None, core_nlp="http://127.0.0.1:9000", lemmize=False):
+        super().__init__(language, lemmize=lemmize)
         self._filter_tags = filter_pos_tags
         if "http" in core_nlp:
             server, port = core_nlp.rsplit(":", maxsplit=1)
@@ -187,9 +187,9 @@ class TextRank(AbstractKeywordExtractor):
         keyword_candidates = self._extract_keywords(text)
         keywords = self._filter(keyword_candidates)
         merged_keywords = self._merge_keywords(keywords, text)
-        result = self._sort(merged_keywords)
-
-        return result
+        lemmed_keywords = self._keywords_lemmatization(keywords) if self._lemmize else merged_keywords
+        sorted_keywords = self._sort(lemmed_keywords)
+        return sorted_keywords
 
     def _extract_keywords(self, text):
         tagged = self.nlp.pos_tag(text)
@@ -234,5 +234,6 @@ class MergingTextRank(TextRank):
         keywords = self._extract_keywords(text)
         filtered_keywords = self._filter(keywords)
         merged_keywords = super(TextRank, self)._merge_keywords(filtered_keywords, text)
-        sorted_keywords = self._sort(merged_keywords)
+        lemmed_keywords = self._keywords_lemmatization(merged_keywords) if self._lemmize else merged_keywords
+        sorted_keywords = self._sort(lemmed_keywords)
         return sorted_keywords

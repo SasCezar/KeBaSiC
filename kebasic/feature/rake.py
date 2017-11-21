@@ -256,7 +256,7 @@ def split_sentences(text):
 class RAKE(AbstractKeywordExtractor):
     def __init__(self, language, stopwords, keyword_separator, min_char_length=1, max_words_length=5,
                  min_keyword_frequency=1, min_words_length_adj=1, max_words_length_adj=1,
-                 min_phrase_freq_adj=2):
+                 min_phrase_freq_adj=2, lemmize=False):
         """
 
         Implementation of RAKE - Rapid Automatic Keyword Extraction algorithm as described in:
@@ -276,7 +276,7 @@ class RAKE(AbstractKeywordExtractor):
         :param min_phrase_freq_adj:
         """
 
-        super().__init__(language, stopwords)
+        super().__init__(language, stopwords, lemmize)
 
         self._keyword_separator = keyword_separator
         self._min_char_length = min_char_length
@@ -330,7 +330,8 @@ class RAKE(AbstractKeywordExtractor):
         return keyword_candidates
 
     def run(self, text):
-        keywords = self._extract_keywords(text)
+        lemmed_text = self._text_lemmatization(text) if self._lemmize else text
+        keywords = self._extract_keywords(lemmed_text)
         filtered_keywords = self._filter(keywords)
         sorted_keywords = self._sort(filtered_keywords)
         return sorted_keywords
@@ -338,7 +339,8 @@ class RAKE(AbstractKeywordExtractor):
 
 class MergingRAKE(RAKE):
     def run(self, text):
-        keywords = self._extract_keywords(text)
+        lemmed_text = self._text_lemmatization(text) if self._lemmize else text
+        keywords = self._extract_keywords(lemmed_text)
         filtered_keywords = self._filter(keywords)
         merged_keywords = self._merge_keywords(filtered_keywords, text)
         sorted_keywords = self._sort(merged_keywords)

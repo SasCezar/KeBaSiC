@@ -106,8 +106,8 @@ def generate_candidate_keyword_scores(phrase_list, word_score):
 
 
 class SimpleRAKE(AbstractKeywordExtractor):
-    def __init__(self, language, stopwords):
-        super().__init__(language, stopwords)
+    def __init__(self, language, stopwords, lemmize=False):
+        super().__init__(language, stopwords, lemmize)
         self.__stop_words_pattern = build_stop_word_regex(self._stopwords)
 
     def run(self, text):

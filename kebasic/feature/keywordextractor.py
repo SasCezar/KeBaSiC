@@ -1,5 +1,7 @@
 import itertools
+import logging
 import re
+import string
 from abc import ABC, abstractmethod
 
 import nltk
@@ -28,13 +30,15 @@ def load_stop_words(stopwords):
 LANGS = {"spanish": "es",
          "english": "en"}
 
+logging.getLogger('TreeTagger').setLevel(logging.CRITICAL)
+
 
 class AbstractKeywordExtractor(ABC):
     """
     Implements an abstract keyword extraction algorithm
     """
 
-    def __init__(self, language, stopwords=None):
+    def __init__(self, language, stopwords=None, lemmize=False):
         self._language = language
 
         self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
@@ -42,7 +46,8 @@ class AbstractKeywordExtractor(ABC):
         self._stopwords_pattern = "(" + "|".join(
             [re.escape(word.strip()) for word in self._stopwords]) + "){0,2}"  # Check if 2 is a good values
 
-        self._lemmatizer = treetaggerwrapper.TreeTagger(TAGLANG=LANGS[self._language]).tag_text
+        self._lemmize = lemmize
+        self._lemmatizer = treetaggerwrapper.TreeTagger(TAGLANG=LANGS[self._language]).tag_text if lemmize else None
 
     @abstractmethod
     def run(self, text):
@@ -107,9 +112,35 @@ class AbstractKeywordExtractor(ABC):
             score = scores[merged_keyword[0].lower()] if merged_keyword[0].lower() in scores and not score else score
             result.append((merged_keyword[0], score))
 
-        """
         for key in keys:
-            merged_keywords.append((key, scores[key]))
+            merged_keywords.append((key, scores[key.lower()]))
 
-        """
         return result
+
+    def _text_lemmatization(self, text):
+        lemmed_text = ""
+        tagged_text = self._lemmatizer(text)
+        for lemmed_word in tagged_text:
+            original, tag, lemmed = lemmed_word.split()
+            word = " " + lemmed if lemmed not in string.punctuation else lemmed
+
+            lemmed_text += word
+
+        return lemmed_text
+
+    def _keywords_lemmatization(self, keywords):
+        result = []
+        for keyword, score in keywords:
+            lemmed_keyword = self._keyword_lemmatization(keyword)
+            result.append((lemmed_keyword, score))
+
+        return result
+
+    def _keyword_lemmatization(self, keyword):
+        lemmed_keyword = ""
+        lemming_result = self._lemmatizer(keyword)
+        for lemma in lemming_result:
+            original, pos, lemmed = lemma.split()
+            lemmed_keyword += " " + lemmed
+
+        return lemmed_keyword
