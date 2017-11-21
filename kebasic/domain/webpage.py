@@ -130,7 +130,7 @@ class WebPage(object):
         """
         texts = soup.find_all(text=True)
         visible_texts = [text.strip() for text in texts if self._tag_visible(text)]
-        cleaned_text = " ".join(t for t in visible_texts if t)
+        cleaned_text = ". ".join(t for t in visible_texts if t)
         self._text = cleaned_text
 
     def _extract_metadata(self, soup):
