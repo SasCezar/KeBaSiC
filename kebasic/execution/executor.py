@@ -21,6 +21,19 @@ class AbstractExecution(ABC):
         self.parameters = {}
         self.callables = []
 
+    @abstractmethod
+    def execute(self, webpages):
+        pass
+
+    def get_config(self):
+        configs = {}
+        for name, callable_object in self.callables:
+            object_config = callable_object.configuration()
+
+            configs[name] = object_config
+
+        return configs
+
     def _build(self):
         """
         Builds the objects that the class will use
@@ -32,10 +45,6 @@ class AbstractExecution(ABC):
             algorithm_name, algorithm_object = self._import_class(algorithm)
             algorithm_parameters = self.parameters.get(algorithm, {})
             self.callables.append((algorithm_name, algorithm_object(**algorithm_parameters)))
-
-    @abstractmethod
-    def execute(self, webpages):
-        pass
 
     def _initialize(self):
         """
