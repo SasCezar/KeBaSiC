@@ -11,6 +11,9 @@ class AbstractCleaner(ABC):
         cleaned_text = self.re_match.sub(self.sub, text)
         return cleaned_text
 
+    def configuration(self):
+        return self.__dict__
+
 
 class WordsWithNumbersCleaner(AbstractCleaner):
     """
