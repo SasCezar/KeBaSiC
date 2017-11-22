@@ -340,7 +340,7 @@ class RAKE(AbstractKeywordExtractor):
 class MergingRAKE(RAKE):
     """
     Extends the basic RAKE algorthm adding a keyword merge logic based on the proximity of the keywords.
-    See :doc:'~keywordextractor.AbstractKeywordExtractor._merge' for more details about merging logic.
+    See :func:'~keywordextractor.AbstractKeywordExtractor._merge' for more details about merging logic.
     """
     def run(self, text):
         lemmed_text = self._text_lemmatization(text) if self._lemmize else text
