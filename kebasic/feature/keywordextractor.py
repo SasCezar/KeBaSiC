@@ -122,7 +122,7 @@ class AbstractKeywordExtractor(ABC):
             result.append((merged_keyword[0], score))
 
         for key in keys:
-            merged_keywords.append((key, scores[key.lower()]))
+            result.append((key, scores[key.lower()]))
 
         return result
 
@@ -164,11 +164,10 @@ class AbstractKeywordExtractor(ABC):
         :param keyword:
         :return:
         """
-
         lemmed_keyword = ""
         lemming_result = self._lemmatizer(keyword)
         for lemma in lemming_result:
             original, pos, lemmed = lemma.split()
             lemmed_keyword += " " + lemmed
 
-        return lemmed_keyword
+        return lemmed_keyword.strip()
