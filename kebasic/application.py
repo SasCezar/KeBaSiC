@@ -23,7 +23,7 @@ def main(configs):
     executors_configs = {}
     executors_configs.update(cleaner_configs)
     executors_configs.update(feature_config)
-    SortedPPrintResultWriter(order).write("./results/", result, executors_configs)
+    SortedPPrintResultWriter(order).write("../results/", result, executors_configs)
     return
 
 
