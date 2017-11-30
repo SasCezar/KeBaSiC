@@ -42,7 +42,7 @@ class PPrintResultWriter(AbstractResultWriter):
         now = strftime("%Y_%m_%d-%H_%M", gmtime())
         file = join(dest_path, "keywords_{}.txt".format(now))
         with open(file, 'wt', encoding="utf8") as out:
-            pp = pprint.PrettyPrinter(stream=out, indent=4)
+            pp = pprint.PrettyPrinter(stream=out, indent=4, width=200)
             pprint._sorted = lambda x: x
             pp.pprint(result)
 
