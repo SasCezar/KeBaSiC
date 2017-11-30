@@ -16,6 +16,9 @@
       "words_path": "../resources/common_words.txt"
     }
   },
+  "SiteKeywordsExtractor": {
+    "algo_score": "MergingRAKE"
+  },
 
   // Feature Extraction
   "extractor_algorithms": [

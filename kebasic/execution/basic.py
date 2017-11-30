@@ -1,5 +1,7 @@
 import logging
+from operator import itemgetter
 
+from feature.sitekeywords import SiteKeywordsExtractor
 from kebasic.execution.executor import AbstractExecution
 
 
@@ -10,10 +12,11 @@ class FeatureExtractionExecution(AbstractExecution):
         self._initialize()
         self.algorithms = self.extractor_algorithms
         self.parameters = self.extractor_parameters if self.extractor_parameters else {}
+        self.site_keywords_extractor = SiteKeywordsExtractor(**config['SiteKeywordsExtractor'])
         self._build()
 
     def execute(self, webpages):
-        result = []
+        results = []
         for webpage in webpages:
             logging.info("Extracting features from site: {}".format(webpage.url))
             if not webpage.text:
@@ -21,10 +24,13 @@ class FeatureExtractionExecution(AbstractExecution):
                 continue
             features = self._extract_features(webpage.text)
             features['url'] = webpage.url
-            features['site_keywords'] = webpage.meta_keywords
-            result.append(features)
+            scores = features[self.site_keywords_extractor.algo_score]
+            site_keyword_score = max(scores, key=itemgetter(1))[1] if scores else 1
+            features['site_keywords'] = self.site_keywords_extractor.run(webpage.meta_keywords,
+                                                                         score=site_keyword_score)
+            results.append(features)
 
-        return result
+        return results
 
     def _extract_features(self, webpage):
         result = {}

@@ -38,7 +38,7 @@ class AbstractKeywordExtractor(ABC):
     Implements an abstract keyword extraction algorithm
     """
 
-    def __init__(self, language, stopwords=None, lemmize=False):
+    def __init__(self, language=None, stopwords=None, lemmize=False):
         self._language = language
 
         self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
@@ -121,9 +121,12 @@ class AbstractKeywordExtractor(ABC):
             score = scores[merged_keyword[0].lower()] if merged_keyword[0].lower() in scores and not score else score
             result.append((merged_keyword[0], score))
 
-        for key in keys:
-            result.append((key, scores[key.lower()]))
+        """
+        used_keywords = set(keyword for kwtuple in seen for keyword in kwtuple)
 
+        for key in keys:
+            result.append((key, scores[key.lower()])) if key not in used_keywords else None
+        """
         return result
 
     def _text_lemmatization(self, text):
