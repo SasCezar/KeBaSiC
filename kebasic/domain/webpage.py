@@ -176,11 +176,13 @@ class WebPage(object):
         link = urljoin(self.url, href) if not href.startswith('http') else href
         return link
 
-    def _inline_css(self, html):
+    @staticmethod
+    def _inline_css(html):
         result = transform(html)
         return result
 
-    def _clean_style(self, soup):
+    @staticmethod
+    def _clean_style(soup):
         style_tags = soup.find_all('style')
         for style_tag in style_tags:
             style_tag.decompose()
@@ -188,7 +190,8 @@ class WebPage(object):
         soup.renderContents()
         return soup
 
-    def _filter_tags(self, soup):
+    @staticmethod
+    def _filter_tags(soup):
         # hidden_tags = soup.find_all('div', style=re.compile(r'(display:\s*none|visibility:\s*hidden)'))
         unwanted_divs = soup.find_all(class_=re.compile(r"(footer|header|cookie)", re.IGNORECASE))  # Check menu
         unwanted_sections = soup.find_all(['footer', 'header', 'noscript'])
