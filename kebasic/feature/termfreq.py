@@ -34,5 +34,6 @@ class MergingTermFrequencies(TermFrequencies):
         keywords = self._extract_keywords(lemmed_text)
         filtered_keywords = self._filter(keywords)
         merged_keywords = self._merge_keywords(filtered_keywords, text)
-        sorted_result = self._sort(merged_keywords)
-        return sorted_result
+        scaled_keywords = self._score_rescaling(merged_keywords)
+        sorted_keywords = self._sort(scaled_keywords)
+        return sorted_keywords

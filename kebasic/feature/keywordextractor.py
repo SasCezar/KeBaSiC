@@ -42,7 +42,7 @@ class AbstractKeywordExtractor(ABC):
         self._language = language
 
         self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
-        self._merging_template = "((({keys})\s+({stop}|\s){{0,2}})+\s*({keys}))"
+        self._merging_template = "((({keys})\s+({stop}|\s){{0,2}})+\s*({keys}))"  # TODO Fix
         self._stopwords_pattern = "(" + "|".join(
             [re.escape(word.strip()) for word in self._stopwords]) + "){0,2}"  # Check if 2 is a good values
 
@@ -91,7 +91,7 @@ class AbstractKeywordExtractor(ABC):
     def _extract_keywords(self, text):
         pass
 
-    def _merge_keywords(self, keywords, text):
+    def _merge_keywords(self, keywords, text, keep_all=0):
         """
         Given a list of keywords, find all the adjacent combinations of keywords in the text. The keywords may be
         separated by a stopword.
@@ -121,12 +121,12 @@ class AbstractKeywordExtractor(ABC):
             score = scores[merged_keyword[0].lower()] if merged_keyword[0].lower() in scores and not score else score
             result.append((merged_keyword[0], score))
 
-        """
-        used_keywords = set(keyword for kwtuple in seen for keyword in kwtuple)
+        if keep_all:
+            used_keywords = set(keyword for kwtuple in seen for keyword in kwtuple)
 
-        for key in keys:
-            result.append((key, scores[key.lower()])) if key not in used_keywords else None
-        """
+            for key in keys:
+                result.append((key, scores[key.lower()])) if key not in used_keywords else None
+
         return result
 
     def _text_lemmatization(self, text):
@@ -174,3 +174,18 @@ class AbstractKeywordExtractor(ABC):
             lemmed_keyword += " " + lemmed
 
         return lemmed_keyword.strip()
+
+    @staticmethod
+    def _score_rescaling(keywords):
+        if not keywords:
+            return []
+        scores = [score for _, score in keywords]
+        rescaled_keywords = []
+
+        for keyword, score in keywords:
+            # scaled_score = score / max_score if max_score else 0
+            scaled_score = score / sum(scores) if sum(scores) else 0
+
+            rescaled_keywords.append((keyword, scaled_score))
+
+        return rescaled_keywords

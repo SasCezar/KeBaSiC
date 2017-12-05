@@ -235,5 +235,6 @@ class MergingTextRank(TextRank):
         filtered_keywords = self._filter(keywords)
         merged_keywords = super(TextRank, self)._merge_keywords(filtered_keywords, text)
         lemmed_keywords = self._keywords_lemmatization(merged_keywords) if self._lemmize else merged_keywords
-        sorted_keywords = self._sort(lemmed_keywords)
+        scaled_keywords = self._score_rescaling(lemmed_keywords)
+        sorted_keywords = self._sort(scaled_keywords)
         return sorted_keywords
