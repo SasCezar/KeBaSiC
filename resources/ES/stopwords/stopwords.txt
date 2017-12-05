@@ -157,6 +157,7 @@ centésimas
 centésimo
 centésimos
 cerca
+cero
 chau
 che
 chis
