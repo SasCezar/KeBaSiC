@@ -42,6 +42,10 @@ class AbstractKeywordExtractor(ABC):
         self._language = language
 
         self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
+        # self._merging_template = "(({keys})((\s+({stop})){{0,2}}\s+({keys}))*)+"
+        # self._merging_template = "(?:[\W])(({keys})((\s+({stop})){{0,2}}\s+({keys}))*)"
+        # self._merging_template = "((?:\s+){keys}\s+({stop}){{0,2}}\s+{keys}\s+)+"
+        # self._merging_template = "((\\b({keys}\s)\\b){{1,}}(\\b({stop}\s)\\b){{0,2}})+(\\b({keys}\s)\\b){{1,}}"
         self._merging_template = "((({keys})\s+({stop}|\s){{0,2}})+\s*({keys}))"  # TODO Fix
         self._stopwords_pattern = "(" + "|".join(
             [re.escape(word.strip()) for word in self._stopwords]) + "){0,2}"  # Check if 2 is a good values
@@ -111,7 +115,7 @@ class AbstractKeywordExtractor(ABC):
 
         seen = set()
         for merged_keyword in merged_keywords:
-            keywords_tuple = tuple(kw.lower() for kw in merged_keyword[0].split() if kw.lower() in scores)
+            keywords_tuple = tuple(kw.lower() for kw in merged_keyword[0].strip().split() if kw.lower() in scores)
             if any(kwtuple in seen for kwtuple in itertools.permutations(keywords_tuple)):
                 continue
 
@@ -180,11 +184,13 @@ class AbstractKeywordExtractor(ABC):
         if not keywords:
             return []
         scores = [score for _, score in keywords]
+        max_score = max(scores)
+
         rescaled_keywords = []
 
         for keyword, score in keywords:
-            # scaled_score = score / max_score if max_score else 0
-            scaled_score = score / sum(scores) if sum(scores) else 0
+            scaled_score = score / max_score if max_score else 0
+            # scaled_score = score / sum(scores) if sum(scores) else 0
 
             rescaled_keywords.append((keyword, scaled_score))
 

@@ -40,7 +40,7 @@ class PPrintResultWriter(AbstractResultWriter):
     def write(self, dest_path, content, config):
         result = self._create_content(dest_path, content, config)
         now = strftime("%Y_%m_%d-%H_%M", gmtime())
-        file = join(dest_path, "keywords_{}.txt".format(now))
+        file = join(dest_path, "keywords_{}_weighted_max.txt".format(now))
         with open(file, 'wt', encoding="utf8") as out:
             pp = pprint.PrettyPrinter(stream=out, indent=4, width=200)
             pprint._sorted = lambda x: x
@@ -58,7 +58,8 @@ class SortedPPrintResultWriter(PPrintResultWriter):
     def _sort_content(self, content):
         results = []
         for result in content:
-            sorted_result = OrderedDict([(i, result[i]) for i in self._order])
-            results.append(sorted_result)
+            sorted_result = OrderedDict([(i, result['keywords'][i]) for i in self._order])
+            result['keywords'] = sorted_result
+            results.append(result)
 
         return results

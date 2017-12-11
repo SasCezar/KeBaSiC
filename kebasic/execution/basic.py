@@ -1,4 +1,5 @@
 import logging
+from collections import OrderedDict
 from operator import itemgetter
 
 from feature.sitekeywords import SiteKeywordsExtractor
@@ -18,17 +19,19 @@ class FeatureExtractionExecution(AbstractExecution):
     def execute(self, webpages):
         results = []
         for webpage in webpages:
+            result = OrderedDict()
             logging.info("Extracting features from site: {}".format(webpage.url))
             if not webpage.text:
                 logging.info("Empty text webpage: {}".format(webpage.url))
                 continue
+            result['url'] = webpage.url
             features = self._extract_features(webpage.text)
-            features['url'] = webpage.url
             scores = features[self.site_keywords_extractor.algo_score]
             site_keyword_score = max(scores, key=itemgetter(1))[1] if scores else 1
             features['site_keywords'] = self.site_keywords_extractor.run(webpage.meta_keywords,
                                                                          score=site_keyword_score)
-            results.append(features)
+            result['keywords'] = features
+            results.append(result)
 
         return results
 

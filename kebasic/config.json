@@ -17,7 +17,10 @@
     }
   },
   "SiteKeywordsExtractor": {
-    "algo_score": "MergingRAKE"
+    "algo_score": "MergingRAKE",
+    "language": "spanish",
+    "stopwords": "../resources/ES/stopwords/stopwords.txt",
+    "lemmize": true
   },
 
   // Feature Extraction
@@ -116,8 +119,8 @@
     1
   ],
   // Crawling
-  "template_path": "../resources/templates/bing.txt",
-  "query_out_path": "../output/query/bing.txt",
+  "template_path": "../resources/ES/templates/bing.txt",
+  "query_out_path": "../resources/ES/query/bing.txt",
   "keywords_path": "../resources/query/keywords.txt",
   "sites_path": "../resources/query/sites.txt",
   //Logger
