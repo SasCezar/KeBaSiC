@@ -119,7 +119,7 @@
     1
   ],
   // Crawling
-  "template_path": "../resources/ES/templates/bing.txt",
+  "template_path": "../resources/ES/query/templates/bing.txt",
   "query_out_path": "../resources/ES/query/bing.txt",
   "keywords_path": "../resources/query/keywords.txt",
   "sites_path": "../resources/query/sites.txt",
