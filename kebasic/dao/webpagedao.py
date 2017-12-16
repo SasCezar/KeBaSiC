@@ -1,7 +1,7 @@
 import csv
 from abc import ABC, abstractmethod
 
-from kebasic.domain.webpage import WebPage
+from domain.webpagebuilder import WebPageBuilder
 
 
 class WebPageDAO(ABC):
@@ -13,6 +13,7 @@ class WebPageDAO(ABC):
 class CSVWebPageDAO(WebPageDAO):
     def __init__(self, path):
         self.file = path
+        self.builder = WebPageBuilder()
 
     def _load_webpages(self):
         with open(self.file, "rt", encoding="utf-8-sig") as inf:
@@ -20,7 +21,7 @@ class CSVWebPageDAO(WebPageDAO):
             for line in reader:
                 url = line[0]
                 html = line[1] if len(line) > 1 else None
-                webpage = WebPage(url=url, html=html)
+                webpage = self.builder.build(url, html)
                 yield webpage
 
     def load_webpages(self):
