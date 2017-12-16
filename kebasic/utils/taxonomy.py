@@ -1,9 +1,15 @@
 import csv
 import os
+from re import finditer
 
 from googletrans import Translator
 
-from kebasic.utils.utils import camel_case_split, load_configs
+from kebasic.utils.config import load_configs
+
+
+def camel_case_split(identifier):
+    matches = finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', identifier)
+    return " ".join([m.group(0) for m in matches])
 
 
 def translate_taxonomy(taxonomy_path, src_lang="en", dst_lang="es"):
@@ -52,6 +58,18 @@ def write_taxonomy(categories, out_path, header=None, mask=None):
         for category in categories:
             row = [element for element, visible in zip(category, mask) if visible] if mask else category
             writer.writerow(row)
+
+
+def read_taxonomy(path):
+    with open(path, "rt", encoding="utf8") as inf:
+        reader = csv.reader(inf)
+        taxonomy = {}
+        for id, lvl1, lvl2 in reader:
+            text_category = lvl1.strip() + " " + lvl2.strip()
+            taxonomy[text_category.strip()] = (lvl2.strip(), id.strip()) if lvl2.strip() else (lvl1.strip(), id.strip())
+            taxonomy[lvl2.strip()] = (lvl2.strip(), id.strip()) if lvl2.strip() else (lvl1.strip(), id.strip())
+
+    return taxonomy
 
 
 def main():
