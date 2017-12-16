@@ -1,7 +1,7 @@
 import csv
 import os
 
-from kebasic.utils.utils import load_configs
+from kebasic.utils.config import load_configs
 
 
 def read_dict_csv(file_path):
@@ -14,7 +14,7 @@ def read_dict_csv(file_path):
     if not file_path:
         return None
     with open(file_path, "rt", encoding="utf8") as inf:
-        r = [{k: v.strip() for k, v in row.items()}
+        r = [{k.strip(): v.strip() for k, v in row.items()}
              for row in csv.DictReader(inf, skipinitialspace=True)]
 
     return r

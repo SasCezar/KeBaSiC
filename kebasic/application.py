@@ -2,10 +2,10 @@ import argparse
 import os
 from time import gmtime, strftime
 
-from feature.resultsjoin import WeightedSum
+from feature.resultsjoin import SumResults
 from kebasic.dao.webpagedao import CSVWebPageDAO
 from kebasic.execution.basic import FeatureExtractionExecution, TextCleanerExecution
-from kebasic.utils import utils
+from kebasic.utils import config
 from kebasic.utils.logger import initialize_logger
 from kebasicio.results import SortedPPrintResultWriter
 
@@ -18,15 +18,17 @@ def main(configs):
     webpages = CSVWebPageDAO(configs['websites_path']).load_webpages()
     cleaned_webages = cleaner.execute(webpages)
     results = feature.execute(cleaned_webages)
-    filename = 'keywords_{}.json'.format(strftime("%Y_%m_%d-%H_%M", gmtime()))
     cleaner_configs = cleaner.get_config()
     feature_config = feature.get_config()
     executors_configs = {}
     executors_configs.update(cleaner_configs)
     executors_configs.update(feature_config)
     for result in results:
-        result['keywords']['Combined'] = WeightedSum().merge(result['keywords'])
-    SortedPPrintResultWriter(order).write("../results/", results, executors_configs)
+        result['keywords']['Combined'] = SumResults().merge(result['keywords'])
+
+    now = strftime("%Y_%m_%d-%H_%M", gmtime())
+    filename = "keywords_{}_sum_combined_max_normalized.txt".format(now)
+    SortedPPrintResultWriter(order).write("../results/", filename, results, executors_configs)
     return
 
 
@@ -35,7 +37,7 @@ if __name__ == "__main__":
     parser.add_argument("-config_file", default="config.json")
 
     args = parser.parse_args()
-    configs = utils.load_configs(args.config_file)
+    configs = config.load_configs(args.config_file)
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
     initialize_logger(configs['log_path'])
