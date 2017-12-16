@@ -1,3 +1,6 @@
+import re
+import string
+
 from feature.keywordextractor import AbstractKeywordExtractor
 
 
@@ -7,9 +10,10 @@ class SiteKeywordsExtractor(AbstractKeywordExtractor):
         if not algo_score:
             raise Exception("Missing value: \'algo_score\'")
         self.algo_score = algo_score
+        self._remove = {char: None for char in string.punctuation}
 
     def _extract_keywords(self, text, score=0):
-        keywords = [(keyword.strip(), score) for keyword in text.split(',') if keyword.strip()]
+        keywords = [(self._clean(keyword.strip()), score) for keyword in re.split(text, "(,|.)") if keyword.strip()]
         return keywords
 
     def run(self, text, score=0):
@@ -20,3 +24,7 @@ class SiteKeywordsExtractor(AbstractKeywordExtractor):
         lemmed_keywords = self._keywords_lemmatization(filtered_keywords)
         sorted_keywords = self._sort(lemmed_keywords)
         return sorted_keywords
+
+    def _clean(self, keyword):
+        keyword.translate(self._remove)
+        return keyword
