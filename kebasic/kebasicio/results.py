@@ -3,12 +3,11 @@ import pprint
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from os.path import join
-from time import strftime, gmtime
 
 
 class AbstractResultWriter(ABC):
     @abstractmethod
-    def write(self, dest_path, content, config):
+    def write(self, dest_path, file_name, content, config):
         pass
 
     def _create_content(self, dest_path, content, config):
@@ -23,7 +22,8 @@ class AbstractResultWriter(ABC):
     def _inject_config(content, config_hash):
         return {"results": content, "config_hash": config_hash} if config_hash else {"results": content}
 
-    def _save_config(self, dest_path, config):
+    @staticmethod
+    def _save_config(dest_path, config):
         sha = hashlib.sha256()
         sha.update(pprint.pformat(config).encode('utf-8'))
         hashed = sha.hexdigest()
@@ -37,10 +37,9 @@ class AbstractResultWriter(ABC):
 
 
 class PPrintResultWriter(AbstractResultWriter):
-    def write(self, dest_path, content, config):
+    def write(self, dest_path, file_name, content, config):
         result = self._create_content(dest_path, content, config)
-        now = strftime("%Y_%m_%d-%H_%M", gmtime())
-        file = join(dest_path, "keywords_{}_weighted_max.txt".format(now))
+        file = join(dest_path, file_name)
         with open(file, 'wt', encoding="utf8") as out:
             pp = pprint.PrettyPrinter(stream=out, indent=4, width=200)
             pprint._sorted = lambda x: x
@@ -51,9 +50,9 @@ class SortedPPrintResultWriter(PPrintResultWriter):
     def __init__(self, order):
         self._order = order
 
-    def write(self, dest_path, content, config):
+    def write(self, dest_path, file_name, content, config):
         content = self._sort_content(content)
-        super(SortedPPrintResultWriter, self).write(dest_path, content, config)
+        super(SortedPPrintResultWriter, self).write(dest_path, file_name, content, config)
 
     def _sort_content(self, content):
         results = []
