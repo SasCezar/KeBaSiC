@@ -4,15 +4,27 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict
 from os.path import join
 
+import path
+
 
 class AbstractResultWriter(ABC):
     @abstractmethod
     def write(self, dest_path, file_name, content, config):
+        """
+        Saves the content to the destination path and with the defined filename. If config is passed, the write method
+        injects a hash reference to the saved content file.
+
+        :param dest_path:
+        :param file_name:
+        :param content:
+        :param config:
+        :return:
+        """
         pass
 
     def _create_content(self, dest_path, content, config):
         if config:
-            hash_config = self._save_config(dest_path, config)
+            hash_config = self._save_config(path.join(dest_path, 'hash'), config)
             result = self._inject_config(content, hash_config)
             return result
         else:
