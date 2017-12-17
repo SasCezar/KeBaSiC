@@ -6,9 +6,10 @@ from langdetect import detect
 from langdetect.lang_detect_exception import LangDetectException
 
 from utils.logger import initialize_logger
-from utils.taxonomy import read_taxonomy
+from utils.taxonomy import read_reverse_taxonomy
 
-unwanted_elements = ["effective_query", "requested_by", "requested_at", "scrape_method", "search_engine_name", "status"]
+unwanted_elements = ["effective_query", "requested_by", "requested_at", "scrape_method",
+                     "search_engine_name", "status", "id"]
 
 unwanted_domains = ['bing', 'google', 'yahoo', 'facebook', 'scribd', 'amazon', 'ebay']
 
@@ -38,9 +39,12 @@ def clean_query(query):
 
 def get_category(query, taxonomy):
     cleaned_query = clean_query(query)
+    if not cleaned_query:
+        return False, False
     if cleaned_query in taxonomy:
-        return taxonomy[cleaned_query][1], taxonomy[cleaned_query][0], cleaned_query
-    return None, cleaned_query
+        return cleaned_query, taxonomy[cleaned_query]
+
+    raise Exception
 
 
 def filter_results(results):
@@ -67,16 +71,15 @@ def bing_cleaner(path, out, taxonomy):
     size = len(file)
     i = 0
     for query_result in file:
+        i += 1
         filtered_query = pop_elements(query_result)
-        filtered_query['query'] = filtered_query['query']
         filtered_query['results'] = filter_results(filtered_query['results'])
         filtered_query['num_results'] = str(len(filtered_query['results']))
-        category_id, category, clened_query = get_category(filtered_query['query'], taxonomy)
-        filtered_query['category_id'] = category_id
-        filtered_query['category'] = category
-        filtered_query['query_cleaned'] = clened_query
-
-        i += 1
+        cleaned_query, category = get_category(filtered_query['query'], taxonomy)
+        if not cleaned_query:
+            continue
+        filtered_query.update(category)
+        filtered_query['query_cleaned'] = cleaned_query
 
         if not len(filtered_query['results']):
             continue
@@ -92,8 +95,8 @@ def bing_cleaner(path, out, taxonomy):
 
 if __name__ == '__main__':
     initialize_logger("./")
-    path = "C:/Users/sasce/Desktop/query_results loc.json"
-    out = "C:/Users/sasce/Desktop/query_results loc_filtered.json"
-    taxonomy_path = "C:\\Users\\sasce\\PycharmProjects\\KeBaSiC\\resources\\ES\\taxonomy\\taxonomy.csv"
-    taxonomy = read_taxonomy(taxonomy_path)
+    path = "../../output/scraper/bing.json"
+    out = "../../output/scraper/bing_clean.json"
+    taxonomy_path = "../../resources/ES/taxonomy/taxonomy.csv"
+    taxonomy = read_reverse_taxonomy(taxonomy_path)
     bing_cleaner(path, out, taxonomy)

@@ -106,18 +106,6 @@
   "taxonomy_path": "../resources/ES/taxonomy/taxonomy.csv",
   "taxonomy_translate_from": "en",
   "taxonomy_translate_to": "es",
-  "taxonomy_header": [
-    "id",
-    "lvl1",
-    "lvl2"
-  ],
-  "taxonomy_mask": [
-    1,
-    0,
-    0,
-    1,
-    1
-  ],
   // Crawling
   "template_path": "../resources/ES/query/templates/bing.txt",
   "query_out_path": "../resources/ES/query/bing.txt",

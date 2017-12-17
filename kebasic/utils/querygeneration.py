@@ -98,6 +98,8 @@ class QueryGenerator(object):
         queries = set()
         for template in templates:
             query = template.format(**keyword).strip()
+            if query == template:
+                continue
             queries.add(query)
 
         return queries

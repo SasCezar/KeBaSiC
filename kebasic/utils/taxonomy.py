@@ -1,92 +1,120 @@
 import csv
-import os
-from re import finditer
+from abc import ABC
 
 from googletrans import Translator
 
-from kebasic.utils.config import load_configs
+
+class Taxonomy(ABC):
+    @staticmethod
+    def read(path, header=True):
+        taxonomy = Taxonomy._read(path, header)
+        reverse_taxonomy = Taxonomy._read_reverse(path, header)
+        return Taxonomy._find_parents(taxonomy, reverse_taxonomy)
+
+    @staticmethod
+    def read_reverse(path, header=True):
+        taxonomy = Taxonomy.read(path, header)
+
+        reversed_taxonomy = {}
+
+        for category_id in taxonomy:
+            key = taxonomy[category_id]['parent_category'] + " " + taxonomy[category_id]['category']
+            reversed_taxonomy[key] = taxonomy[category_id]
+            reversed_taxonomy[taxonomy[category_id]['category']] = taxonomy[category_id]
+
+        return reversed_taxonomy
+
+    @staticmethod
+    def _find_parents(taxonomy, reverse_taxonomy):
+        parent_taxonomy = {}
+        for category_id in taxonomy:
+            result = {}
+            is_top_level = len(taxonomy[category_id]) > 1
+
+            parent_category = taxonomy[category_id][0] if is_top_level else ''
+            result['parent_category'] = parent_category
+            result['parent_id'] = reverse_taxonomy[parent_category] if is_top_level else '0'
+            x = 1 if is_top_level else 0
+            result['category'] = taxonomy[category_id][x]
+            result['category_id'] = category_id
+
+            parent_taxonomy[category_id] = result
+
+        return parent_taxonomy
+
+    @staticmethod
+    def write(dest, taxonomy, header=None):
+        """
+        Saves the taxonomy to files
+
+        :param dest: Path where to save the file
+        :param taxonomy:
+        :param header: An optional header
+        :return:
+        """
+        with open(dest, "wt", encoding="utf8", newline="") as outf:
+            writer = csv.writer(outf)
+            writer.writerow(header) if header else None
+
+            for category in taxonomy:
+                writer.writerow(category)
+
+    @staticmethod
+    def _read_reverse(path, header):
+        taxonomy = Taxonomy._read(path, header)
+
+        reversed_taxonomy = {}
+        for category_id in taxonomy:
+            category = taxonomy[category_id]
+            reversed_taxonomy[" ".join(category)] = category_id
+            if len(category) > 1:
+                reversed_taxonomy[category[1]] = category_id
+
+        return reversed_taxonomy
+
+    @staticmethod
+    def _read(path, header=False):
+        with open(path, "rt", encoding="utf8") as inf:
+            reader = csv.reader(inf)
+            next(reader) if header else None
+            taxonomy = {}
+            for category in reader:
+                category_id = category[0].strip()
+                lvls = [text.strip() for text in category[1:] if text.strip()]
+                taxonomy[category_id] = lvls
+
+        return taxonomy
 
 
-def camel_case_split(identifier):
-    matches = finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', identifier)
-    return " ".join([m.group(0) for m in matches])
-
-
-def translate_taxonomy(taxonomy_path, src_lang="en", dst_lang="es"):
+def translate_taxonomy(taxonomy, src_lang="en", dst_lang="es"):
     """
     Given a taxonomy of second level, translates the categories using Google Translate
 
-    :param taxonomy_path:
+    :param taxonomy:
     :param src_lang:
     :param dst_lang:
     :return:
     """
     translator = Translator()
-    with open(taxonomy_path, "rt", encoding="utf8") as inf:
-        reader = csv.reader(inf)
-        next(reader)
+    translated_taxonomy = {}
+    for category_id in taxonomy:
+        translated_category = [translation.text for translation
+                               in translator.translate(taxonomy[category_id], src=src_lang, dest=dst_lang)]
 
-        categories = []
-        for category_id, n1, n2 in reader:
-            n1 = camel_case_split(n1)
-            n2 = camel_case_split(n2)
-            translated_n1 = translator.translate(n1, src=src_lang, dest=dst_lang).text if n1 else ""
-            translated_n2 = translator.translate(n2, src=src_lang, dest=dst_lang).text if n1 else ""
+        translated_taxonomy[category_id] = [category_id].append(translated_category)
 
-            category = [category_id, n1, n2, translated_n1, translated_n2]
-
-            categories.append(category)
-
-    return categories
+    return translated_taxonomy
 
 
-def write_taxonomy(categories, out_path, header=None, mask=None):
-    """
-    Saves the taxonomy to files
-
-    :param out_path:
-    :param categories: Taxonomy :param out_path: Path where to save the file
-    :param header: An optional header
-    :param mask: Filter some values of categories (eg categories=[id, lvl1, lvl2, es_lvl1, es_lvl2], mask=[1,0,0,1,1],
-        result=[id, es_lvl1, es_lvl2]
-    :return:
-    """
-    with open(out_path, "wt", newline="", encoding="utf8") as outf:
-        writer = csv.writer(outf)
-        writer.writerow(header) if header else None
-
-        for category in categories:
-            row = [element for element, visible in zip(category, mask) if visible] if mask else category
-            writer.writerow(row)
-
-
-def read_taxonomy(path):
-    with open(path, "rt", encoding="utf8") as inf:
-        reader = csv.reader(inf)
-        taxonomy = {}
-        for id, lvl1, lvl2 in reader:
-            text_category = lvl1.strip() + " " + lvl2.strip()
-            taxonomy[text_category.strip()] = (lvl2.strip(), id.strip()) if lvl2.strip() else (lvl1.strip(), id.strip())
-            taxonomy[lvl2.strip()] = (lvl2.strip(), id.strip()) if lvl2.strip() else (lvl1.strip(), id.strip())
-
+def read_reverse_taxonomy(path):
+    taxonomy = Taxonomy().read_reverse(path, True)
     return taxonomy
 
 
-def main():
-    config_path = "../config.json"
-
-    config = load_configs(config_path)
-
-    os.chdir("..")
-
-    src = config.get("taxonomy_translate_from", None)
-    dst = config.get("taxonomy_translate_to", "es")
-    taxonomy = translate_taxonomy(config['original_taxonomy'], src_lang=src, dst_lang=dst)
-
-    header = config.get("taxonomy_header", ["id", "lvl1", "lvl2"])
-    mask = config.get("taxonomy_mask", [1, 0, 0, 1, 1])
-    write_taxonomy(taxonomy, config['taxonomy_path'], header=header, mask=mask)
+def read_taxonomy(path):
+    taxonomy = Taxonomy().read(path, True)
+    return taxonomy
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    test = read_taxonomy("../../resources/ES/taxonomy/taxonomy.csv")
