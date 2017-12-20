@@ -114,3 +114,9 @@ class PunctuationSpacesCleaner(AbstractCleaner):
         super().__init__()
         self.re_match = re.compile(r"""(\s*(?P<punctuation>[!\"&':;?,\.]+))+""")
         self.sub = lambda x: x.group("punctuation").strip()[0]
+
+
+class Clean4SQL(AbstractCleaner):
+    def __init__(self):
+        super().__init__()
+        self.re_match = re.compile(r"""[\",\\0]""")
