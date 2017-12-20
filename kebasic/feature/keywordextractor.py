@@ -84,10 +84,6 @@ class AbstractKeywordExtractor(ABC):
         return self.__dict__
 
     @abstractmethod
-    def run(self, text):
-        pass
-
-    @abstractmethod
     def _extract_keywords(self, text):
         pass
 

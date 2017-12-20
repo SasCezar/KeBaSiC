@@ -4,8 +4,6 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict
 from os.path import join
 
-import path
-
 
 class AbstractResultWriter(ABC):
     @abstractmethod
@@ -24,7 +22,7 @@ class AbstractResultWriter(ABC):
 
     def _create_content(self, dest_path, content, config):
         if config:
-            hash_config = self._save_config(path.join(dest_path, 'hash'), config)
+            hash_config = self._save_config(join(dest_path, 'hash'), config)
             result = self._inject_config(content, hash_config)
             return result
         else:

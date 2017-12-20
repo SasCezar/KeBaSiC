@@ -38,6 +38,8 @@ class WebPageBuilder(object):
         logging.info("Downloading webpage: {}".format(url))
         webpage = {'url': url}
         if not html_source:
+            if 'http' not in url:
+                url = 'http://' + url
             html_source = self._download_html(url)
 
         webpage['html'] = html_source

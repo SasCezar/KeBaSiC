@@ -1,4 +1,5 @@
 import csv
+import logging
 from abc import ABC, abstractmethod
 
 from domain.webpagebuilder import WebPageBuilder
@@ -21,8 +22,12 @@ class CSVWebPageDAO(WebPageDAO):
             for line in reader:
                 url = line[0]
                 html = line[1] if len(line) > 1 else None
-                webpage = self.builder.build(url, html)
-                yield webpage
+                try:
+                    webpage = self.builder.build(url, html)
+                    yield webpage
+                except Exception as e:
+                    logging.error(e)
+                    continue
 
     def load_webpages(self):
         webpages = list(self._load_webpages())

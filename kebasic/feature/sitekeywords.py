@@ -13,7 +13,7 @@ class SiteKeywordsExtractor(AbstractKeywordExtractor):
         self._remove = {char: None for char in string.punctuation}
 
     def _extract_keywords(self, text, score=0):
-        keywords = [(self._clean(keyword.strip()), score) for keyword in re.split(text, "(,|.)") if keyword.strip()]
+        keywords = [(self._clean(keyword.strip()), score) for keyword in re.split(r"[,.]", text) if keyword.strip()]
         return keywords
 
     def run(self, text, score=0):
