@@ -13,6 +13,12 @@ order = ["site_keywords", "Combined", "MergingRAKE", "MergingTextRank", "Merging
 
 
 def main(configs):
+    feature_extraction(configs)
+    # data_crawling(configs)
+    return
+
+
+def feature_extraction(configs):
     cleaner = TextCleanerExecution(configs)
     feature = FeatureExtractionExecution(configs)
     webpages = CSVWebPageDAO(configs['websites_path']).load_webpages()
@@ -25,11 +31,9 @@ def main(configs):
     executors_configs.update(feature_config)
     for result in results:
         result['keywords']['Combined'] = SumResults().merge(result['keywords'])
-
     now = strftime("%Y_%m_%d-%H_%M", gmtime())
-    filename = "keywords_{}_sum_combined_max_normalized.txt".format(now)
+    filename = "keywords_site_2_{}_sum_combined_max_normalized.txt".format(now)
     SortedPPrintResultWriter(order).write("../results/", filename, results, executors_configs)
-    return
 
 
 if __name__ == "__main__":

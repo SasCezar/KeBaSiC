@@ -38,7 +38,7 @@ class AbstractKeywordExtractor(ABC):
     Implements an abstract keyword extraction algorithm
     """
 
-    def __init__(self, language=None, stopwords=None, lemmize=False):
+    def __init__(self, language=None, stopwords=None, lemmize=False, keep_all=0):
         self._language = language
 
         self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
@@ -48,6 +48,7 @@ class AbstractKeywordExtractor(ABC):
 
         self._lemmize = lemmize
         self._lemmatizer = treetaggerwrapper.TreeTagger(TAGLANG=LANGS[self._language]).tag_text if lemmize else None
+        self._keep_all = keep_all
 
     @abstractmethod
     def run(self, text):
@@ -87,7 +88,7 @@ class AbstractKeywordExtractor(ABC):
     def _extract_keywords(self, text):
         pass
 
-    def _merge_keywords(self, keywords, text, keep_all=0):
+    def _merge_keywords(self, keywords, text):
         """
         Given a list of keywords, find all the adjacent combinations of keywords in the text. The keywords may be
         separated by a stopword.
@@ -117,7 +118,7 @@ class AbstractKeywordExtractor(ABC):
             score = scores[merged_keyword[0].lower()] if merged_keyword[0].lower() in scores and not score else score
             result.append((merged_keyword[0], score))
 
-        if keep_all:
+        if self._keep_all:
             used_keywords = set(keyword for kwtuple in seen for keyword in kwtuple)
 
             for key in keys:

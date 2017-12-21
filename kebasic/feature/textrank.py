@@ -1,21 +1,10 @@
 import itertools
-import logging
 import re
 
 import networkx as nx
-import nltk
 from stanfordcorenlp import StanfordCoreNLP
 
 from kebasic.feature.keywordextractor import AbstractKeywordExtractor
-
-
-def setup_environment():
-    """
-    Download required resources.
-    """
-    nltk.download('punkt')
-    nltk.download('averaged_perceptron_tagger')
-    logging.info('Completed resource downloads.')
 
 
 def filter_for_tags(tagged, tags=None):

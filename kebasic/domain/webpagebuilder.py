@@ -3,8 +3,8 @@ import itertools
 import logging
 import random
 import re
-from urllib.request import urlopen, Request
 
+import requests
 from bs4 import BeautifulSoup, Comment
 
 from domain.webpage import WebPage
@@ -48,9 +48,13 @@ class WebPageBuilder(object):
 
     @staticmethod
     def _download_html(url):
-        request = Request(url, headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)]})
-        with urlopen(request) as webpage:
-            html_source = BeautifulSoup(webpage, 'html.parser').prettify()
+        # request = Request(url, headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)]})
+        # with urlopen(request) as webpage:
+        response = requests.get(url, timeout=10,
+                                headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)]})
+        webpage = response.content
+
+        html_source = BeautifulSoup(webpage, 'html.parser').prettify()
 
         html_source = html.unescape(html_source)
         html_source = ' '.join(html_source.split()).strip()

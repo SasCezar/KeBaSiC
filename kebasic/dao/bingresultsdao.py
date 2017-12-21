@@ -9,19 +9,19 @@ connect('kebasic')
 
 class BingResultsDAO(object):
     @staticmethod
-    def get_domains_categories(lvl=0):
+    def get_website_categories():
         results = BingResults.objects()
         categories_list = []
         domains_list = []
         for result in results:
             for query_result in result.results:
-                if lvl == 0 and result.parent_id == 0:
-                    cat = result.parent_id
+                if result.parent_id == '0':
+                    parent = result.category_id
                 else:
-                    cat = result.category_id
+                    parent = result.parent_id
 
-                categories_list.append(cat)
-                domains_list.append(query_result.domain)
+                categories_list.append([parent, result.category_id])
+                domains_list.append(query_result.link)
 
         categories = {}
         domains = []
@@ -36,14 +36,15 @@ class BingResultsDAO(object):
         return categories, domains
 
 
-def save_csv(path, res):
+def save_csv(path, categories, domains):
     with open(path, "wt", encoding="utf8", newline="") as outf:
-        writer = csv.writer(outf, delimiter=",")
-        for r in res:
+        writer = csv.writer(outf, delimiter=",", quoting=csv.QUOTE_ALL)
+        for d in domains:
+            r = categories[d] + [d]
             writer.writerow(r)
 
 
 if __name__ == '__main__':
     r2csv = BingResultsDAO()
-    res = r2csv.get_domains_categories()
-    save_csv("categories.csv", res)
+    categories, domains = r2csv.get_website_categories()
+    save_csv("categories_domains_text.csv", categories, domains)
