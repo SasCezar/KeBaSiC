@@ -2,12 +2,13 @@ import argparse
 import os
 from time import gmtime, strftime
 
-from feature.resultsjoin import SumResults
+from feature.normalization import MaxScaling
+from feature.resultsjoin import SumResults, InsertScores
 from kebasic.dao.webpagedao import CSVWebPageDAO
 from kebasic.execution.basic import FeatureExtractionExecution, TextCleanerExecution
 from kebasic.utils import config
 from kebasic.utils.logger import initialize_logger
-from kebasicio.results import SortedPPrintResultWriter
+from kebasicio.results import PPrintResultWriter
 
 order = ["site_keywords", "Combined", "MergingRAKE", "MergingTextRank", "MergingTermFrequencies"]
 
@@ -21,19 +22,29 @@ def main(configs):
 def feature_extraction(configs):
     cleaner = TextCleanerExecution(configs)
     feature = FeatureExtractionExecution(configs)
+    score_normalizer = MaxScaling()
+
     webpages = CSVWebPageDAO(configs['websites_path']).load_webpages()
     cleaned_webages = cleaner.execute(webpages)
     results = feature.execute(cleaned_webages)
-    cleaner_configs = cleaner.get_config()
-    feature_config = feature.get_config()
-    executors_configs = {}
-    executors_configs.update(cleaner_configs)
-    executors_configs.update(feature_config)
+
     for result in results:
-        result['keywords']['Combined'] = SumResults().merge(result['keywords'])
+        for algorithm in result['keywords']:
+            keywords = result['keywords']
+            keywords[algorithm] = score_normalizer.normalize(result['keywords'][algorithm])
+
+    for result in results:
+        site_keywords = result['keywords']['site_keywords']
+        result['keywords']['Combined'] = score_normalizer.normalize(SumResults().merge(result['keywords']))
+        result['keywords'] = InsertScores().insert(result['keywords']['Combined'], site_keywords)
+
+    executors_configs = {}
+    executors_configs.update(cleaner.get_config())
+    executors_configs.update(feature.get_config())
+
     now = strftime("%Y_%m_%d-%H_%M", gmtime())
-    filename = "keywords_site_2_{}_sum_combined_max_normalized.txt".format(now)
-    SortedPPrintResultWriter(order).write("../results/", filename, results, executors_configs)
+    filename = "keywords_site_{}_sum_combined_max_normalized.txt".format(now)
+    PPrintResultWriter().write("../results/", filename, results, executors_configs)
 
 
 if __name__ == "__main__":

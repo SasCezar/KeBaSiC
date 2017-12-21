@@ -40,3 +40,14 @@ class WeightedSum(AbstractScoresCombination):
             results[result] = results[result] / num_algorithms
 
         return sorted(results.items(), key=lambda x: (-x[1], x[0]))
+
+
+class InsertScores(object):
+    def insert(self, base1, insert1):
+        keywords = {k.lower(): v for k, v in base1}
+        insert = {k.lower(): v for k, v in insert1}
+
+        keywords.update(insert)
+        keywords = keywords.items()
+        keywords = [(kw, score) for kw, score in keywords]
+        return sorted(keywords, key=lambda x: (-x[1], x[0]))

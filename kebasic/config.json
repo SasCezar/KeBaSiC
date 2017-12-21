@@ -1,6 +1,6 @@
 {
   "language": "spanish",
-  "websites_path": "../data/test_sites_2.csv",
+  "websites_path": "../data/test_sites.csv",
   // Preprocessing
   "preprocessing_algorithms": [
     "textprocessing.cleaner.MailCleaner",
@@ -9,7 +9,7 @@
     "textprocessing.cleaner.NonPunctuationSymbolsCleaner",
     "textprocessing.cleaner.CommonWords",
     "textprocessing.cleaner.PunctuationSpacesCleaner",
-    "textprocessing.cleaner.Clean4SQL",
+    // "textprocessing.cleaner.Clean4SQL",
     "textprocessing.cleaner.MultipleSpacesCleaner"
   ],
   "preprocessing_parameters": {

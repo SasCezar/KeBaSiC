@@ -40,7 +40,7 @@ class AbstractResultWriter(ABC):
         filename = join(dest_path, "config_{}.txt".format(hashed))
 
         with open(filename, "wt", encoding="utf8") as out:
-            pp = pprint.PrettyPrinter(stream=out, indent=4, width=200)
+            pp = pprint.PrettyPrinter(stream=out, indent=4, width=120)
             pp.pprint(config)
 
         return hashed
@@ -51,7 +51,7 @@ class PPrintResultWriter(AbstractResultWriter):
         result = self._create_content(dest_path, content, config)
         file = join(dest_path, file_name)
         with open(file, 'wt', encoding="utf8") as out:
-            pp = pprint.PrettyPrinter(stream=out, indent=4, width=200)
+            pp = pprint.PrettyPrinter(stream=out, indent=4, width=120)
             pprint._sorted = lambda x: x
             pp.pprint(result)
 
@@ -67,7 +67,7 @@ class SortedPPrintResultWriter(PPrintResultWriter):
     def _sort_content(self, content):
         results = []
         for result in content:
-            sorted_result = OrderedDict([(i, result['keywords'][i]) for i in self._order])
+            sorted_result = OrderedDict([(i, result['keywords'][i]) for i in self._order if i in result['keywords']])
             result['keywords'] = sorted_result
             results.append(result)
 

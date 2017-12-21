@@ -7,7 +7,7 @@ class AbstractNormalizer(ABC):
         pass
 
 
-class FeatureScaling(AbstractNormalizer):
+class MaxScaling(AbstractNormalizer):
     def normalize(self, keywords):
         if not keywords:
             return []

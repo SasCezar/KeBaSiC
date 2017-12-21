@@ -1,6 +1,5 @@
 import logging
 from collections import OrderedDict
-from operator import itemgetter
 
 from feature.sitekeywords import SiteKeywordsExtractor
 from kebasic.execution.executor import AbstractExecution
@@ -26,10 +25,7 @@ class FeatureExtractionExecution(AbstractExecution):
                 continue
             result['url'] = webpage.url
             features = self._extract_features(webpage.text)
-            scores = features[self.site_keywords_extractor.algo_score]
-            site_keyword_score = max(scores, key=itemgetter(1))[1] if scores else 1
-            features['site_keywords'] = self.site_keywords_extractor.run(webpage.meta_keywords,
-                                                                         score=site_keyword_score)
+            features['site_keywords'] = self.site_keywords_extractor.run(webpage.meta_keywords, score=1)
             result['keywords'] = features
             results.append(result)
 
