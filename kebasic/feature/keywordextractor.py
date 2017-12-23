@@ -42,9 +42,9 @@ class AbstractKeywordExtractor(ABC):
         self._language = language
 
         self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
-        self._merging_template = "((({keys})\s+({stop}|\s){{0,2}})+\s*({keys}))"  # TODO Fix
-        self._stopwords_pattern = "(" + "|".join(
-            [re.escape(word.strip()) for word in self._stopwords]) + "){0,2}"  # Check if 2 is a good values
+        #  self._merging_template = "((({keys})\s+({stop}|\s){{0,2}})+\s*({keys}))"  # TODO Fix
+        self._merging_template = "(({keys}){{1}}((\s+({stop})){{0,2}}\s+({keys}){{1}})+)"
+        self._stopwords_pattern = "|".join([re.escape(word.strip()) for word in self._stopwords])
 
         self._lemmize = lemmize
         self._lemmatizer = treetaggerwrapper.TreeTagger(TAGLANG=LANGS[self._language]).tag_text if lemmize else None
@@ -63,7 +63,8 @@ class AbstractKeywordExtractor(ABC):
     def _filter(self, keywords):
         if not self._stopwords:
             return keywords
-        return [(keyword, weight) for keyword, weight in keywords if keyword not in self._stopwords]
+        return [(keyword, weight) for keyword, weight in keywords
+                if keyword not in self._stopwords and len(keyword.strip()) > 1]
 
     @staticmethod
     def _sort(keywords):

@@ -24,7 +24,8 @@ class TermFrequencies(AbstractKeywordExtractor):
         return keyword_candidates
 
     def _filter(self, terms):
-        result = [(term, freq) for term, freq in terms if term not in self._stopwords and freq >= self._min_count]
+        result = [(term, freq) for term, freq in terms
+                  if term not in self._stopwords and freq >= self._min_count and len(term.strip()) > 1]
         return result
 
 
