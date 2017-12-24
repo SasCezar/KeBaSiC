@@ -41,3 +41,9 @@ class WebPage(object):
     @text.setter
     def text(self, value):
         self._text = value
+
+    def to_json(self):
+        webpage = {'url': self.url, 'html': self.html, 'title': self.title, 'text': self.text,
+                   'meta_keywords': self.meta_keywords, 'meta_description': self.meta_description}
+
+        return webpage

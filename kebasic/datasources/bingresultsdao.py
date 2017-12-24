@@ -2,7 +2,7 @@ import csv
 
 from mongoengine import *
 
-from mongo.mongoobjects import BingResults
+from datasources.mongoobjects import BingResults
 
 connect('kebasic')
 

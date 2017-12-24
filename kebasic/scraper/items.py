@@ -9,7 +9,7 @@
 from scrapy import Item, Field
 
 
-class Page(Item):
+class WebPage(Item):
     """
     Defines a item for Scrapy, this item is a web page
     """

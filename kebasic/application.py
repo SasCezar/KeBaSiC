@@ -4,7 +4,7 @@ from time import gmtime, strftime
 
 from feature.normalization import MaxScaling
 from feature.resultsjoin import SumResults, InsertScores
-from kebasic.dao.webpagedao import CSVWebPageDAO
+from kebasic.datasources.webpagedao import CSVWebPageDAO
 from kebasic.execution.basic import FeatureExtractionExecution, TextCleanerExecution
 from kebasic.utils import config
 from kebasic.utils.logger import initialize_logger

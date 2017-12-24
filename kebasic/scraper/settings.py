@@ -13,15 +13,15 @@ BOT_NAME = 'KeBaSiC-Broad'
 SPIDER_MODULES = ['scraper.spiders']
 NEWSPIDER_MODULE = 'scraper.spiders'
 
-DOWNLOAD_DELAY = 1  # default 0
+DOWNLOAD_DELAY = 0  # default 0
 RANDOMIZE_DOWNLOAD_DELAY = False
 CONCURRENT_REQUESTS_PER_DOMAIN = 25
 AUTOTHROTTLE_ENABLED = False
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
 
 # Broad Crawl Setting
 CONCURRENT_REQUESTS = 1000
-REACTOR_THREADPOOL_MAXSIZE = 20
+REACTOR_THREADPOOL_MAXSIZE = 100
 
 # LOG_ENABLED = False
 LOG_LEVEL = 'DEBUG'
@@ -31,13 +31,6 @@ RETRY_ENABLED = False
 DOWNLOAD_TIMEOUT = 30
 REDIRECT_ENABLED = True
 AJAXCRAWL_ENABLED = True
-
-"""
-ITEM_PIPELINES = {
-    'scraper.pipelines.DuplicatesPipeline': 100,
-    'scraper.pipelines.SQLPipeline': 300,
-}
-"""
 
 DOWNLOADER_MIDDLEWARES = {
     'scraper.middlewares.RotateUserAgentMiddleware': 110,
@@ -91,4 +84,10 @@ ALLOWED_MIME = [b'text', b'application']
 FEED_FORMAT = 'jsonlines'
 FEED_URI = 'result.json'
 
-METADATA_KEY = ['keywords', 'description']
+FEED_EXPORT_ENCODING = 'utf-8'
+
+DEPTH_PRIORITY = 1
+SCHEDULER_DISK_QUEUE = 'scrapy.squeues.PickleFifoDiskQueue'
+SCHEDULER_MEMORY_QUEUE = 'scrapy.squeues.FifoMemoryQueue'
+
+JOBDIR = "cache/"
