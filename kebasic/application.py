@@ -43,7 +43,7 @@ def feature_extraction(configs):
     executors_configs.update(feature.get_config())
 
     now = strftime("%Y_%m_%d-%H_%M", gmtime())
-    filename = "keywords_site_{}_sum_combined_max_normalized.txt".format(now)
+    filename = "keywords_site_2_{}_sum_combined_max_normalized.txt".format(now)
     PPrintResultWriter().write("../results/", filename, results, executors_configs)
 
 

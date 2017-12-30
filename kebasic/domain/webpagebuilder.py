@@ -124,7 +124,7 @@ class WebPageBuilder(object):
         :param soup:
         :return:
         """
-        title = soup.title.name.strip() if soup.title else ""
+        title = soup.title.string.strip() if soup.title else ""
         return title
 
     @staticmethod

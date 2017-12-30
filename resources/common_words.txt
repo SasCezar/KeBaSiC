@@ -24,3 +24,27 @@ follow
 mail
 powered
 etc
+share
+subscribe
+download
+rss
+comment
+comments
+like
+likes
+home
+menu
+blog
+blogs
+social
+socials
+tweet
+tweets
+online
+web
+html
+xhtml
+css
+log in
+account
+password
