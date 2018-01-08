@@ -5,7 +5,9 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 import re
+from collections import defaultdict
 from random import choice
+from urllib.parse import urlparse
 
 from scrapy import log
 from scrapy import signals
@@ -71,4 +73,25 @@ class FilterResponsesMiddleware(object):
         else:
             msg = "Ignoring request {}, content-type was not in whitelist".format(response.url)
             log.msg(msg, level=log.DEBUG, spider=spider)
+            raise IgnoreRequest()
+
+
+class LimitPagesDomainMiddleware(object):
+    def __init__(self, limit):
+        self.limit = limit
+        self.counter = defaultdict(int)
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        settings = crawler.settings
+        limit = settings.get('DOMAIN_PAGES_LIMIT')
+        o = cls(limit)
+        return o
+
+    def process_request(self, request, spider):
+        parsed_url = urlparse.urlparse(request.url)
+        domain = parsed_url.netloc if "www." not in parsed_url.netloc else parsed_url.netloc.replace("www.", "")
+        if self.counter.get(domain, 0) < self.limit:
+            self.counter[parsed_url.netloc] += 1
+        else:
             raise IgnoreRequest()

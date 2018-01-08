@@ -35,6 +35,7 @@ AJAXCRAWL_ENABLED = True
 DOWNLOADER_MIDDLEWARES = {
     'scraper.middlewares.RotateUserAgentMiddleware': 110,
     'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 500,
+    'scraper.middlewares.LimitPagesDomainMiddleware': 600,
     'scraper.middlewares.FilterResponsesMiddleware': 900
 }
 
@@ -91,3 +92,5 @@ SCHEDULER_DISK_QUEUE = 'scrapy.squeues.PickleFifoDiskQueue'
 SCHEDULER_MEMORY_QUEUE = 'scrapy.squeues.FifoMemoryQueue'
 
 JOBDIR = "cache/"
+
+DOMAIN_PAGES_LIMIT = 5000
