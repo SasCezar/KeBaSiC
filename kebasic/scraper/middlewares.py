@@ -89,9 +89,11 @@ class LimitPagesDomainMiddleware(object):
         return o
 
     def process_request(self, request, spider):
-        parsed_url = urlparse.urlparse(request.url)
+        parsed_url = urlparse(request.url)
         domain = parsed_url.netloc if "www." not in parsed_url.netloc else parsed_url.netloc.replace("www.", "")
         if self.counter.get(domain, 0) < self.limit:
-            self.counter[parsed_url.netloc] += 1
+            self.counter[domain] += 1
+            log.msg("Crawled webpages for domain {} : {}".format(domain, self.counter[domain]), level=log.INFO, spider=spider)
         else:
+            log.msg("Ignoring domain {}".format(domain), level=log.INFO, spider=spider)
             raise IgnoreRequest()
