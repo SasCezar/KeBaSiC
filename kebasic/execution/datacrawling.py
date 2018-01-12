@@ -1,18 +1,15 @@
-import csv
 import logging
 import math
 import multiprocessing
+from abc import ABC, abstractmethod
 from multiprocessing import Queue
 
-from dao.bingresultsdao import BingResultsDAO
 from domain.webpagebuilder import WebPageBuilder
-from execution.basic import TextCleanerExecution
 
 
 def worker(domains, queue):
-    """ The worker function, invoked in a process. 'nums' is a
-        list of numbers to factor. The results are placed in
-        a dictionary that's pushed to a queue.
+    """
+        The worker function, invoked in a process. The results are pushed to a queue.
     """
     builder = WebPageBuilder()
     out = []
@@ -27,40 +24,41 @@ def worker(domains, queue):
     queue.put(out)
 
 
-def data_crawling(configs):
-    cleaner = TextCleanerExecution(configs)
-    categories, domains = BingResultsDAO().get_website_categories()
-    logging.info("NUM DOMAINS {}".format(len(domains)))
-    webpages = []
+class AbstractCrawling(ABC):
+    def __init__(self, config):
+        self._config = config
 
-    procs = []
-    nprocs = 32
-    out_q = Queue()
-    chunksize = int(math.ceil(len(domains) / float(nprocs)))
-    print("Chunk size: {}".format(chunksize))
+    @abstractmethod
+    def run(self, webpages):
+        pass
 
-    logging.info("Initializing processes")
-    # inizializzazione carico per processo
-    for i in range(nprocs):
-        p = multiprocessing.Process(target=worker, args=(domains[chunksize * i:chunksize * (i + 1)], out_q))
-        procs.append(p)
-        p.start()
 
-    logging.info("Joining results")
-    for x in range(len(procs)):
-        webpages += out_q.get()
+class ParallelCrawling(AbstractCrawling):
+    def __init__(self, config, workers):
+        super().__init__(config)
+        self._workers = workers
+        self._processes = []
 
-    logging.info("Waiting processes to end")
-    # Wait for all worker processes to finish
-    for p in procs:
-        p.join()
+    def run(self, urls):
+        result = Queue()
+        chunksize = int(math.ceil(len(urls) / float(self._workers)))
+        print("Chunk size: {}".format(chunksize))
 
-    logging.info("Processes ended")
-    filtered_webpages = [webpage for webpage in webpages if webpage]
-    cleaned_webpages = cleaner.execute(filtered_webpages)
+        logging.info("Initializing processes")
+        for i in range(self._workers):
+            p = multiprocessing.Process(target=worker, args=(urls[chunksize * i:chunksize * (i + 1)], result))
+            self._processes.append(p)
+            p.start()
 
-    with open("webpages.csv", "wt", encoding="utf8", newline='') as outf:
-        writer = csv.writer(outf, quoting=csv.QUOTE_ALL)
-        writer.writerow(['parent_id', "category_id", "url", "text"])
-        for webpage in cleaned_webpages:
-            writer.writerow(categories[webpage.url] + [webpage.url, webpage.text])
+        logging.info("Joining results")
+        for x in range(len(self._processes)):
+            urls += result.get()
+
+        logging.info("Waiting processes to end")
+        for p in self._processes:
+            p.join()
+
+        logging.info("Processes ended")
+        filtered_webpages = [webpage for webpage in urls if webpage and ".pdf" not in webpage.url]
+
+        return filtered_webpages
