@@ -2,7 +2,7 @@ import logging
 import unittest
 from difflib import SequenceMatcher
 
-from kebasic.domain.webpage import WebPage
+from domain.webpagebuilder import WebPageBuilder
 
 url = "http://www.abogadosvilagarcia.es/"
 
@@ -11,7 +11,7 @@ def clean(text):
     return ' '.join(text.split())
 
 
-abogados_html = WebPage(url)
+abogados_html = WebPageBuilder().build(url)
 ground_truth_keywords = "Abogado en Vilagarcía, despacho de abogados en Vilagarcía, mediación familiar en Vilagarcía, abogado accidentes en Vilagarcía."
 
 
