@@ -32,42 +32,56 @@ DESCRIPTION = "description"
 NAME = "name"
 CONTENT = "content"
 
+HTML_PARSER = 'html.parser'
+
+URL = 'url'
+HTML = 'html'
+TEXT = 'text'
+HTTP = 'http'
+META_DESCRIPTION = 'meta_description'
+META_KEYWORDS = 'meta_keywords'
+
 
 class WebPageBuilder(object):
-    def build(self, url, html_source=None):
+
+    def build(self, url, html_source=None, **kwargs):
+        url = url.strip()
         logging.info("Downloading webpage: {}".format(url))
-        webpage = {'url': url}
+        webpage = {URL: url}
         if not html_source:
-            if 'http' not in url:
+            if HTTP not in url:
                 url = 'http://' + url
             html_source = self._download_html(url)
 
-        webpage['html'] = html_source
-        webpage.update(self._extract(html_source))
+        webpage[HTML] = html_source
+        webpage.update(kwargs)
+        webpage.update(self._extract(html_source, kwargs))
         return WebPage(**webpage)
 
     @staticmethod
     def _download_html(url):
-        # request = Request(url, headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)]})
-        # with urlopen(request) as webpage:
         response = requests.get(url, timeout=10,
-                                headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)]})
+                                headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)],
+                                         'Accept-Language': 'es'})
+
         webpage = response.content
 
-        html_source = BeautifulSoup(webpage, 'html.parser').prettify()
+        html_source = BeautifulSoup(webpage, HTML_PARSER).prettify()
 
         html_source = html.unescape(html_source)
         html_source = ' '.join(html_source.split()).strip()
         return html_source
 
-    def _extract(self, html_source):
+    def _extract(self, html_source, kwargs):
         result = {}
-        soup = BeautifulSoup(html_source, 'html.parser')
+        soup = BeautifulSoup(html_source, HTML_PARSER)
         soup = self._filter_tags(soup)
-        result['title'] = self._extract_title(soup)
-        result['meta_keywords'] = self._extract_meta_keywords(soup)
-        result['meta_description'] = self._extract_meta_description(soup)
-        result['text'] = self._extract_text(soup)
+        result[TEXT] = self._extract_text(soup) if TEXT not in kwargs else kwargs[TEXT]
+        result[META_KEYWORDS] = self._extract_meta_keywords(soup) if META_KEYWORDS not in kwargs else kwargs[
+            META_KEYWORDS]
+        result[META_DESCRIPTION] = self._extract_meta_description(soup) if META_DESCRIPTION not in kwargs else kwargs[
+            META_DESCRIPTION]
+
         return result
 
     @staticmethod
