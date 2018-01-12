@@ -36,7 +36,10 @@ class BroadScraper(scrapy.Spider):
         html = response.text
         page = self.builder.build(url, html)
 
-        yield WebPage(**page.to_json())
+        json_page = page.to_dict()
+        json_page.pop("category_id")
+        json_page.pop("parent_category_id")
+        yield WebPage(**json_page)
 
         soup = BeautifulSoup(html, BS_PARSER)
         urls = self._extract_urls(response.url, soup)
