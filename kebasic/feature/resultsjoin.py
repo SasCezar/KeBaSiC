@@ -43,7 +43,8 @@ class WeightedSum(AbstractScoresCombination):
 
 
 class InsertScores(object):
-    def insert(self, base1, insert1):
+    @staticmethod
+    def insert(base1, insert1):
         keywords = {k.lower(): v for k, v in base1}
         insert = {k.lower(): v for k, v in insert1}
 
