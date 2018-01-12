@@ -33,6 +33,7 @@ def add_categories():
             url = obj["url"]
             parsed = urlparse(url)
             domain = parsed.netloc if "www." not in parsed.netloc else parsed.netloc.replace("www.", "")
+            obj['domain'] = domain
             if domain not in categories:
                 i += 1
                 continue

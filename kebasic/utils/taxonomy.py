@@ -1,10 +1,9 @@
 import csv
-from abc import ABC
 
 from googletrans import Translator
 
 
-class Taxonomy(ABC):
+class Taxonomy(object):
     @staticmethod
     def read(path, header=True):
         taxonomy = Taxonomy._read(path, header)
@@ -19,7 +18,7 @@ class Taxonomy(ABC):
 
         for category_id in taxonomy:
             key = taxonomy[category_id]['parent_category'] + " " + taxonomy[category_id]['category']
-            reversed_taxonomy[key] = taxonomy[category_id]
+            reversed_taxonomy[key.strip()] = taxonomy[category_id]
             reversed_taxonomy[taxonomy[category_id]['category']] = taxonomy[category_id]
 
         return reversed_taxonomy
@@ -33,7 +32,7 @@ class Taxonomy(ABC):
 
             parent_category = taxonomy[category_id][0] if is_top_level else ''
             result['parent_category'] = parent_category
-            result['parent_id'] = reverse_taxonomy[parent_category] if is_top_level else '0'
+            result['parent_category_id'] = reverse_taxonomy[parent_category] if is_top_level else '0'
             x = 1 if is_top_level else 0
             result['category'] = taxonomy[category_id][x]
             result['category_id'] = category_id
@@ -47,7 +46,7 @@ class Taxonomy(ABC):
         """
         Saves the taxonomy to files
 
-        :param dest: Path where to save the file
+        :param dest: Path where to save the _file
         :param taxonomy:
         :param header: An optional header
         :return:
@@ -66,9 +65,9 @@ class Taxonomy(ABC):
         reversed_taxonomy = {}
         for category_id in taxonomy:
             category = taxonomy[category_id]
-            reversed_taxonomy[" ".join(category)] = category_id
+            reversed_taxonomy[" ".join(category).strip()] = category_id
             if len(category) > 1:
-                reversed_taxonomy[category[1]] = category_id
+                reversed_taxonomy[category[1].strip()] = category_id
 
         return reversed_taxonomy
 
@@ -117,4 +116,4 @@ def read_taxonomy(path):
 
 
 if __name__ == '__main__':
-    test = read_taxonomy("../../resources/ES/taxonomy/taxonomy.csv")
+    test = read_reverse_taxonomy("../../resources/ES/taxonomy/taxonomy.csv")
