@@ -21,6 +21,7 @@ class WordsWithNumbersCleaner(AbstractCleaner):
 
     Example: "Hello Earth! This is WorldA90" --> "Hello Earth! This is "
     """
+
     def __init__(self):
         super().__init__()
         self.re_match = re.compile(r"\S*\d+\S*", re.IGNORECASE)
@@ -32,6 +33,7 @@ class URLCleaner(AbstractCleaner):
 
     Example: "Check out this page: google.com" --> "Check out this page: "
     """
+
     def __init__(self):
         super().__init__()
         self.re_match = re.compile(
@@ -45,6 +47,7 @@ class MailCleaner(AbstractCleaner):
 
     Example: "Send me an email at this address: some.random@mail.com" --> "Send me an email at this address: "
     """
+
     def __init__(self):
         super().__init__()
         self.re_match = re.compile(
@@ -57,6 +60,7 @@ class MultipleSpacesCleaner(AbstractCleaner):
 
     Example "This  is a poor    formatted text" --> "This is a poor formatted text"
     """
+
     def run(self, text):
         result = " ".join(text.split())
         return result
@@ -68,6 +72,7 @@ class NonPunctuationSymbolsCleaner(AbstractCleaner):
 
     Example: "This is a symbol € for euro, another one is (." --> This is a symbol  for euro, another one is ."
     """
+
     def __init__(self):
         super().__init__()
         self.re_match = re.compile(r"""[^!"&':;?,\.\w\d ]+""")
@@ -77,6 +82,7 @@ class DigitsCleaner(AbstractCleaner):
     """
     Removes numbers
     """
+
     def __init__(self):
         super().__init__()
         self.re_match = re.compile(r"""\b\d+\b""")
@@ -86,9 +92,10 @@ class CommonWords(AbstractCleaner):
     """
     Removes common words from the text
     """
+
     def __init__(self, words_path):
         """
-        :param words_path: The path od the file containing the words, one for each line
+        :param words_path: The path od the _file containing the words, one for each line
         """
         super().__init__()
         with open(words_path, "rt", encoding="utf8") as inf:
@@ -120,3 +127,8 @@ class Clean4SQL(AbstractCleaner):
     def __init__(self):
         super().__init__()
         self.re_match = re.compile(r"""[\",\\0]""")
+
+
+class StopWordsCleaner(CommonWords):
+    def __init__(self, words_path):
+        super().__init__(words_path)
