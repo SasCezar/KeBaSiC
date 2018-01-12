@@ -48,3 +48,6 @@ css
 log in
 account
 password
+googleplus
+instagram
+pinterest
