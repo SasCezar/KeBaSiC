@@ -3,33 +3,32 @@ from abc import ABC, abstractmethod
 from importlib import import_module
 
 
-class AbstractExecution(ABC):
+class AbstractExecutor(ABC):
     """
     Defines an abstract execution class. Implements the common function that are needed to perform a generic computation
     """
 
-    def __init__(self, config):
+    def __init__(self, configs):
         """
         Constructor of the class. Accepts a dictionary of configurations that will be used to define the workflow of the
         class.
 
-        :param config:
+        :param configs:
         """
-        self._config = config
+        self._configs = configs
         self._allowed = set()  # all those keys will be initialized as class attributes
         self.algorithms = []
         self.parameters = {}
         self.callables = []
 
     @abstractmethod
-    def execute(self, webpages):
+    def run(self):
         pass
 
     def get_config(self):
         configs = {}
         for name, callable_object in self.callables:
             object_config = callable_object.configuration()
-
             configs[name] = object_config
 
         return configs
@@ -42,9 +41,14 @@ class AbstractExecution(ABC):
         logging.info("Loading modules...")
         for algorithm in self.algorithms:
             logging.info("Loading {}".format(algorithm))
-            algorithm_name, algorithm_object = self._import_class(algorithm)
             algorithm_parameters = self.parameters.get(algorithm, {})
-            self.callables.append((algorithm_name, algorithm_object(**algorithm_parameters)))
+            algorithm_instance, algorithm_name = self.object_instancer(algorithm, algorithm_parameters)
+            self.callables.append((algorithm_name, algorithm_instance))
+
+    def object_instancer(self, algorithm, algorithm_parameters):
+        algorithm_name, algorithm_object = self._import_class(algorithm)
+        algorithm_instance = algorithm_object(**algorithm_parameters)
+        return algorithm_instance, algorithm_name
 
     def _initialize(self):
         """
@@ -55,7 +59,7 @@ class AbstractExecution(ABC):
         for key in self._allowed:
             self.__setattr__(key, False)
 
-        for key, value in self._config.items():
+        for key, value in self._configs.items():
             self.__setattr__(key, value) if key in self._allowed else None
 
         return self
@@ -72,3 +76,16 @@ class AbstractExecution(ABC):
         class_name = module.split('.')[-1]
         model = getattr(my_module, class_name)
         return class_name, model
+
+
+class AbstractPipeline(AbstractExecutor):
+    """
+    Defines an abstract execution class for an item.
+    """
+
+    def run(self):
+        pass
+
+    @abstractmethod
+    def process(self, item):
+        pass

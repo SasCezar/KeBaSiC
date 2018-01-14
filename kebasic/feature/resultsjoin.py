@@ -7,7 +7,7 @@ class AbstractScoresCombination(ABC):
         pass
 
 
-class SumResults(AbstractScoresCombination):
+class SumScores(AbstractScoresCombination):
     def merge(self, scores):
         results = {}
 

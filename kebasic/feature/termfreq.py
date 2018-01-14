@@ -4,8 +4,8 @@ from feature.keywordextractor import AbstractKeywordExtractor
 
 
 class TermFrequencies(AbstractKeywordExtractor):
-    def __init__(self, language=None, stopwords=None, min_count=1, lemmize=False):
-        super().__init__(language, stopwords, lemmize)
+    def __init__(self, language=None, stopwords=None, min_count=1, lemmize=False, limit=50, keep_all=0):
+        super().__init__(language=language, stopwords=stopwords, lemmize=lemmize, limit=limit, keep_all=keep_all)
         self._language = language
 
         self._min_count = min_count
@@ -33,8 +33,12 @@ class MergingTermFrequencies(TermFrequencies):
     def run(self, text):
         lemmed_text = self._text_lemmatization(text) if self._lemmize else text
         keywords = self._extract_keywords(lemmed_text)
+        if not keywords:
+            return []
         filtered_keywords = self._filter(keywords)
         merged_keywords = self._merge_keywords(filtered_keywords, text)
         # scaled_keywords = self._score_rescaling(merged_keywords)
         sorted_keywords = self._sort(merged_keywords)
+        if self._limit:
+            sorted_keywords = sorted_keywords[:self._limit]
         return sorted_keywords

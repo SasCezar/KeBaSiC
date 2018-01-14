@@ -22,7 +22,6 @@
     }
   },
   "SiteKeywordsExtractor": {
-    "algo_score": "MergingRAKE",
     "language": "spanish",
     "stopwords": "../resources/ES/stopwords/stopwords.txt",
     "lemmize": true

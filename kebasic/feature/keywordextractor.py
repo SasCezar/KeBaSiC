@@ -1,4 +1,3 @@
-import itertools
 import logging
 import re
 import string
@@ -38,17 +37,17 @@ class AbstractKeywordExtractor(ABC):
     Implements an abstract keyword extraction algorithm
     """
 
-    def __init__(self, language=None, stopwords=None, lemmize=False, keep_all=0):
+    def __init__(self, language=None, stopwords=None, lemmize=False, limit=50, keep_all=0):
         self._language = language
 
         self._stopwords = load_stop_words(stopwords) if stopwords else nltk.corpus.stopwords.words(language)
-        #  self._merging_template = "((({keys})\s+({stop}|\s){{0,2}})+\s*({keys}))"  # TODO Fix
         self._merging_template = "(({keys}){{1}}((\s+({stop})){{0,2}}\s+({keys}){{1}})+)"
         self._stopwords_pattern = "|".join([re.escape(word.strip()) for word in self._stopwords])
 
         self._lemmize = lemmize
         self._lemmatizer = treetaggerwrapper.TreeTagger(TAGLANG=LANGS[self._language]).tag_text if lemmize else None
         self._keep_all = keep_all
+        self._limit = limit
 
     @abstractmethod
     def run(self, text):
@@ -98,8 +97,10 @@ class AbstractKeywordExtractor(ABC):
         :param text:
         :return:
         """
-        result = []
+        if not keywords:
+            return []
 
+        result = []
         scores = dict([(k.lower(), score) for k, score in keywords])
         keys = scores.keys()
 
@@ -110,10 +111,16 @@ class AbstractKeywordExtractor(ABC):
         seen = set()
         for merged_keyword in merged_keywords:
             keywords_tuple = tuple(kw.lower() for kw in merged_keyword[0].strip().split() if kw.lower() in scores)
-            if any(kwtuple in seen for kwtuple in itertools.permutations(keywords_tuple)):
+            # logging.debug("Keywords tuple {}".format(keywords_tuple))
+            if len(keywords_tuple) > 10:
+                logging.debug("Keywords tuple {}".format(keywords_tuple))
+            if not keywords_tuple:
+                continue
+            frozen_keyword = frozenset(keywords_tuple)
+            if frozen_keyword in seen:
                 continue
 
-            seen.add(keywords_tuple)
+            seen.add(frozen_keyword)
 
             score = sum([scores[kw.lower()] for kw in keywords_tuple])
             score = scores[merged_keyword[0].lower()] if merged_keyword[0].lower() in scores and not score else score

@@ -1,6 +1,9 @@
 import itertools
+import logging
 import re
+from json import JSONDecodeError
 
+import editdistance
 import networkx as nx
 from stanfordcorenlp import StanfordCoreNLP
 
@@ -54,29 +57,6 @@ def unique_everseen(iterable, key=None):
                 yield element
 
 
-def levenshtein_distance(first, second):
-    """
-    Return the Levenshtein distance between two strings.
-
-    Based on:
-        http://rosettacode.org/wiki/Levenshtein_distance#Python
-    """
-    if len(first) > len(second):
-        first, second = second, first
-    distances = range(len(first) + 1)
-    for index2, char2 in enumerate(second):
-        new_distances = [index2 + 1]
-        for index1, char1 in enumerate(first):
-            if char1 == char2:
-                new_distances.append(distances[index1])
-            else:
-                new_distances.append(1 + min((distances[index1],
-                                              distances[index1 + 1],
-                                              new_distances[-1])))
-        distances = new_distances
-    return distances[-1]
-
-
 def build_graph(nodes):
     """
     Return a networkx graph instance.
@@ -91,7 +71,8 @@ def build_graph(nodes):
     for pair in node_pairs:
         first_string = pair[0]
         second_string = pair[1]
-        strings_distance = levenshtein_distance(first_string, second_string)
+        strings_distance = editdistance.eval(first_string, second_string)
+
         gr.add_edge(first_string, second_string, weight=strings_distance)
 
     return gr
@@ -158,8 +139,9 @@ class TextRank(AbstractKeywordExtractor):
     A NLTK based implementation of TextRank as defined in: "TextRank: Bringing Order into Texts" by Mihalcea et al. (2004)
     """
 
-    def __init__(self, language, filter_pos_tags=None, core_nlp="http://127.0.0.1:9000", lemmize=False):
-        super().__init__(language, lemmize=lemmize)
+    def __init__(self, language, filter_pos_tags=None, core_nlp="http://127.0.0.1:9000", lemmize=False, limit=50,
+                 keep_all=0):
+        super().__init__(language, lemmize=lemmize, stopwords=None, limit=limit, keep_all=keep_all)
         self._filter_tags = filter_pos_tags
         if "http" in core_nlp:
             server, port = core_nlp.rsplit(":", maxsplit=1)
@@ -181,7 +163,11 @@ class TextRank(AbstractKeywordExtractor):
         return sorted_keywords
 
     def _extract_keywords(self, text):
-        tagged = self.nlp.pos_tag(text)
+        try:
+            tagged = self.nlp.pos_tag(text)
+        except JSONDecodeError:
+            logging.info("JSONDecodeError")
+            return []
 
         tagged = filter_for_tags(tagged, tags=self._filter_tags)
         tagged = normalize(tagged)
@@ -221,9 +207,12 @@ class TextRank(AbstractKeywordExtractor):
 class MergingTextRank(TextRank):
     def run(self, text):
         keywords = self._extract_keywords(text)
+        if not keywords:
+            return []
         filtered_keywords = self._filter(keywords)
         merged_keywords = super(TextRank, self)._merge_keywords(filtered_keywords, text)
         lemmed_keywords = self._keywords_lemmatization(merged_keywords) if self._lemmize else merged_keywords
-        # scaled_keywords = self._score_rescaling(lemmed_keywords)
         sorted_keywords = self._sort(lemmed_keywords)
+        if self._limit:
+            sorted_keywords = sorted_keywords[:self._limit]
         return sorted_keywords

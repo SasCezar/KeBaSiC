@@ -1,19 +1,28 @@
 import csv
 
+from kebasicio.writer import AbstractWriter
 
-class WekaTrainigCSV(object):
+
+class WekaTrainigCSV(AbstractWriter):
     def __init__(self, path):
-        self._path = path
+        super().__init__(path)
         self._header = ['parent_category_id', "category_id", "url", "text"]
 
-    def write(self, webpages):
-        with open(self._path, "wt", encoding="utf8", newline='') as outf:
-            writer = csv.writer(outf, quoting=csv.QUOTE_ALL)
-            for webpage in webpages:
-                row = self._create_row(webpage)
-                if not row:
-                    continue
-                writer.writerow(row)
+    def __enter__(self):
+        super().__enter__()
+        self._csv = csv.writer(self._file, quoting=csv.QUOTE_ALL)
+        return self
+
+    def write_header(self, header=None):
+        if not header:
+            header = self._header
+        self._csv.writerow(header)
+
+    def _write(self, webpage):
+        row = self._create_row(webpage)
+        if row:
+            self._csv.writerow(row)
+        return
 
     def _create_row(self, webpage):
         parent_category_id = webpage.parent_category_id

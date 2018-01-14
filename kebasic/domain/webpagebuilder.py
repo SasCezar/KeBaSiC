@@ -1,8 +1,8 @@
-import html
 import itertools
 import logging
 import random
 import re
+from html import unescape
 
 import requests
 from bs4 import BeautifulSoup, Comment
@@ -44,22 +44,23 @@ META_KEYWORDS = 'meta_keywords'
 
 class WebPageBuilder(object):
 
-    def build(self, url, html_source=None, **kwargs):
+    def build(self, url, html=None, **kwargs):
         url = url.strip()
-        logging.info("Downloading webpage: {}".format(url))
+        logging.info("Building webpage: {}".format(url))
         webpage = {URL: url}
-        if not html_source:
+        if not html:
             if HTTP not in url:
                 url = 'http://' + url
-            html_source = self._download_html(url)
+            html = self._download_html(url)
 
-        webpage[HTML] = html_source
+        webpage[HTML] = html
         webpage.update(kwargs)
-        webpage.update(self._extract(html_source, kwargs))
+        webpage.update(self._extract(html, kwargs))
         return WebPage(**webpage)
 
     @staticmethod
     def _download_html(url):
+        logging.debug("Downloading webpage: {}".format(url))
         response = requests.get(url, timeout=10,
                                 headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)],
                                          'Accept-Language': 'es'})
@@ -68,7 +69,7 @@ class WebPageBuilder(object):
 
         html_source = BeautifulSoup(webpage, HTML_PARSER).prettify()
 
-        html_source = html.unescape(html_source)
+        html_source = unescape(html_source)
         html_source = ' '.join(html_source.split()).strip()
         return html_source
 
@@ -76,7 +77,7 @@ class WebPageBuilder(object):
         result = {}
         soup = BeautifulSoup(html_source, HTML_PARSER)
         soup = self._filter_tags(soup)
-        result[TEXT] = self._extract_text(soup) if TEXT not in kwargs else kwargs[TEXT]
+        result[TEXT] = self._extract_text(soup)
         result[META_KEYWORDS] = self._extract_meta_keywords(soup) if META_KEYWORDS not in kwargs else kwargs[
             META_KEYWORDS]
         result[META_DESCRIPTION] = self._extract_meta_description(soup) if META_DESCRIPTION not in kwargs else kwargs[
@@ -149,9 +150,10 @@ class WebPageBuilder(object):
         :return:
         """
         unwanted_divs = soup.find_all(class_=re.compile(r"(footer|header|cookie|style)", re.IGNORECASE))  # Check menu
-        unwanted_sections = soup.find_all(['footer', 'header', 'noscript'])
+        unwanted_sections = soup.find_all(['footer', 'header', 'noscript', 'sidebar'])
+        hidded_tags = soup.find_all(style=re.compile(r"(display:none|visibility:hidden)", re.IGNORECASE))
 
-        for tag in itertools.chain(unwanted_divs, unwanted_sections):
+        for tag in itertools.chain(unwanted_divs, unwanted_sections, hidded_tags):
             tag.decompose()
 
         soup.renderContents()

@@ -1,68 +1,40 @@
-import hashlib
 import pprint
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from collections import OrderedDict
-from os.path import join
+
+from kebasicio.writer import AbstractWriter
 
 
-class AbstractResultWriter(ABC):
+class AbstractResultWriter(AbstractWriter):
     @abstractmethod
-    def write(self, dest_path, file_name, content, config):
-        """
-        Saves the content to the destination path and with the defined filename. If config is passed, the write method
-        injects a hash reference to the saved content file.
-
-        :param dest_path:
-        :param file_name:
-        :param content:
-        :param config:
-        :return:
-        """
+    def _write(self, content):
         pass
-
-    def _create_content(self, dest_path, content, config):
-        if config:
-            hash_config = self._save_config(join(dest_path, 'hash'), config)
-            result = self._inject_config(content, hash_config)
-            return result
-        else:
-            return content
-
-    @staticmethod
-    def _inject_config(content, config_hash):
-        return {"results": content, "config_hash": config_hash} if config_hash else {"results": content}
-
-    @staticmethod
-    def _save_config(dest_path, config):
-        sha = hashlib.sha256()
-        sha.update(pprint.pformat(config).encode('utf-8'))
-        hashed = sha.hexdigest()
-        filename = join(dest_path, "config_{}.txt".format(hashed))
-
-        with open(filename, "wt", encoding="utf8") as out:
-            pp = pprint.PrettyPrinter(stream=out, indent=4, width=120)
-            pp.pprint(config)
-
-        return hashed
 
 
 class PPrintResultWriter(AbstractResultWriter):
-    def write(self, dest_path, file_name, content, config):
-        result = self._create_content(dest_path, content, config)
-        file = join(dest_path, file_name)
-        with open(file, 'wt', encoding="utf8") as out:
-            pp = pprint.PrettyPrinter(stream=out, indent=4, width=120)
-            pprint._sorted = lambda x: x
-            pp.pprint(result)
+
+    def write_header(self):
+        pass
+
+    def __enter__(self):
+        super().__enter__()
+        self._pp = pprint.PrettyPrinter(stream=self._file, indent=4, width=120)
+        return self
+
+    def _write(self, content):
+        self._pp.pprint(content)
 
 
 class SortedPPrintResultWriter(PPrintResultWriter):
-    def __init__(self, order):
+    def __init__(self, path, order=None):
+        super().__init__(path)
+        if order is None:
+            order = ["site_keywords", "Combined", "MergingRAKE", "MergingTextRank", "MergingTermFrequencies"]
         self._order = order
 
-    def write(self, dest_path, file_name, content, config):
+    def write(self, content):
         content = self._sort_content(content)
-        super(SortedPPrintResultWriter, self).write(dest_path, file_name, content, config)
+        super(SortedPPrintResultWriter, self).write(content)
 
     def _sort_content(self, content):
         results = []

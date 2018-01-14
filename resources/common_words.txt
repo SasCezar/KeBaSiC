@@ -51,3 +51,5 @@ password
 googleplus
 instagram
 pinterest
+follower
+followers

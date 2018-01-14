@@ -40,7 +40,11 @@ class CSVWebPageReader(WebPageReader):
 
 class MongoWebPageReader(WebPageReader):
     def _load_webpages(self):
-        for webpage in WebPage.objects()[:100]:
+        i = 0
+        n = WebPage.objects().count()
+        for webpage in WebPage.objects()[459:1000]:
+            percent = i / n * 100
+            logging.info("Webpage percentage: {}".format(percent))
             yield webpage
 
 

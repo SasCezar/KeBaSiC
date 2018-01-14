@@ -13,8 +13,7 @@
 # NOTE 3: The code published by zelandiya (https://github.com/zelandiya/RAKE-tutorial)
 # and subsequently edited by Marco Pegoraro has been wrapped and modified to conform
 # to our needs. This includes the extension of an abstract class and some minor edits to code.
-
-
+import logging
 import re
 from collections import Counter
 
@@ -256,7 +255,7 @@ def split_sentences(text):
 class RAKE(AbstractKeywordExtractor):
     def __init__(self, language, stopwords, keyword_separator, min_char_length=1, max_words_length=5,
                  min_keyword_frequency=1, min_words_length_adj=1, max_words_length_adj=1,
-                 min_phrase_freq_adj=2, lemmize=False):
+                 min_phrase_freq_adj=2, lemmize=False, limit=50, keep_all=0):
         """
 
         Implementation of RAKE - Rapid Automatic Keyword Extraction algorithm as described in:
@@ -276,7 +275,7 @@ class RAKE(AbstractKeywordExtractor):
         :param min_phrase_freq_adj:
         """
 
-        super().__init__(language, stopwords, lemmize)
+        super().__init__(language, stopwords, lemmize, limit, keep_all)
 
         self._keyword_separator = keyword_separator
         self._min_char_length = min_char_length
@@ -345,8 +344,14 @@ class MergingRAKE(RAKE):
     def run(self, text):
         lemmed_text = self._text_lemmatization(text) if self._lemmize else text
         keywords = self._extract_keywords(lemmed_text)
+        if not keywords:
+            return []
         filtered_keywords = self._filter(keywords)
+        logging.debug("Keywords extracted")
         merged_keywords = self._merge_keywords(filtered_keywords, text)
+        logging.debug("Keywords merged")
         # scaled_keywords = self._score_rescaling(merged_keywords)
         sorted_keywords = self._sort(merged_keywords)
+        if self._limit:
+            sorted_keywords = sorted_keywords[:self._limit]
         return sorted_keywords

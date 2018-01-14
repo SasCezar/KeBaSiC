@@ -10,7 +10,7 @@ def initialize_logger(output_dir):
 
     # create console handler and set level to info
     handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
+    handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter(LOGGING_STRING_FORMAT)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
