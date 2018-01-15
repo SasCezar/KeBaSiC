@@ -46,7 +46,7 @@ class Taxonomy(object):
         """
         Saves the taxonomy to files
 
-        :param dest: Path where to save the _file
+        :param dest: Path where to save the _path
         :param taxonomy:
         :param header: An optional header
         :return:

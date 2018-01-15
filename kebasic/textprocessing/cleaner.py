@@ -95,7 +95,7 @@ class CommonWords(AbstractCleaner):
 
     def __init__(self, words_path):
         """
-        :param words_path: The path od the _file containing the words, one for each line
+        :param words_path: The path od the _path containing the words, one for each line
         """
         super().__init__()
         with open(words_path, "rt", encoding="utf8") as inf:
