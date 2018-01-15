@@ -2,6 +2,9 @@ from abc import ABC, abstractmethod
 
 
 class AbstractNormalizer(ABC):
+    """
+    Defines an abstract function for score normalization
+    """
     name = "AbstractNormalizer"
 
     def __init__(self, limit=50):
@@ -9,6 +12,11 @@ class AbstractNormalizer(ABC):
 
     @abstractmethod
     def normalize(self, keywords):
+        """
+        Given a list of tuples (keyword, score) normalizes using a specific function.
+        :param keywords:
+        :return:
+        """
         pass
 
     def config(self):

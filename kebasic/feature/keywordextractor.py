@@ -101,7 +101,7 @@ class AbstractKeywordExtractor(ABC):
             return []
 
         result = []
-        scores = dict([(k.lower(), score) for k, score in keywords])
+        scores = {k.lower(): score for k, score in keywords}
         keys = scores.keys()
 
         keywords_pattern = "|".join(keys)
@@ -111,9 +111,8 @@ class AbstractKeywordExtractor(ABC):
         seen = set()
         for merged_keyword in merged_keywords:
             keywords_tuple = tuple(kw.lower() for kw in merged_keyword[0].strip().split() if kw.lower() in scores)
-            # logging.debug("Keywords tuple {}".format(keywords_tuple))
-            if len(keywords_tuple) > 10:
-                logging.debug("Keywords tuple {}".format(keywords_tuple))
+            if len(keywords_tuple) > 6:
+                continue
             if not keywords_tuple:
                 continue
             frozen_keyword = frozenset(keywords_tuple)

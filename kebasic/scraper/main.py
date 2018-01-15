@@ -1,9 +1,10 @@
+import logging
+
 from scrapy.crawler import CrawlerProcess
+from scrapy.utils.log import configure_logging
 from scrapy.utils.project import get_project_settings
 
 from kebasic.scraper.spiders.broadscraper import BroadScraper
-import logging
-from scrapy.utils.log import configure_logging
 
 LOGGING_STRING_FORMAT = "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
 

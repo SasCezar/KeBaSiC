@@ -2,8 +2,17 @@ from abc import ABC, abstractmethod
 
 
 class AbstractScoresCombination(ABC):
+    """
+    Defines an abstract function of combining scores from different algorithms
+    """
+
     @abstractmethod
     def merge(self, scores):
+        """
+        Given a dictionary of scores return a list of the combined scores
+        :param scores:
+        :return:
+        """
         pass
 
 
@@ -18,10 +27,6 @@ class SumScores(AbstractScoresCombination):
                 results[key.lower()] = score + results[key.lower()] if key.lower() in results else score
 
         keywords = results.items()
-        kw_scores = [x for _, x in keywords]
-        max_score = max(kw_scores) if kw_scores and max(kw_scores) else 1
-
-        keywords = [(kw, score / max_score) for kw, score in keywords]
         return sorted(keywords, key=lambda x: (-x[1], x[0]))
 
 

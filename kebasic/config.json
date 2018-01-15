@@ -26,7 +26,6 @@
     "stopwords": "../resources/ES/stopwords/stopwords.txt",
     "lemmize": true
   },
-
   // Feature Extraction
   "extractor_algorithms": [
     // "feature.rake.RAKE",
