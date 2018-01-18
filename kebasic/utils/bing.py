@@ -13,6 +13,8 @@ unwanted_elements = ["effective_query", "requested_by", "requested_at", "scrape_
 
 unwanted_domains = ['bing', 'google', 'yahoo', 'facebook', 'scribd', 'amazon', 'ebay']
 
+unwanted_extensions = ['.pdf', '.ppt', '.xml', '.doc', '.epub']
+
 
 def pop_elements(query_result):
     for element in unwanted_elements:
@@ -72,7 +74,7 @@ def bing_cleaner(path, out, taxonomy):
     i = 0
     for query_result in file:
         i += 1
-        filtered_query = pop_elements(query_result)
+        filtered_query = pop_elements(query_result).replace("\"", "").strip()
         filtered_query['results'] = filter_results(filtered_query['results'])
         filtered_query['num_results'] = str(len(filtered_query['results']))
         cleaned_query, category = get_category(filtered_query['query'], taxonomy)
@@ -93,10 +95,26 @@ def bing_cleaner(path, out, taxonomy):
         json.dump(filtered_result, outf, indent=4, sort_keys=True, ensure_ascii=False)
 
 
+def bing2json(path, out, taxonomy):
+    with open(path, "rt", encoding="utf-8") as inf, open(out, "wt", encoding="utf8") as outf:
+        file = json.load(inf)
+
+        for query in file:
+            cleaned_query = query['query'].replace("\"", "").strip()
+            category = taxonomy[cleaned_query]
+            results = query['results']
+            for result in results:
+                url = result['link']
+                webpage = {'url': url}
+                webpage.update(category)
+                json_page = json.dumps(webpage, ensure_ascii=False)
+                outf.write(json_page + "\n")
+
+
 if __name__ == '__main__':
     initialize_logger("./")
-    path = "../../output/scraper/bing.json"
-    out = "../../output/scraper/bing_clean.json"
+    path = "../../output/scraper/GoogleScraper_bing_quoted_query.json"
+    out = "../../output/scraper/GoogleScraper_bing_quoted_query_categorized.json"
     taxonomy_path = "../../resources/ES/taxonomy/taxonomy.csv"
     taxonomy = read_reverse_taxonomy(taxonomy_path)
-    bing_cleaner(path, out, taxonomy)
+    bing2json(path, out, taxonomy)

@@ -2,8 +2,8 @@ import argparse
 import os
 
 from executions.composed import KeywordsExecution
-from kebasic.utils import config
-from kebasic.utils.logger import initialize_logger
+from utils import config
+from utils.logger import initialize_logger
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -16,3 +16,4 @@ if __name__ == "__main__":
     initialize_logger(configs['log_path'])
 
     KeywordsExecution(configs).run()
+    # CrawlingExecution(configs).run()

@@ -2,6 +2,8 @@ import csv
 
 from kebasicio.writer import AbstractWriter
 
+csv.field_size_limit(2147483647)
+
 
 class WekaTrainigCSV(AbstractWriter):
     def __init__(self, path):
@@ -35,7 +37,26 @@ class WekaTrainigCSV(AbstractWriter):
         return row
 
 
-class WekaKeywordTrainingCSV(WekaTrainigCSV):
+class WekaWebPageTrainingCSV(WekaTrainigCSV):
+    def __init__(self, path):
+        super().__init__(path)
+        self._header = ['parent_category_id', "category_id", "url", "text"]
+
+    def _create_row(self, result):
+        parent_category_id = result['parent_category_id']
+        category_id = result['category_id']
+        if parent_category_id == "0":
+            parent_category_id = category_id
+        url = result['url']
+        # keywords = " ".join([keyword for keyword, _ in result['keywords']])
+        text = result['text']
+        if not text:
+            return False
+        row = [parent_category_id, category_id, url, text]
+        return row
+
+
+class WekaResultsTrainingCSV(WekaTrainigCSV):
     def __init__(self, path):
         super().__init__(path)
         self._header = ['parent_category_id', "category_id", "url", "keywords"]

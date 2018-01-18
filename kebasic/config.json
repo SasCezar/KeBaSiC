@@ -1,6 +1,6 @@
 {
   "language": "spanish",
-  "websites_path": "../data/test_sites_2.csv",
+  "file": "xac",
   // Preprocessing
   "preprocessing_algorithms": [
     "textprocessing.cleaner.MailCleaner",
@@ -26,6 +26,7 @@
     "stopwords": "../resources/ES/stopwords/stopwords.txt",
     "lemmize": true
   },
+
   // Feature Extraction
   "extractor_algorithms": [
     // "feature.rake.RAKE",
@@ -106,7 +107,7 @@
   },
   // Taxonomy
   "original_taxonomy": "../resources/ES/taxonomy/original_taxonomy.csv",
-  "taxonomy_path": "../resources/EN/taxonomy/taxonomy.csv",
+  "taxonomy_path": "../resources/ES/taxonomy/taxonomy.csv",
   "taxonomy_translate_from": "en",
   "taxonomy_translate_to": "es",
   // Crawling

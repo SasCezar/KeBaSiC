@@ -1,8 +1,9 @@
 import re
-from abc import ABC
+
+from textprocessing.textprocessor import AbstractTextProcessor
 
 
-class AbstractCleaner(ABC):
+class AbstractCleaner(AbstractTextProcessor):
     def __init__(self):
         self.re_match = None
         self.sub = " "

@@ -11,7 +11,8 @@ def load_categories():
     result = {}
     with open("../webpages_quoted.csv", "rt", encoding="utf8") as inf:
         reader = csv.reader(inf)
-        for parent_id, category_id, url, text in reader:
+        next(inf)
+        for parent_category_id, category_id, url, text in reader:
             parsed = urlparse(url)
             domain = parsed.netloc if "www." not in parsed.netloc else parsed.netloc.replace("www.", "")
             result[domain] = category_id
@@ -51,5 +52,37 @@ def add_categories():
     print("Lines {} - Not Loaded {} - Percent {}".format(n, i, percent))
 
 
+def add_categories_weka():
+    categories = load_categories()
+    ids = read_taxonomy("../../resources/ES/taxonomy/taxonomy.csv")
+    with open("../keywords_results/keywords_results.csv", "rt", encoding="utf8") as inf, \
+            open("keywords_results_categorized.csv", "wt", encoding="utf8", newline="") as outf:
+        i = 0
+        n = 0
+        reader = csv.reader(inf)
+        writer = csv.writer(outf, quoting=csv.QUOTE_ALL)
+        writer.writerow(["parent_category_id", "category_id", "url", "keywords"])
+        for url, keywords in reader:
+            n += 1
+            parsed = urlparse(url)
+            domain = parsed.netloc if "www." not in parsed.netloc else parsed.netloc.replace("www.", "")
+            if domain not in categories:
+                i += 1
+                continue
+            cat = categories[domain]
+            if cat not in ids:
+                print("ERROR: {}".format(cat))
+                continue
+            if ids[cat]['parent_category_id'] == '0':
+                parent_cat = ids[cat]['category_id']
+            else:
+                parent_cat = ids[cat]['parent_category_id']
+            row = [parent_cat, ids[cat]['category_id'], url, keywords]
+            writer.writerow(row)
+
+    percent = i / n
+    print("Lines {} - Not Loaded {} - Percent {}".format(n, i, percent))
+
+
 if __name__ == '__main__':
-    add_categories()
+    add_categories_weka()
