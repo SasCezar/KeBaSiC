@@ -15,10 +15,10 @@ def worker(domains, queue):
     out = []
     for domain in domains:
         try:
-            webpage = builder.build(domain)
+            webpage = builder.build(**domain)
+            print(webpage.url)
             out.append(webpage)
         except:
-            out.append(False)
             continue
 
     queue.put(out)
@@ -39,26 +39,27 @@ class ParallelCrawling(AbstractCrawling):
         self._workers = workers
         self._processes = []
 
-    def run(self, urls):
+    def run(self, items):
         result = Queue()
-        chunksize = int(math.ceil(len(urls) / float(self._workers)))
+        chunksize = int(math.ceil(len(items) / float(self._workers)))
         print("Chunk size: {}".format(chunksize))
 
         logging.info("Initializing processes")
         for i in range(self._workers):
-            p = multiprocessing.Process(target=worker, args=(urls[chunksize * i:chunksize * (i + 1)], result))
+            p = multiprocessing.Process(target=worker, args=(items[chunksize * i:chunksize * (i + 1)], result))
             self._processes.append(p)
             p.start()
 
         logging.info("Joining results")
+        webpages = []
         for x in range(len(self._processes)):
-            urls += result.get()
+            webpages += result.get()
 
         logging.info("Waiting processes to end")
         for p in self._processes:
             p.join()
 
         logging.info("Processes ended")
-        filtered_webpages = [webpage for webpage in urls if webpage and ".pdf" not in webpage.url]
+        filtered_webpages = [webpage for webpage in webpages if webpage and ".pdf" not in webpage.url]
 
         return filtered_webpages
