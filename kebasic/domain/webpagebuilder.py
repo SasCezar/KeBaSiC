@@ -78,6 +78,7 @@ class WebPageBuilder(object):
         soup = BeautifulSoup(html_source, HTML_PARSER)
         soup = self._filter_tags(soup)
         result[TEXT] = self._extract_text(soup) if TEXT not in kwargs else kwargs[TEXT]
+        # result[TEXT] = self._extract_text(soup)
         result[META_KEYWORDS] = self._extract_meta_keywords(soup) if META_KEYWORDS not in kwargs else kwargs[
             META_KEYWORDS]
         result[META_DESCRIPTION] = self._extract_meta_description(soup) if META_DESCRIPTION not in kwargs else kwargs[
