@@ -8,7 +8,7 @@ from executions.datacrawling import ParallelCrawling
 from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
 from feature.resultsjoin import SumScores, InsertScores
-from kebasicio.weka import WekaResultsTrainingCSV
+from kebasicio.weka import WekaResultsTrainingCSV, WekaWebPageTrainingCSV
 
 
 class KeywordsExecution(AbstractExecutor):
@@ -46,7 +46,6 @@ class KeywordsExecution(AbstractExecutor):
                     dump.write(dump_result + "\n")
                     result['keywords'] = result['keywords']['combined']
                     logging.info("Keyword extracted: {}".format(len(result['keywords'])))
-                    # result.update(webpages_category[result['url']])
                     result['parent_category_id'] = webpage.parent_category_id
                     result['category_id'] = webpage.category_id
 
