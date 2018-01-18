@@ -17,7 +17,7 @@ import logging
 import re
 from collections import Counter
 
-from kebasic.feature.keywordextractor import AbstractKeywordExtractor
+from feature.keywordextractor import AbstractKeywordExtractor
 
 
 def is_number(s):

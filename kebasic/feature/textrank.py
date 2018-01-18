@@ -7,7 +7,7 @@ import editdistance
 import networkx as nx
 from stanfordcorenlp import StanfordCoreNLP
 
-from kebasic.feature.keywordextractor import AbstractKeywordExtractor
+from feature.keywordextractor import AbstractKeywordExtractor
 
 
 def filter_for_tags(tagged, tags=None):
