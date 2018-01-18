@@ -1,4 +1,1 @@
-domain:es.wikipedia.com {lvl1} {lvl2} loc:ES language:es -ext:pdf
-domain:es.wikipedia.com {lvl2} language:es loc:ES  -ext:pdf
-inbody: {lvl1} {lvl2} language:es loc:ES -ext:pdf loc:ES
-intitle: {lvl1} {lvl2} language:es loc:ES -ext:pdf
+"{lvl1} {lvl2}"

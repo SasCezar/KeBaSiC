@@ -39,6 +39,20 @@ class CSVWebPageReader(WebPageReader):
                     continue
 
 
+class WekaWebPageReader(WebPageReader):
+    def _load_webpages(self):
+        with open(self._path, "rt", encoding="utf8") as inf:
+            next(inf)
+            reader = csv.reader(inf)
+            for line in reader:
+                parent_category_id = line[0]
+                category_id = line[1]
+                url = line[2]
+                text = line[3]
+                yield WebPage(
+                    **{"url": url, "text": text, "parent_category_id": parent_category_id, "category_id": category_id})
+
+
 class MongoWebPageReader(WebPageReader):
     def _load_webpages(self):
         i = 0
@@ -81,7 +95,7 @@ class JSONWebPageReader(WebPageReader):
             for line in inf:
                 page = json.loads(line)
                 try:
-                    webpage = self._builder.build(**page)
+                    webpage = page
                 except:
                     continue
 
