@@ -1,6 +1,8 @@
+import csv
 import json
 import logging
 from time import strftime, gmtime
+from urllib.parse import urlparse
 
 from datasources.webpagedao import JSONWebPageReader, WekaWebPageReader
 from executions.basic import TextCleaningPipeline, FeatureExtractionPipeline
@@ -77,3 +79,50 @@ class CrawlingExecution(AbstractExecutor):
             for webpage in webpages:
                 csvout.write(webpage.to_dict())
                 jsonout.write(json.dumps(webpage.to_dict(), ensure_ascii=False) + "\n")
+
+
+csv.field_size_limit(2147483647)
+
+
+def read_categories(cat_path):
+    categories = {}
+    with open(cat_path, "rt", encoding="utf8") as inf:
+        reader = csv.reader(inf)
+        for p_c_id, c_id, url, _ in reader:
+            categories[get_domain(url)] = [p_c_id, c_id]
+
+    return categories
+
+
+def get_domain(url):
+    parsed = urlparse(url)
+    domain = parsed.netloc if "www." not in parsed.netloc else parsed.netloc.replace("www.", "")
+    return domain
+
+
+class ReformatExecution(AbstractExecutor):
+    def run(self):
+        path = ""
+        reader = WekaWebPageReader(path)
+        webpages = reader.load_webpages()
+        cat_path = ""
+        cat = read_categories(cat_path)
+        n = 800000
+        writer = WekaWebPageTrainingCSV
+        out_path = ""
+        i = 0
+        with writer(out_path) as outf:
+            outf.write_header()
+            for webpage in webpages():
+                url = webpage.url
+                domain = get_domain(url)
+                i = i + 1
+                if domain not in cat:
+                    continue
+                webpage_categeory = cat[domain]
+                webpage.parent_category_id = webpage_categeory[0]
+                webpage.category_id = webpage_categeory[1]
+
+                perc = i / n * 100
+                logging.info("Percent completed: {}".format(perc))
+                outf.write(webpage)
