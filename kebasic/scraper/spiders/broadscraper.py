@@ -5,7 +5,7 @@ import scrapy
 from bs4 import BeautifulSoup
 from scrapy.utils.project import get_project_settings
 
-from domain.webpagebuilder import WebPageBuilder
+from kebasic.domain.webpagebuilder import WebPageBuilder
 from kebasic.scraper.items import WebPage
 
 BS_PARSER = 'html.parser'

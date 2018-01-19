@@ -88,6 +88,7 @@ def read_categories(cat_path):
     categories = {}
     with open(cat_path, "rt", encoding="utf8") as inf:
         reader = csv.reader(inf)
+        next(reader)
         for p_c_id, c_id, url, _ in reader:
             categories[get_domain(url)] = [p_c_id, c_id]
 
@@ -102,27 +103,34 @@ def get_domain(url):
 
 class ReformatExecution(AbstractExecutor):
     def run(self):
-        path = ""
-        reader = WekaWebPageReader(path)
+        path = "../data/result.json"
+        reader = JSONWebPageReader(path)
         webpages = reader.load_webpages()
-        cat_path = ""
+        cat_path = "../data/webpages_cleaned.csv"
         cat = read_categories(cat_path)
         n = 800000
         writer = WekaWebPageTrainingCSV
-        out_path = ""
+        out_path = "../resuls_1b_retry.csv"
         i = 0
+        j = 0
+        k = 0
+        cleaner = TextCleaningPipeline(self._configs)
         with writer(out_path) as outf:
             outf.write_header()
-            for webpage in webpages():
-                url = webpage.url
+            for webpage in webpages:
+                k += 1
+                url = webpage['url']
                 domain = get_domain(url)
                 i = i + 1
                 if domain not in cat:
+                    logging.info("Skipped {}".format(url))
+                    j += 1
                     continue
-                webpage_categeory = cat[domain]
-                webpage.parent_category_id = webpage_categeory[0]
-                webpage.category_id = webpage_categeory[1]
-
+                webpage_category = cat[domain]
+                webpage['parent_category_id'] = webpage_category[0]
+                webpage['category_id'] = webpage_category[1]
                 perc = i / n * 100
                 logging.info("Percent completed: {}".format(perc))
+                webpage['text'] = cleaner.process(webpage['text'])
                 outf.write(webpage)
+        logging.info("Skipped {} on total of {} - Percent skipped: {}".format(j, k, j / k * 100))
