@@ -5,10 +5,8 @@ from abc import ABC, abstractmethod
 
 from mongoengine import *
 
-from datasources.mongoobjects import WebPage
 from domain.webpagebuilder import WebPageBuilder
-
-connect('kebasic')
+from kebasicio.mongoobjects import WebPage
 
 
 class WebPageReader(ABC):
@@ -16,16 +14,16 @@ class WebPageReader(ABC):
         self._path = path
         self._builder = WebPageBuilder()
 
-    def load_webpages(self):
-        return self._load_webpages()
+    def read(self):
+        return self._read()
 
     @abstractmethod
-    def _load_webpages(self):
+    def _read(self):
         pass
 
 
 class CSVWebPageReader(WebPageReader):
-    def _load_webpages(self):
+    def _read(self):
         with open(self._path, "rt", encoding="utf-8-sig") as inf:
             reader = csv.reader(inf)
             for line in reader:
@@ -40,7 +38,7 @@ class CSVWebPageReader(WebPageReader):
 
 
 class WekaWebPageReader(WebPageReader):
-    def _load_webpages(self):
+    def _read(self):
         with open(self._path, "rt", encoding="utf8") as inf:
             next(inf)
             reader = csv.reader(inf)
@@ -54,10 +52,14 @@ class WekaWebPageReader(WebPageReader):
 
 
 class MongoWebPageReader(WebPageReader):
-    def _load_webpages(self):
+    def __init__(self, path):
+        super().__init__(path)
+        connect('kebasic')
+
+    def _read(self):
         i = 0
         n = WebPage.objects().count()
-        for webpage in WebPage.objects()[459:1000]:
+        for webpage in WebPage.objects():
             percent = i / n * 100
             logging.info("Webpage percentage: {}".format(percent))
             yield webpage
@@ -68,7 +70,7 @@ class CSVCatalogactionReader(WebPageReader):
         super().__init__(path)
         self._ontology = ontology
 
-    def _load_webpages(self):
+    def _read(self):
         with open(self._path, "rt", encoding="utf8") as inf:
             reader = csv.reader(inf)
             next(inf)
@@ -90,7 +92,7 @@ class CSVCatalogactionReader(WebPageReader):
 
 
 class JSONWebPageReader(WebPageReader):
-    def _load_webpages(self):
+    def _read(self):
         with open(self._path, "rt", encoding="utf8") as inf:
             for line in inf:
                 page = json.loads(line)
@@ -108,15 +110,15 @@ class BingResultsWebPageReader(WebPageReader):
         with open(self._path, "rt", encoding="utf8") as inf:
             self._results = json.load(inf)
         self._taxonomy = taxonomy
-        self._unwanted = ["amazon.", "google.", "bing.", "youtube.", "yahoo."]
+        self._unwanted = ["amazon.", "google.", "bing.", "youtube.", "yahoo.", "twitter.", "slideshare.", "facebook."]
         self._extentions = [".doc", ".pdf", ".ppt", ".xml"]
 
-    def _load_webpages(self):
+    def _read(self):
         for query in self._results:
-            text_query = query['query']
+            text_query = query['query'][1:-1].strip()
             category = self._taxonomy[text_query]
             for result in query['results']:
-                url = result['url']
+                url = result['link']
                 if any([x in url for x in self._unwanted]) or any([str(url).endswith(x) for x in self._extentions]):
                     continue
                 title = result['title']

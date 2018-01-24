@@ -4,14 +4,12 @@ import logging
 from time import strftime, gmtime
 from urllib.parse import urlparse
 
-from kebasicio.database.webpagedao import JSONWebPageReader, CSVCatalogactionReader
-
-from datasources.webpagedao import BingResultsWebPageReader
 from executions.basic import TextCleaningPipeline, FeatureExtractionPipeline
 from executions.datacrawling import ParallelCrawling
 from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
 from feature.resultsjoin import SumScores
+from kebasicio.webpageio import CSVCatalogactionReader, BingResultsWebPageReader, JSONWebPageReader
 from kebasicio.weka import WekaWebPageTrainingCSV
 from textprocessing.stemmer import Stemmer
 from utils.taxonomy import read_reverse_taxonomy
@@ -30,7 +28,7 @@ class KeywordsExecution(AbstractExecutor):
         # reader = WekaWebPageReader(path)
         reader = CSVCatalogactionReader(path, ontology)
 
-        webpages = reader.load_webpages()
+        webpages = reader.read()
         stemmer = Stemmer(language="spanish")
         now = strftime("%Y_%m_%d-%H_%M", gmtime())
         filename = "training_catalogacion_stemmed.csv".format(file, now)
@@ -81,8 +79,9 @@ class CrawlingExecution(AbstractExecutor):
         taxonomy = read_reverse_taxonomy(self._configs['taxonomy_path'])
         reader = BingResultsWebPageReader
         pages = list(
-            reader("../output/scraper/GoogleScraper_bing_quoted_query_categorized.json", taxonomy).load_webpages())
+            reader("../output/scraper/GoogleScraper_bing_quoted_50_pages.json", taxonomy).read())
 
+        logging.info("Loaded {}".format(len(pages)))
         writer = WekaWebPageTrainingCSV
         crawler = ParallelCrawling({}, 32)
         webpages = crawler.run(pages)
@@ -120,7 +119,7 @@ class ReformatExecution(AbstractExecutor):
     def run(self):
         path = "../data/result.json"
         reader = JSONWebPageReader(path)
-        webpages = reader.load_webpages()
+        webpages = reader.read()
         cat_path = "../data/webpages_cleaned.csv"
         cat = read_categories(cat_path)
         n = 800000
