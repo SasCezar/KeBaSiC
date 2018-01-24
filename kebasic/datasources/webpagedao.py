@@ -100,3 +100,26 @@ class JSONWebPageReader(WebPageReader):
                     continue
 
                 yield webpage
+
+
+class BingResultsWebPageReader(WebPageReader):
+    def __init__(self, path, taxonomy):
+        super().__init__(path)
+        with open(self._path, "rt", encoding="utf8") as inf:
+            self._results = json.load(inf)
+        self._taxonomy = taxonomy
+        self._unwanted = ["amazon.", "google.", "bing.", "youtube.", "yahoo."]
+        self._extentions = [".doc", ".pdf", ".ppt", ".xml"]
+
+    def _load_webpages(self):
+        for query in self._results:
+            text_query = query['query']
+            category = self._taxonomy[text_query]
+            for result in query['results']:
+                url = result['url']
+                if any([x in url for x in self._unwanted]) or any([str(url).endswith(x) for x in self._extentions]):
+                    continue
+                title = result['title']
+                webpage = {'url': url, 'title': title}
+                webpage.update(category)
+                yield webpage

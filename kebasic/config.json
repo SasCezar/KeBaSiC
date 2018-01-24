@@ -1,6 +1,6 @@
 {
   "language": "spanish",
-  "file": "xac",
+  "file": "Catalogación_100Webs (003).csv",
   // Preprocessing
   "preprocessing_algorithms": [
     "textprocessing.cleaner.MailCleaner",
@@ -106,7 +106,6 @@
   "classifiers_parameters": {
   },
   // Taxonomy
-  "original_taxonomy": "../resources/ES/taxonomy/original_taxonomy.csv",
   "taxonomy_path": "../resources/ES/taxonomy/taxonomy.csv",
   "taxonomy_translate_from": "en",
   "taxonomy_translate_to": "es",

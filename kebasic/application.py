@@ -1,11 +1,9 @@
 import argparse
 import os
 
-from executions.composed import KeywordsExecution
+from executions.composed import CrawlingExecution
 from utils import config
 from utils.logger import initialize_logger
-
-from executions.composed import ReformatExecution
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -18,5 +16,5 @@ if __name__ == "__main__":
     initialize_logger(configs['log_path'])
 
     # KeywordsExecution(configs).run()
-    # CrawlingExecution(configs).run()
-    ReformatExecution(configs).run()
+    CrawlingExecution(configs).run()
+    # ReformatExecution(configs).run()

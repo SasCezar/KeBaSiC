@@ -4,13 +4,17 @@ import logging
 from time import strftime, gmtime
 from urllib.parse import urlparse
 
-from datasources.webpagedao import JSONWebPageReader, WekaWebPageReader
+from kebasicio.database.webpagedao import JSONWebPageReader, CSVCatalogactionReader
+
+from datasources.webpagedao import BingResultsWebPageReader
 from executions.basic import TextCleaningPipeline, FeatureExtractionPipeline
 from executions.datacrawling import ParallelCrawling
 from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
-from feature.resultsjoin import SumScores, InsertScores
-from kebasicio.weka import WekaResultsTrainingCSV, WekaWebPageTrainingCSV
+from feature.resultsjoin import SumScores
+from kebasicio.weka import WekaWebPageTrainingCSV
+from textprocessing.stemmer import Stemmer
+from utils.taxonomy import read_reverse_taxonomy
 
 
 class KeywordsExecution(AbstractExecutor):
@@ -21,16 +25,24 @@ class KeywordsExecution(AbstractExecutor):
         scores_merger = SumScores()
         file = self._configs['file']
         path = "../data/{}".format(file)
-        reader = WekaWebPageReader(path)
+        taxonomy_path = self._configs['taxonomy_path']
+        ontology = read_reverse_taxonomy(taxonomy_path)
+        # reader = WekaWebPageReader(path)
+        reader = CSVCatalogactionReader(path, ontology)
 
         webpages = reader.load_webpages()
-
+        stemmer = Stemmer(language="spanish")
         now = strftime("%Y_%m_%d-%H_%M", gmtime())
-        filename = "keywords_{}_{}_sum_combined_max_normalized.txt".format(file, now)
+        filename = "training_catalogacion_stemmed.csv".format(file, now)
 
-        writer = WekaResultsTrainingCSV
+        writer = WekaWebPageTrainingCSV
         with writer(filename) as outf, open("dump_{}.json".format(file), "wt", encoding="utf8") as dump:
+            outf.write_header()
             for webpage in webpages:
+                webpage.text = cleaner.process(webpage.text)
+                webpage.text = stemmer.run(webpage.text)
+                outf.write(webpage.to_dict())
+                """
                 try:
                     webpage.text = cleaner.process(webpage.text)
                     result = feature.process(webpage)
@@ -50,11 +62,12 @@ class KeywordsExecution(AbstractExecutor):
                     logging.info("Keyword extracted: {}".format(len(result['keywords'])))
                     result['parent_category_id'] = webpage.parent_category_id
                     result['category_id'] = webpage.category_id
-
+                    
                     outf.write(result)
                 except Exception as e:
                     print(e)
                     continue
+                """
 
         """
         executors_configs = {}
@@ -65,13 +78,15 @@ class KeywordsExecution(AbstractExecutor):
 
 class CrawlingExecution(AbstractExecutor):
     def run(self):
+        taxonomy = read_reverse_taxonomy(self._configs['taxonomy_path'])
+        reader = BingResultsWebPageReader
         pages = list(
-            JSONWebPageReader("../output/scraper/GoogleScraper_bing_quoted_query_categorized.json").load_webpages())
+            reader("../output/scraper/GoogleScraper_bing_quoted_query_categorized.json", taxonomy).load_webpages())
 
         writer = WekaWebPageTrainingCSV
         crawler = ParallelCrawling({}, 32)
         webpages = crawler.run(pages)
-        print("crawled webpages {}".format(len(webpages)))
+        print("Crawled webpages {}".format(len(webpages)))
         with writer("../output/scraper/GoogleScraper_bing_quoted_query_categorized_built.csv") as csvout, \
                 open("../output/scraper/GoogleScraper_bing_quoted_query_categorized_built.json", "wt",
                      encoding="utf8") as jsonout:

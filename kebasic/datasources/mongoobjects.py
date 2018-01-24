@@ -1,37 +1,10 @@
 from mongoengine import *
 
 
-class Results(EmbeddedDocument):
-    domain = StringField()
-    id = StringField()
-    language = StringField()
-    link = StringField()
-    serp_id = StringField()
-    snippet = StringField()
-    rank = StringField()
-    title = StringField()
-    visible_link = StringField()
-
-
-class BingResults(Document):
-    meta = {
-        'collection': 'bing_clean'
-    }
-
-    category = StringField()
-    category_id = StringField()
-    no_results = StringField()
-    num_results = StringField()
-    num_results_for_query = StringField()
-    page_number = StringField()
-    parent_category = StringField()
-    parent_id = StringField()
-    query = StringField()
-    query_cleaned = StringField()
-    results = ListField(EmbeddedDocumentField(Results))
-
-
 class WebPage(Document):
+    meta = {
+        'collection': "webpages"
+    }
 
     def __init__(self, *args, **values):
         super().__init__(*args, **values)
@@ -45,10 +18,6 @@ class WebPage(Document):
         self.text = values['text'] if 'text' in values else ''
         self.meta_keywords = values['meta_keywords'] if 'meta_keywords' in values else ''
         self.meta_description = values['meta_description'] if 'meta_description' in values else ''
-
-    meta = {
-        'collection': "webpages"
-    }
 
     url = StringField()
     html = StringField()

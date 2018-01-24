@@ -43,7 +43,6 @@ META_KEYWORDS = 'meta_keywords'
 
 
 class WebPageBuilder(object):
-
     def build(self, url, html=None, **kwargs):
         url = url.strip()
         logging.info("Building webpage: {}".format(url))
@@ -150,7 +149,7 @@ class WebPageBuilder(object):
         :param soup:
         :return:
         """
-        unwanted_divs = soup.find_all(class_=re.compile(r"(footer|header|cookie|style)", re.IGNORECASE))  # Check menu
+        unwanted_divs = soup.find_all("div", class_=re.compile(r"(footer|cookie|style)", re.IGNORECASE))  # Check menu
         unwanted_sections = soup.find_all(['footer', 'header', 'noscript', 'sidebar'])
         hidded_tags = soup.find_all(style=re.compile(r"(display:none|visibility:hidden)", re.IGNORECASE))
 
