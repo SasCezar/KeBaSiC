@@ -30,7 +30,7 @@ class KeywordsExecution(AbstractExecutor):
         # reader = CSVCatalogactionReader(path, ontology)
         reader = JSONWebPageReader(path)
 
-        webpages = list(reader.read())[:10]
+        webpages = reader.read()
         stemmer = Stemmer(language="spanish")
         now = strftime("%Y_%m_%d-%H_%M", gmtime())
         filename = "training_keywords_bing_50_pages_stemmed_{}.csv".format(now)
