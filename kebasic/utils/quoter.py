@@ -51,13 +51,13 @@ def write(results, filter_list):
 
 
 def clean():
-    unwanted = ["amazon.", "google.", "bing.", "youtube.", "yahoo."]
+    unwanted = ["amazon.", "google.", "bing.", "youtube.", "yahoo.", "scribd."]
     extentions = [".doc", ".pdf", ".ppt", ".xml"]
     duplicates = {}
 
     configs = load_configs("config.json")
     cleaner = TextCleaningPipeline(configs)
-    with open("../output/scraper/GoogleScraper_bing_quoted_query_categorized_built.csv", "rt", encoding="utf8") as inf:
+    with open("../GoogleScraper_bing_50_pages_categorized_stemmed.csv", "rt", encoding="utf8") as inf:
 
         reader = csv.reader(x.replace('\0', '') for x in inf)
 
@@ -68,23 +68,27 @@ def clean():
             domain = parsed.netloc if "www." not in parsed.netloc else parsed.netloc.replace("www.", "")
             if parent_category_id == "0":
                 parent_category_id = category_id
+            """
             if domain in seen:
                 if seen[domain] != parent_category_id:
                     print("Skipped {} - Seen {} - Parent {}".format(url, seen[domain], parent_category_id))
                     duplicates[domain] = True
             else:
                 seen[domain] = parent_category_id
+            """
 
-    with open("../output/scraper/GoogleScraper_bing_quoted_query_categorized_built.csv", "rt",
+    with open("../GoogleScraper_bing_50_pages_categorized_stemmed.csv", "rt",
               encoding="utf8") as inf, \
-            open("../output/scraper/GoogleScraper_bing_quoted_query_categorized_built_clean.csv", "wt",
+            open("../GoogleScraper_bing_quoted_50_pages_categorized_stemmed_domains_clean.csv", "wt",
                  encoding="utf8", newline="") as outf:
         writer = csv.writer(outf, quoting=csv.QUOTE_ALL)
         reader = csv.reader(x.replace('\0', '') for x in inf)
         seen_urls = {}
         for parent_category_id, category_id, url, text in reader:
+            """
             if url in seen_urls:
                 continue
+            """
             seen_urls[url] = True
             parsed = urlparse(url)
             domain = parsed.netloc if "www." not in parsed.netloc else parsed.netloc.replace("www.", "")
@@ -110,8 +114,8 @@ def read_filter():
 
 if __name__ == '__main__':
     os.chdir("C:\\Users\\sasce\\PycharmProjects\\KeBaSiC\\kebasic")
-    r = read()
-    filter_list = read_filter()
+    # r = read()
+    # filter_list = read_filter()
     # write(r, filter_list)
     # write_urls(r, filter_list)
     clean()

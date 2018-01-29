@@ -4,13 +4,14 @@ import logging
 from time import strftime, gmtime
 from urllib.parse import urlparse
 
+from domain.webpagebuilder import WebPageBuilder
 from executions.basic import TextCleaningPipeline, FeatureExtractionPipeline
 from executions.datacrawling import ParallelCrawling
 from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
-from feature.resultsjoin import SumScores
-from kebasicio.webpageio import CSVCatalogactionReader, BingResultsWebPageReader, JSONWebPageReader
-from kebasicio.weka import WekaWebPageTrainingCSV
+from feature.resultsjoin import SumScores, InsertScores
+from kebasicio.webpageio import BingResultsWebPageReader, JSONWebPageReader
+from kebasicio.weka import WekaWebPageTrainingCSV, WekaResultsTrainingCSV
 from textprocessing.stemmer import Stemmer
 from utils.taxonomy import read_reverse_taxonomy
 
@@ -22,31 +23,29 @@ class KeywordsExecution(AbstractExecutor):
         scores_normalizer = MaxScaling()
         scores_merger = SumScores()
         file = self._configs['file']
-        path = "../data/{}".format(file)
+        path = "../data/{}.json".format(file)
         taxonomy_path = self._configs['taxonomy_path']
         ontology = read_reverse_taxonomy(taxonomy_path)
         # reader = WekaWebPageReader(path)
-        reader = CSVCatalogactionReader(path, ontology)
+        # reader = CSVCatalogactionReader(path, ontology)
+        reader = JSONWebPageReader(path)
 
-        webpages = reader.read()
+        webpages = list(reader.read())[:10]
         stemmer = Stemmer(language="spanish")
         now = strftime("%Y_%m_%d-%H_%M", gmtime())
-        filename = "training_catalogacion_stemmed.csv".format(file, now)
+        filename = "training_keywords_bing_50_pages_stemmed_{}.csv".format(now)
 
-        writer = WekaWebPageTrainingCSV
-        with writer(filename) as outf, open("dump_{}.json".format(file), "wt", encoding="utf8") as dump:
+        writer = WekaResultsTrainingCSV
+        builder = WebPageBuilder()
+        with writer(filename) as outf, open("dump_{}_{}.json".format(file, now), "wt", encoding="utf8") as dump:
             outf.write_header()
-            for webpage in webpages:
-                webpage.text = cleaner.process(webpage.text)
-                webpage.text = stemmer.run(webpage.text)
-                outf.write(webpage.to_dict())
-                """
+            for json_webpage in webpages:
                 try:
+                    webpage = builder.build(**json_webpage)
                     webpage.text = cleaner.process(webpage.text)
                     result = feature.process(webpage)
                     if not result:
                         continue
-
                     for algorithm in result['keywords']:
                         keywords = result['keywords']
                         keywords[algorithm] = scores_normalizer.normalize(result['keywords'][algorithm])
@@ -62,11 +61,9 @@ class KeywordsExecution(AbstractExecutor):
                     result['category_id'] = webpage.category_id
                     
                     outf.write(result)
-                except Exception as e:
-                    print(e)
+                except Exception:
+                    logging.exception("Keyword extraction")
                     continue
-                """
-
         """
         executors_configs = {}
         executors_configs.update(cleaner.get_config())
@@ -117,14 +114,12 @@ def get_domain(url):
 
 class ReformatExecution(AbstractExecutor):
     def run(self):
-        path = "../data/result.json"
+        path = "../output/scraper/GoogleScraper_bing_quoted_50_pages_categorized_built.json"
         reader = JSONWebPageReader(path)
         webpages = reader.read()
-        cat_path = "../data/webpages_cleaned.csv"
-        cat = read_categories(cat_path)
-        n = 800000
+        n = 32000
         writer = WekaWebPageTrainingCSV
-        out_path = "../resuls_1b_retry.csv"
+        out_path = "../GoogleScraper_bing_50_pages_categorized_stemmed.csv"
         i = 0
         j = 0
         k = 0
@@ -133,16 +128,7 @@ class ReformatExecution(AbstractExecutor):
             outf.write_header()
             for webpage in webpages:
                 k += 1
-                url = webpage['url']
-                domain = get_domain(url)
-                i = i + 1
-                if domain not in cat:
-                    logging.info("Skipped {}".format(url))
-                    j += 1
-                    continue
-                webpage_category = cat[domain]
-                webpage['parent_category_id'] = webpage_category[0]
-                webpage['category_id'] = webpage_category[1]
+                i += 1
                 perc = i / n * 100
                 logging.info("Percent completed: {}".format(perc))
                 webpage['text'] = cleaner.process(webpage['text'])

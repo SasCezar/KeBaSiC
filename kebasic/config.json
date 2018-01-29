@@ -1,6 +1,6 @@
 {
   "language": "spanish",
-  "file": "Catalogación_100Webs (003).csv",
+  "file": "GoogleScraper_bing_quoted_50_pages_categorized_built",
   // Preprocessing
   "preprocessing_algorithms": [
     "textprocessing.cleaner.MailCleaner",
@@ -12,6 +12,7 @@
     "textprocessing.cleaner.PunctuationSpacesCleaner",
     "textprocessing.cleaner.Clean4SQL",
     "textprocessing.cleaner.MultipleSpacesCleaner"
+    // "textprocessing.stemmer.Stemmer"
   ],
   "preprocessing_parameters": {
     "textprocessing.cleaner.CommonWords": {
@@ -19,6 +20,9 @@
     },
     "textprocessing.cleaner.StopWordsCleaner": {
       "words_path": "../resources/ES/stopwords/stopwords.txt"
+    },
+    "textprocessing.stemmer.Stemmer": {
+      "language": "spanish"
     }
   },
   "SiteKeywordsExtractor": {

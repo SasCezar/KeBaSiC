@@ -5,14 +5,13 @@ from abc import ABC, abstractmethod
 
 from mongoengine import *
 
-from domain.webpagebuilder import WebPageBuilder
 from kebasicio.mongoobjects import WebPage
+from kebasicio.writer import AbstractWriter
 
 
-class WebPageReader(ABC):
+class AbstractWebPageReader(ABC):
     def __init__(self, path):
         self._path = path
-        self._builder = WebPageBuilder()
 
     def read(self):
         return self._read()
@@ -22,22 +21,24 @@ class WebPageReader(ABC):
         pass
 
 
-class CSVWebPageReader(WebPageReader):
+class AbstractWebPageWriter(AbstractWriter):
+    @abstractmethod
+    def _write(self, content):
+        pass
+
+
+class CSVWebPageReader(AbstractWebPageReader):
     def _read(self):
         with open(self._path, "rt", encoding="utf-8-sig") as inf:
             reader = csv.reader(inf)
             for line in reader:
                 url = line[0]
                 html = line[1] if len(line) > 1 else None
-                try:
-                    webpage = self._builder.build(url, html)
-                    yield webpage
-                except Exception as e:
-                    logging.error(e)
-                    continue
+                webpage = {"url": url, "html": html}
+                yield webpage
 
 
-class WekaWebPageReader(WebPageReader):
+class WekaWebPageReader(AbstractWebPageReader):
     def _read(self):
         with open(self._path, "rt", encoding="utf8") as inf:
             next(inf)
@@ -47,11 +48,12 @@ class WekaWebPageReader(WebPageReader):
                 category_id = line[1]
                 url = line[2]
                 text = line[3]
-                yield WebPage(
-                    **{"url": url, "text": text, "parent_category_id": parent_category_id, "category_id": category_id})
+                webpage = {"url": url, "text": text, "parent_category_id": parent_category_id,
+                           "category_id": category_id}
+                yield webpage
 
 
-class MongoWebPageReader(WebPageReader):
+class MongoWebPageReader(AbstractWebPageReader):
     def __init__(self, path):
         super().__init__(path)
         connect('kebasic')
@@ -65,7 +67,7 @@ class MongoWebPageReader(WebPageReader):
             yield webpage
 
 
-class CSVCatalogactionReader(WebPageReader):
+class CSVCatalogactionReader(AbstractWebPageReader):
     def __init__(self, path, ontology):
         super().__init__(path)
         self._ontology = ontology
@@ -79,49 +81,48 @@ class CSVCatalogactionReader(WebPageReader):
                 category = (line[3] + " " + line[4]).strip()
 
                 category = self._ontology[category]
-
-                page = {"url": url}
-                page.update(category)
-
-                try:
-                    webpage = self._builder.build(**page)
-                except:
-                    continue
+                webpage = {"url": url}
+                webpage.update(category)
 
                 yield webpage
 
 
-class JSONWebPageReader(WebPageReader):
+class JSONWebPageReader(AbstractWebPageReader):
     def _read(self):
         with open(self._path, "rt", encoding="utf8") as inf:
             for line in inf:
-                page = json.loads(line)
-                try:
-                    webpage = page
-                except:
-                    continue
-
+                webpage = json.loads(line)
                 yield webpage
 
 
-class BingResultsWebPageReader(WebPageReader):
+class BingResultsWebPageReader(AbstractWebPageReader):
     def __init__(self, path, taxonomy):
         super().__init__(path)
         with open(self._path, "rt", encoding="utf8") as inf:
             self._results = json.load(inf)
         self._taxonomy = taxonomy
-        self._unwanted = ["amazon.", "google.", "bing.", "youtube.", "yahoo.", "twitter.", "slideshare.", "facebook."]
+        self._unwanted = ["amazon.", "google.", "bing.", "youtube.", "yahoo.", "twitter.",
+                          "slideshare.", "facebook.", "scribd."]
         self._extentions = [".doc", ".pdf", ".ppt", ".xml"]
 
     def _read(self):
+        seen = set()
         for query in self._results:
             text_query = query['query'][1:-1].strip()
             category = self._taxonomy[text_query]
             for result in query['results']:
                 url = result['link']
-                if any([x in url for x in self._unwanted]) or any([str(url).endswith(x) for x in self._extentions]):
+                if any([x in url for x in self._unwanted]) or any(
+                        [str(url).endswith(x) for x in self._extentions]) or url in seen:
                     continue
+                seen.add(url)
                 title = result['title']
                 webpage = {'url': url, 'title': title}
                 webpage.update(category)
                 yield webpage
+
+
+class JSONWebPageWriter(AbstractWebPageWriter):
+    def _write(self, content):
+        json_content = json.dumps(content, ensure_ascii=False)
+        self._file.write(json_content)
