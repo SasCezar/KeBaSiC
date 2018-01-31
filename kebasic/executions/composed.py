@@ -1,8 +1,6 @@
-import csv
 import json
 import logging
 from time import strftime, gmtime
-from urllib.parse import urlparse
 
 from domain.webpagebuilder import WebPageBuilder
 from executions.basic import TextCleaningPipeline, FeatureExtractionPipeline
@@ -33,7 +31,7 @@ class KeywordsExecution(AbstractExecutor):
         webpages = reader.read()
         stemmer = Stemmer(language="spanish")
         now = strftime("%Y_%m_%d-%H_%M", gmtime())
-        filename = "training_keywords_bing_50_pages_stemmed_{}.csv".format(now)
+        filename = "training_{}_{}.csv".format(file, now)
 
         writer = WekaResultsTrainingCSV
         builder = WebPageBuilder()
@@ -64,11 +62,6 @@ class KeywordsExecution(AbstractExecutor):
                 except Exception:
                     logging.exception("Keyword extraction")
                     continue
-        """
-        executors_configs = {}
-        executors_configs.update(cleaner.get_config())
-        executors_configs.update(feature.get_config())
-        """
 
 
 class CrawlingExecution(AbstractExecutor):
@@ -92,45 +85,20 @@ class CrawlingExecution(AbstractExecutor):
                 jsonout.write(json.dumps(webpage.to_dict(), ensure_ascii=False) + "\n")
 
 
-csv.field_size_limit(2147483647)
-
-
-def read_categories(cat_path):
-    categories = {}
-    with open(cat_path, "rt", encoding="utf8") as inf:
-        reader = csv.reader(inf)
-        next(reader)
-        for p_c_id, c_id, url, _ in reader:
-            categories[get_domain(url)] = [p_c_id, c_id]
-
-    return categories
-
-
-def get_domain(url):
-    parsed = urlparse(url)
-    domain = parsed.netloc if "www." not in parsed.netloc else parsed.netloc.replace("www.", "")
-    return domain
-
-
 class ReformatExecution(AbstractExecutor):
     def run(self):
         path = "../output/scraper/GoogleScraper_bing_quoted_50_pages_categorized_built.json"
         reader = JSONWebPageReader(path)
         webpages = reader.read()
-        n = 32000
         writer = WekaWebPageTrainingCSV
         out_path = "../GoogleScraper_bing_50_pages_categorized_stemmed.csv"
         i = 0
-        j = 0
-        k = 0
         cleaner = TextCleaningPipeline(self._configs)
         with writer(out_path) as outf:
             outf.write_header()
             for webpage in webpages:
-                k += 1
                 i += 1
-                perc = i / n * 100
-                logging.info("Percent completed: {}".format(perc))
+                if i % 1000:
+                    logging.info("Completed {} rows}".format(i))
                 webpage['text'] = cleaner.process(webpage['text'])
                 outf.write(webpage)
-        logging.info("Skipped {} on total of {} - Percent skipped: {}".format(j, k, j / k * 100))

@@ -1,6 +1,6 @@
 {
   "language": "spanish",
-  "file": "GoogleScraper_bing_quoted_50_pages_categorized_built",
+  "file": "bing_50_pages_03",
   // Preprocessing
   "preprocessing_algorithms": [
     "textprocessing.cleaner.MailCleaner",

@@ -1,8 +1,5 @@
 import csv
 
-from googletrans import Translator
-
-
 class Taxonomy(object):
     @staticmethod
     def read(path, header=True):
@@ -83,26 +80,6 @@ class Taxonomy(object):
                 taxonomy[category_id] = lvls
 
         return taxonomy
-
-
-def translate_taxonomy(taxonomy, src_lang="en", dst_lang="es"):
-    """
-    Given a taxonomy of second level, translates the categories using Google Translate
-
-    :param taxonomy:
-    :param src_lang:
-    :param dst_lang:
-    :return:
-    """
-    translator = Translator()
-    translated_taxonomy = {}
-    for category_id in taxonomy:
-        translated_category = [translation.text for translation
-                               in translator.translate(taxonomy[category_id], src=src_lang, dest=dst_lang)]
-
-        translated_taxonomy[category_id] = [category_id].append(translated_category)
-
-    return translated_taxonomy
 
 
 def read_reverse_taxonomy(path):

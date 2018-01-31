@@ -1,12 +1,10 @@
 import csv
 import json
-import logging
 from abc import ABC, abstractmethod
 
-from mongoengine import *
-
-from kebasicio.mongoobjects import WebPage
 from kebasicio.writer import AbstractWriter
+
+csv.field_size_limit(2147483647)
 
 
 class AbstractWebPageReader(ABC):
@@ -51,20 +49,6 @@ class WekaWebPageReader(AbstractWebPageReader):
                 webpage = {"url": url, "text": text, "parent_category_id": parent_category_id,
                            "category_id": category_id}
                 yield webpage
-
-
-class MongoWebPageReader(AbstractWebPageReader):
-    def __init__(self, path):
-        super().__init__(path)
-        connect('kebasic')
-
-    def _read(self):
-        i = 0
-        n = WebPage.objects().count()
-        for webpage in WebPage.objects():
-            percent = i / n * 100
-            logging.info("Webpage percentage: {}".format(percent))
-            yield webpage
 
 
 class CSVCatalogactionReader(AbstractWebPageReader):
