@@ -10,7 +10,6 @@ from feature.normalization import MaxScaling
 from feature.resultsjoin import SumScores, InsertScores
 from kebasicio.webpageio import BingResultsWebPageReader, JSONWebPageReader
 from kebasicio.weka import WekaWebPageTrainingCSV, WekaResultsTrainingCSV
-from textprocessing.stemmer import Stemmer
 from utils.taxonomy import read_reverse_taxonomy
 
 
@@ -22,14 +21,9 @@ class KeywordsExecution(AbstractExecutor):
         scores_merger = SumScores()
         file = self._configs['file']
         path = "../data/{}.json".format(file)
-        taxonomy_path = self._configs['taxonomy_path']
-        ontology = read_reverse_taxonomy(taxonomy_path)
-        # reader = WekaWebPageReader(path)
-        # reader = CSVCatalogactionReader(path, ontology)
         reader = JSONWebPageReader(path)
 
         webpages = reader.read()
-        stemmer = Stemmer(language="spanish")
         now = strftime("%Y_%m_%d-%H_%M", gmtime())
         filename = "training_{}_{}.csv".format(file, now)
 
@@ -99,6 +93,6 @@ class ReformatExecution(AbstractExecutor):
             for webpage in webpages:
                 i += 1
                 if i % 1000:
-                    logging.info("Completed {} rows}".format(i))
+                    logging.info("Completed {} rows".format(i))
                 webpage['text'] = cleaner.process(webpage['text'])
                 outf.write(webpage)
