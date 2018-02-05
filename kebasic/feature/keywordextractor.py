@@ -12,7 +12,7 @@ def load_stop_words(stopwords):
     Utility function to load stop words from a file and return as a list of words
 
     :param stopwords: Path and file name of a file containing stop words.
-    :return list: A list of stop words.
+    :return: A list of stop words.
     """
 
     if type(stopwords) is list:

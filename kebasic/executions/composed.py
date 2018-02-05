@@ -8,7 +8,8 @@ from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
 from feature.resultsjoin import SumScores, InsertScores
 from kebasicio.webpageio import BingResultsWebPageReader, JSONWebPageReader
-from kebasicio.weka import WekaWebPageTrainingCSV, WekaResultsTrainingCSV
+from kebasicio.weka import WekaWebPageTrainingCSV
+from kebasicio.writer import JSONWriter
 from utils.taxonomy import read_reverse_taxonomy
 
 
@@ -25,7 +26,7 @@ class KeywordsExecution(AbstractExecutor):
         path = self._configs['input_path']
         reader = JSONWebPageReader(path)
         webpages = reader.read()
-        writer = WekaResultsTrainingCSV
+        writer = JSONWriter
         builder = WebPageBuilder()
 
         out_filename = self._configs['out_path']

@@ -122,12 +122,3 @@ class BingResultsWebPageReader(AbstractWebPageReader):
                 webpage = {'url': url, 'title': title}
                 webpage.update(category)
                 yield webpage
-
-
-class JSONWebPageWriter(AbstractWebPageWriter):
-    """
-    Saves a webpage to file as a JSON object
-    """
-    def _write(self, content):
-        json_content = json.dumps(content, ensure_ascii=False)
-        self._file.write(json_content)

@@ -1,3 +1,4 @@
+import json
 from abc import ABC, abstractmethod
 
 
@@ -18,3 +19,13 @@ class AbstractWriter(ABC):
     @abstractmethod
     def _write(self, content):
         pass
+
+
+class JSONWriter(AbstractWriter):
+    """
+    Saves the content to file as a JSON object
+    """
+
+    def _write(self, content):
+        json_content = json.dumps(content, ensure_ascii=False)
+        self._file.write(json_content)
