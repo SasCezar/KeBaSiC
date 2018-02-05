@@ -1,5 +1,4 @@
 import logging
-from collections import OrderedDict
 
 from executions.executor import AbstractPipeline
 from feature.sitekeywords import SiteKeywordsExtractor
@@ -7,7 +6,7 @@ from feature.sitekeywords import SiteKeywordsExtractor
 
 class FeatureExtractionPipeline(AbstractPipeline):
     """
-        Defines a pipeline for keyword extraction, runs in order all the defined algorithms
+    Defines a pipeline for keyword extraction, runs in order all the defined algorithms
     """
     def __init__(self, config):
         super().__init__(config)
@@ -20,12 +19,12 @@ class FeatureExtractionPipeline(AbstractPipeline):
 
     def process(self, webpage):
         """
-            Given a webpages runs the algorithms for keyword extraction
+        Given a webpages runs the algorithms for keyword extraction
 
         :param webpage:
         :return:
         """
-        result = OrderedDict()
+        result = {}
         logging.info("Extracting features from site: {}".format(webpage.url))
         if not webpage.text:
             logging.info("Empty text webpage: {}".format(webpage.url))
