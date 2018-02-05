@@ -16,7 +16,7 @@ class AbstractExecutor(ABC):
         :param configs:
         """
         self._configs = configs
-        self._allowed = set()  # all those keys will be initialized as class attributes
+        self._allowed = set()  # all these keys will be initialized as class attributes
         self.algorithms = []
         self.parameters = {}
         self.callables = []
