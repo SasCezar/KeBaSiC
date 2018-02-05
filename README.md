@@ -1,9 +1,16 @@
 # KeBaSiC
-Web pages classification based on keyword using Google AdWords taxonomy 
+A tool for keyword extraction from webpages 
 
-## Configurations
- The file [configuration](/kebasic/config.json) file allows to modify the behaviour of the tool.
- In this section we introduce the file structure and how parameters change the execution flow.
-   
-#Modes
-1 - Keyword Extraction Only
+## Installation
+KeBaSic is written in Python 3, and is required at least Python 3.5. In order to install the required dependencies run:
+
+```
+   pip install -r requirements.txt
+```
+
+The tool also requires installing the following programs:
+
+1. Stanford CoreNLP from <a href="https://stanfordnlp.github.io/CoreNLP/">https://stanfordnlp.github.io/CoreNLP/</a> 
+2. TreeTagger from <a href="http://www.cis.uni-muenchen.de/%7Eschmid/tools/TreeTagger/">http://www.cis.uni-muenchen.de/%7Eschmid/tools/TreeTagger/</a>
+
+##Usage

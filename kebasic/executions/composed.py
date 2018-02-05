@@ -1,6 +1,5 @@
 import json
 import logging
-from time import strftime, gmtime
 
 from domain.webpagebuilder import WebPageBuilder
 from executions.basic import TextCleaningPipeline, FeatureExtractionPipeline
@@ -14,22 +13,23 @@ from utils.taxonomy import read_reverse_taxonomy
 
 
 class KeywordsExecution(AbstractExecutor):
+    """
+    Implements an execution for keywords extraction
+    """
     def run(self):
         cleaner = TextCleaningPipeline(self._configs)
         feature = FeatureExtractionPipeline(self._configs)
         scores_normalizer = MaxScaling()
         scores_merger = SumScores()
-        file = self._configs['file']
-        path = "../data/{}.json".format(file)
+
+        path = self._configs['input_path']
         reader = JSONWebPageReader(path)
-
         webpages = reader.read()
-        now = strftime("%Y_%m_%d-%H_%M", gmtime())
-        filename = "training_{}_{}.csv".format(file, now)
-
         writer = WekaResultsTrainingCSV
         builder = WebPageBuilder()
-        with writer(filename) as outf, open("dump_{}_{}.json".format(file, now), "wt", encoding="utf8") as dump:
+
+        out_filename = self._configs['out_path']
+        with writer(out_filename) as outf:
             outf.write_header()
             for json_webpage in webpages:
                 try:
@@ -45,8 +45,6 @@ class KeywordsExecution(AbstractExecutor):
                     combined_scores = scores_normalizer.normalize(scores_merger.merge(result['keywords']))
                     result['keywords']['combined'] = InsertScores().insert(combined_scores,
                                                                            result['keywords']['site_keywords'])
-                    dump_result = json.dumps(result, ensure_ascii=False)
-                    dump.write(dump_result + "\n")
                     result['keywords'] = result['keywords']['combined']
                     logging.info("Keyword extracted: {}".format(len(result['keywords'])))
                     result['parent_category_id'] = webpage.parent_category_id

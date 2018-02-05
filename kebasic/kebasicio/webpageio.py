@@ -8,6 +8,9 @@ csv.field_size_limit(2147483647)
 
 
 class AbstractWebPageReader(ABC):
+    """
+    Defines an interface for webpages reader from file
+    """
     def __init__(self, path):
         self._path = path
 
@@ -26,8 +29,11 @@ class AbstractWebPageWriter(AbstractWriter):
 
 
 class CSVWebPageReader(AbstractWebPageReader):
+    """
+    Reads webpages from a CSV file where the first element is the url and optionally the HTML source for the page
+    """
     def _read(self):
-        with open(self._path, "rt", encoding="utf-8-sig") as inf:
+        with open(self._path, "rt", encoding="utf-8") as inf:
             reader = csv.reader(inf)
             for line in reader:
                 url = line[0]
@@ -37,6 +43,9 @@ class CSVWebPageReader(AbstractWebPageReader):
 
 
 class WekaWebPageReader(AbstractWebPageReader):
+    """
+    Reads webpages from a CSV file where the columns are the following: parent_category_id, category_id, url, text
+    """
     def _read(self):
         with open(self._path, "rt", encoding="utf8") as inf:
             next(inf)
@@ -52,6 +61,9 @@ class WekaWebPageReader(AbstractWebPageReader):
 
 
 class CSVCatalogactionReader(AbstractWebPageReader):
+    """
+    Reads webpages from a CSV file where the columns are the following: url, _, category_id, _, _
+    """
     def __init__(self, path, ontology):
         super().__init__(path)
         self._ontology = ontology
@@ -62,7 +74,7 @@ class CSVCatalogactionReader(AbstractWebPageReader):
             next(inf)
             for line in reader:
                 url = line[0]
-                category = (line[3] + " " + line[4]).strip()
+                category = line[2]
 
                 category = self._ontology[category]
                 webpage = {"url": url}
@@ -72,6 +84,9 @@ class CSVCatalogactionReader(AbstractWebPageReader):
 
 
 class JSONWebPageReader(AbstractWebPageReader):
+    """
+    Reads a file containing, on each line, a JSON object representing a webpage
+    """
     def _read(self):
         with open(self._path, "rt", encoding="utf8") as inf:
             for line in inf:
@@ -80,6 +95,9 @@ class JSONWebPageReader(AbstractWebPageReader):
 
 
 class BingResultsWebPageReader(AbstractWebPageReader):
+    """
+    Parses the result from GoogleScraper and returns the results for each query as a webpage
+    """
     def __init__(self, path, taxonomy):
         super().__init__(path)
         with open(self._path, "rt", encoding="utf8") as inf:
@@ -107,6 +125,9 @@ class BingResultsWebPageReader(AbstractWebPageReader):
 
 
 class JSONWebPageWriter(AbstractWebPageWriter):
+    """
+    Saves a webpage to file as a JSON object
+    """
     def _write(self, content):
         json_content = json.dumps(content, ensure_ascii=False)
         self._file.write(json_content)

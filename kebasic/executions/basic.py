@@ -6,6 +6,9 @@ from feature.sitekeywords import SiteKeywordsExtractor
 
 
 class FeatureExtractionPipeline(AbstractPipeline):
+    """
+        Defines a pipeline for keyword extraction, runs in order all the defined algorithms
+    """
     def __init__(self, config):
         super().__init__(config)
         self._allowed = {"extractor_algorithms", "extractor_parameters"}
@@ -16,6 +19,12 @@ class FeatureExtractionPipeline(AbstractPipeline):
         self._build()
 
     def process(self, webpage):
+        """
+            Given a webpages runs the algorithms for keyword extraction
+
+        :param webpage:
+        :return:
+        """
         result = OrderedDict()
         logging.info("Extracting features from site: {}".format(webpage.url))
         if not webpage.text:
@@ -36,6 +45,9 @@ class FeatureExtractionPipeline(AbstractPipeline):
 
 
 class TextCleaningPipeline(AbstractPipeline):
+    """
+    Defines a pipeline for text cleaning
+    """
     def __init__(self, config):
         super().__init__(config)
         self._allowed = {"preprocessing_algorithms", "preprocessing_parameters"}
@@ -45,6 +57,11 @@ class TextCleaningPipeline(AbstractPipeline):
         self._build()
 
     def process(self, text):
+        """
+        Applies all the cleaning algorithms to the text
+        :param text:
+        :return:
+        """
         for _, callable_object in self.callables:
             text = callable_object.run(text)
         return text

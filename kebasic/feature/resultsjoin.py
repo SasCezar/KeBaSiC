@@ -17,6 +17,10 @@ class AbstractScoresCombination(ABC):
 
 
 class SumScores(AbstractScoresCombination):
+    """
+    The scores are combined using the sum. If the same keyword was extracted by different algorithms the final score
+    is the sum of the scores from each algorithm
+    """
     def merge(self, scores):
         results = {}
 
@@ -31,6 +35,11 @@ class SumScores(AbstractScoresCombination):
 
 
 class WeightedSum(AbstractScoresCombination):
+    """
+    The scores are combined using a weighted sum. If the same keyword was extracted by different algorithms the final score
+    is the sum of the scores from each algorithm divided by the number of all algorithms used for keyword extraction (even if
+    the keyword was not extracted by an algorithm)
+    """
     def merge(self, scores):
         results = {}
 
@@ -50,10 +59,16 @@ class WeightedSum(AbstractScoresCombination):
 class InsertScores(object):
     @staticmethod
     def insert(base1, insert1):
+        """
+        Given two lists of keywords, the final result is an insertion of the second list into the first. If some element
+        are present in both lists, the score is the one present in the second list
+        :param base1:
+        :param insert1:
+        :return:
+        """
         keywords = {k.lower(): v for k, v in base1}
         insert = {k.lower(): v for k, v in insert1}
 
         keywords.update(insert)
-        keywords = keywords.items()
-        keywords = [(kw, score) for kw, score in keywords]
+        keywords = [(kw, score) for kw, score in keywords.items()]
         return sorted(keywords, key=lambda x: (-x[1], x[0]))

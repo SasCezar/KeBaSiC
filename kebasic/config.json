@@ -1,6 +1,7 @@
 {
   "language": "spanish",
-  "file": "bing_50_pages_03",
+  "input_path": "../data/file.csv",
+  "out_path": "../output/keywords_extraction/file.csv",
   // Preprocessing
   "preprocessing_algorithms": [
     "textprocessing.cleaner.MailCleaner",

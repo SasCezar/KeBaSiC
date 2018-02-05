@@ -9,7 +9,7 @@ from domain.webpagebuilder import WebPageBuilder
 
 def worker(domains, queue):
     """
-        The worker function, invoked in a process. The results are pushed to a queue.
+    The worker function, invoked in a process. The results are pushed to a queue.
     """
     builder = WebPageBuilder()
     out = []
@@ -34,6 +34,9 @@ class AbstractCrawling(ABC):
 
 
 class ParallelCrawling(AbstractCrawling):
+    """
+    Performs a parallel webpages crawling
+    """
     def __init__(self, config, workers):
         super().__init__(config)
         self._workers = workers

@@ -178,18 +178,3 @@ class AbstractKeywordExtractor(ABC):
             lemmed_keyword += " " + lemmed
 
         return lemmed_keyword.strip()
-
-    @staticmethod
-    def _score_rescaling(keywords):
-        if not keywords:
-            return []
-        scores = [score for _, score in keywords]
-        max_score = max(scores)
-
-        rescaled_keywords = []
-
-        for keyword, score in keywords:
-            scaled_score = score / max_score if max_score else 0
-            rescaled_keywords.append((keyword, scaled_score))
-
-        return rescaled_keywords
