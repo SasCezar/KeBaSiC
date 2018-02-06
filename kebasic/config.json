@@ -1,7 +1,7 @@
 {
   "language": "spanish",
-  "input_path": "../data/file.csv",
-  "out_path": "../output/keywords_extraction/file.csv",
+  "input_path": "../data/test.json",
+  "out_path": "../output/keywords_extraction/test.json",
   // Preprocessing
   "preprocessing_algorithms": [
     "textprocessing.cleaner.MailCleaner",

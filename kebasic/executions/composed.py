@@ -24,14 +24,13 @@ class KeywordsExecution(AbstractExecutor):
         scores_merger = SumScores()
 
         path = self._configs['input_path']
-        reader = JSONWebPageReader(path)
+        reader = JSONWebPageReader(path)  # Edit the class according to the structure of the input file
         webpages = reader.read()
-        writer = JSONWriter
+        writer = JSONWriter  # Edit the class according to the desired output
         builder = WebPageBuilder()
 
         out_filename = self._configs['out_path']
         with writer(out_filename) as outf:
-            outf.write_header()
             for json_webpage in webpages:
                 try:
                     webpage = builder.build(**json_webpage)

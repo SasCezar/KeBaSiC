@@ -1,8 +1,10 @@
 class WebPage(object):
+    """
+    Represents a generic web page.
+    """
     def __init__(self, url, html, title=None, text=None, meta_keywords=None, meta_description=None, category=None,
                  parent_category=None, category_id=None, parent_category_id=None):
         """
-        Represents a generic web page. The class implements methods for decomposing the web page.
         :param url:
         :param html:
         """

@@ -28,4 +28,4 @@ class JSONWriter(AbstractWriter):
 
     def _write(self, content):
         json_content = json.dumps(content, ensure_ascii=False)
-        self._file.write(json_content)
+        self._file.write(json_content + "\n")
