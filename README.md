@@ -27,17 +27,25 @@ NOTES:
 
 ## Modules Description
 Basic description for the different modules. See docs for more info.
+
 ###kebasic.domain
+
 Contains the classes that represent the domain specific objects
 ###kebasic.execution
+
 Contains the different pipelines used in the program
 ###kebasic.feature
+
 Contains the different algorithms for keyword extraction and score merging
 ###kebasic.kebasicio
+
 Contains the classes responsible for the IO 
 ###kebasic.scraper
+
 Contains the scrapy code for crawling webpages
 ###kebasic.textprocessing
+
 Contains the different algorithms for cleaning and processing of the text
+
 ###kebasic.utils
 Contains various code used for heterogeneous task 
