@@ -10,7 +10,12 @@ KeBaSic is written in Python 3, and is required at least Python 3.5. In order to
 
 The tool also requires installing the following programs:
 
-1. Stanford CoreNLP Server from <a href="https://stanfordnlp.github.io/CoreNLP/">https://stanfordnlp.github.io/CoreNLP/</a> and the language specific properties file from <a href="https://stanfordnlp.github.io/CoreNLP/download.html">https://stanfordnlp.github.io/CoreNLP/download.html</a>
+1. Stanford CoreNLP Server. It requires different files:
+   1. The server from <a href="https://stanfordnlp.github.io/CoreNLP/">https://stanfordnlp.github.io/CoreNLP/</a>;
+   2. The language specific jar file from <a href="https://stanfordnlp.github.io/CoreNLP/download.html">https://stanfordnlp.github.io/CoreNLP/download.html</a>; 
+   3. The language properties file from <a href="https://github.com/stanfordnlp/CoreNLP/blob/master/src/edu/stanford/nlp/pipeline/StanfordCoreNLP-spanish.properties">https://github.com/stanfordnlp/CoreNLP/blob/master/src/edu/stanford/nlp/pipeline/StanfordCoreNLP-spanish.properties</a>
+
+    Place the language specific jar and properties file in the server folder.
 2. TreeTagger from <a href="http://www.cis.uni-muenchen.de/%7Eschmid/tools/TreeTagger/">http://www.cis.uni-muenchen.de/%7Eschmid/tools/TreeTagger/</a>
 
 ## Usage
@@ -21,8 +26,8 @@ The tool also requires installing the following programs:
 
 NOTES:
 
-1. CoreNLP server requires at least 8GB of RAM, higher is better for allowing to process larger webpages.
-2. Set CoreNLP timout to at least a minute in order to allow the processing of large webpages
+1. CoreNLP server requires at least 8GB of RAM; higher is better for allowing to process larger webpages.
+2. Set CoreNLP timeout to at least a minute in order to allow the processing of large webpages
 
 
 ## Modules Description
