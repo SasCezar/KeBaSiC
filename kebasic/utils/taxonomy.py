@@ -1,5 +1,6 @@
 import csv
 
+
 class Taxonomy(object):
     @staticmethod
     def read(path, header=True):
@@ -90,6 +91,60 @@ def read_reverse_taxonomy(path):
 def read_taxonomy(path):
     taxonomy = Taxonomy().read(path, True)
     return taxonomy
+
+
+def read_keys_mapping(query_keys_mapping_path):
+    res = {}
+    with open(query_keys_mapping_path, "rt", encoding="utf8") as inf:
+        reader = csv.reader(inf)
+        for query, lvl1, lvl2 in reader:
+            res[query] = (lvl1.strip(), lvl2.strip())
+
+    return res
+
+
+def read_businnes_type_mapping(business_type_mapping_path):
+    mapping = {}
+    with open(business_type_mapping_path, "rt", encoding="utf8") as inf:
+        next(inf)
+        for line in inf:
+            splitted = line.split(",")
+            lvl1 = splitted[0]
+            lvl2 = splitted[1]
+            id = splitted[2]
+
+            parent_category = mapping[lvl1.lower()]['category_id'] if lvl1.lower() in mapping and mapping[
+                lvl1.lower()] else ''
+            parent_category_id = mapping[lvl1.lower()]['parent_category_id'] if lvl1.lower() in mapping and mapping[
+                lvl1.lower()] else '0'
+
+            category = lvl2 if lvl2.strip() else lvl1
+            category_id = id
+
+            result = {'parent_category': lvl1, 'parent_category_id': lvl1,
+                      'category': lvl2, 'category_id': lvl2}
+
+            mapping[lvl1.lower()] = result if lvl1 and not lvl2 else None
+            mapping[lvl2.lower()] = result if lvl2 else None
+
+    return mapping
+
+
+def read_jot_taxonomy(google_taxonomy_path, query_keys_mapping_path, business_type_mapping_path):
+    google_taxonomy = read_taxonomy(google_taxonomy_path)
+    query_keys_mapping = read_keys_mapping(query_keys_mapping_path)
+    business_type_mapping = read_businnes_type_mapping(business_type_mapping_path)
+
+    jot2google = {}
+    for query_key in query_keys_mapping:
+        lvl1, lvl2 = query_keys_mapping[query_key]
+        category = lvl2.lower() if lvl2 and lvl2.lower() in business_type_mapping else lvl1.lower()
+        if category == "nan":
+            jot2google[query_key] = {}
+        else:
+            jot2google[query_key] = business_type_mapping[category]
+
+    return jot2google
 
 
 if __name__ == '__main__':

@@ -124,7 +124,7 @@ def main():
     os.chdir("..")
     template_path = config["template_path"]
     query_out_path = config["query_out_path"]
-    keywords_path = config["taxonomy_path"]
+    keywords_path = "utils/keys.txt"
     sites_path = None
 
     generate_queries(template_path, query_out_path, keywords_path, sites_path)

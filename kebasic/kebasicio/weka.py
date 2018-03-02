@@ -49,7 +49,7 @@ class WekaWebPageTrainingCSV(WekaTrainigCSV):
             parent_category_id = category_id
         url = result['url']
         # keywords = " ".join([keyword for keyword, _ in result['keywords']])
-        text = result['keywords']
+        text = result['text']
         if not text:
             return False
         row = [parent_category_id, category_id, url, text]

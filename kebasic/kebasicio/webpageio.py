@@ -110,8 +110,10 @@ class BingResultsWebPageReader(AbstractWebPageReader):
     def _read(self):
         seen = set()
         for query in self._results:
-            text_query = query['query'][1:-1].strip()
+            text_query = query['query'].replace("language:es", "").strip()[1:-1].strip()
             category = self._taxonomy[text_query]
+            if category is None:
+                continue
             for result in query['results']:
                 url = result['link']
                 if any([x in url for x in self._unwanted]) or any(
