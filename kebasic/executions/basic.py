@@ -8,6 +8,7 @@ class FeatureExtractionPipeline(AbstractPipeline):
     """
     Defines a pipeline for keyword extraction, runs in order all the defined algorithms
     """
+
     def __init__(self, config):
         super().__init__(config)
         self._allowed = {"extractor_algorithms", "extractor_parameters"}
@@ -47,6 +48,7 @@ class TextCleaningPipeline(AbstractPipeline):
     """
     Defines a pipeline for text cleaning
     """
+
     def __init__(self, config):
         super().__init__(config)
         self._allowed = {"preprocessing_algorithms", "preprocessing_parameters"}

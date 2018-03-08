@@ -7,9 +7,9 @@ from executions.datacrawling import ParallelCrawling
 from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
 from feature.resultsjoin import SumScores, InsertScores
-from kebasicio.webpageio import BingResultsWebPageReader, JSONWebPageReader
+from kebasicio.webpageio import BingResultsWebPageReader, WekaWebPageReader, JSONWebPageReader
 from kebasicio.weka import WekaWebPageTrainingCSV
-from kebasicio.writer import JSONWriter
+from kebasicio.writer import StdOutFileWriter
 from utils.taxonomy import read_jot_taxonomy
 
 
@@ -27,11 +27,11 @@ class KeywordsExecution(AbstractExecutor):
         path = self._configs['input_path']
         reader = JSONWebPageReader(path)  # Edit the class according to the structure of the input file
         webpages = reader.read()
-        writer = JSONWriter  # Edit the class according to the desired output
+        writer = StdOutFileWriter  # Edit the class according to the desired output
         builder = WebPageBuilder()
 
         out_filename = self._configs['out_path']
-        with writer(out_filename) as outf:
+        with writer(out_filename, self._configs['std_out']) as outf:
             for json_webpage in webpages:
                 try:
                     webpage = builder.build(**json_webpage)
@@ -51,7 +51,8 @@ class KeywordsExecution(AbstractExecutor):
                     result['parent_category_id'] = webpage.parent_category_id
                     result['category_id'] = webpage.category_id
 
-                    outf.write(result)
+                    string_result = json.dumps(result, ensure_ascii=False)
+                    outf.write(string_result)
                 except Exception:
                     logging.exception("Keyword extraction")
                     continue
@@ -69,7 +70,7 @@ class CrawlingExecution(AbstractExecutor):
         crawler = ParallelCrawling({}, 25)
         webpages = crawler.run(pages)
         print("Crawled webpages {}".format(len(webpages)))
-        with open("../output/scraper/GoogleScraper_bing_JOTKeywords_25_pages_language_2.json", "wt",
+        with open("../output/scraper/GoogleScraper_bing_JOTKeywords_25_pages_language_3.json", "wt",
                   encoding="utf8") as jsonout:
             for webpage in webpages:
                 jsonout.write(json.dumps(webpage.to_dict(), ensure_ascii=False) + "\n")
@@ -77,17 +78,22 @@ class CrawlingExecution(AbstractExecutor):
 
 class ReformatExecution(AbstractExecutor):
     def run(self):
-        path = "../output/scraper/GoogleScraper_bing_JOTKeywords_25_pages_language_fixed.json"
-        reader = JSONWebPageReader(path)
+        # path = "../output/scraper/GoogleScraper_bing_JOTKeywords_25_pages_language_3.json"
+        path = "../data/test_set.csv"
+        reader = WekaWebPageReader(path)
         webpages = reader.read()
         writer = WekaWebPageTrainingCSV
-        out_path = "../GoogleScraper_bing_JOTKeywords_25_pages_language_fixed.csv"
+        out_path = "../test_set_stemmed.csv"
         i = 0
         seen = set()
+        builder = WebPageBuilder()
         cleaner = TextCleaningPipeline(self._configs)
         with writer(out_path) as outf:
             outf.write_header()
             for webpage in webpages:
+                webpage.pop('text', None)
+                built = builder.build(**webpage)
+                webpage = built.to_dict()
                 if webpage['url'] in seen:
                     continue
                 seen.add(webpage['url'])

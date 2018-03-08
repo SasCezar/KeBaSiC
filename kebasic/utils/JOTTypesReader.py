@@ -27,11 +27,14 @@ if __name__ == '__main__':
     out_path = "keys.txt"
 
     print(len(files))
-    with open(out_path, "wt", encoding="utf8", newline="") as outf:
+    with open(out_path, "wt", encoding="utf8", newline="") as outf, \
+            open("keys_mapping.txt", "wt", encoding="utf8", newline="") as outf2:
         writer = csv.writer(outf, quoting=csv.QUOTE_NONE, quotechar="")
+        mapping_writer = csv.writer(outf2, quoting=csv.QUOTE_NONE, quotechar="")
         for file in files:
             print("Working file: {}".format(file))
             file_kewyords = BusinessKeywords(file).read_keywords()
 
             for keyword in file_kewyords:
                 writer.writerow(["\"{}\" language:es".format(keyword[0])])
+                mapping_writer.writerow(keyword)

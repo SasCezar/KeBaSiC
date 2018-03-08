@@ -37,6 +37,8 @@ def main():
                 i = i + 1
                 continue
             webpage.update(cats[webpage['url']])
+            if not webpage['category']:
+                webpage["category"] = webpage["parent_category"]
             jsonout.write(json.dumps(webpage, ensure_ascii=False) + "\n")
     print(i)
 
@@ -65,7 +67,9 @@ def main2():
                 continue
 
             mapped_cat = mapping[category_id] if category_id in mapping else mapping[parent_id]
-            result.append([mapped_cat['parent_category'], mapped_cat["category"], url])
+            if not mapped_cat['category']:
+                mapped_cat["category"] = mapped_cat["parent_category"]
+            result.append([mapped_cat['parent_category'], mapped_cat["category"], url, text])
 
     test_path = ''
 
@@ -86,6 +90,21 @@ def main2():
             writer.writerow(res)
 
 
+def main3():
+    with open("C:\\Users\\sasce\\PycharmProjects\KeBaSiC\GoogleScraper_bing_JOTKeywords_25_pages_language_fixed_v2.csv",
+              "rt", encoding="utf8") as inf, \
+            open("C:\\Users\sasce\PycharmProjects\KeBaSiC\GoogleScraper_bing_JOTKeywords_25_pages_language_v2.csv",
+                 "wt",
+                 encoding="utf8", newline="") as outf:
+        reader = csv.reader(inf)
+        writer = csv.writer(outf, quoting=csv.QUOTE_ALL)
+        for parent, cat, url, text in reader:
+            if not cat:
+                cat = parent
+
+            writer.writerow([parent, cat, url, text])
+
+
 if __name__ == '__main__':
     os.chdir("..")
-    main2()
+    main3()

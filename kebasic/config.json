@@ -1,7 +1,6 @@
 {
   "language": "spanish",
-  "input_path": "../data/test.json",
-  "out_path": "../output/keywords_extraction/test.json",
+
   // Preprocessing
   "preprocessing_algorithms": [
     "textprocessing.cleaner.MailCleaner",
@@ -12,8 +11,8 @@
     "textprocessing.cleaner.StopWordsCleaner",
     "textprocessing.cleaner.PunctuationSpacesCleaner",
     "textprocessing.cleaner.Clean4SQL",
-    "textprocessing.cleaner.MultipleSpacesCleaner",
-    "textprocessing.stemmer.Stemmer"
+    "textprocessing.cleaner.MultipleSpacesCleaner"
+    //"textprocessing.stemmer.Stemmer"
   ],
   "preprocessing_parameters": {
     "textprocessing.cleaner.CommonWords": {
@@ -118,7 +117,5 @@
   "template_path": "../resources/ES/query/templates/bing.txt",
   "query_out_path": "../resources/ES/query/bing.txt",
   "keywords_path": "../resources/query/keywords.txt",
-  "sites_path": "../resources/query/sites.txt",
-  //Logger
-  "log_path": "../log"
+  "sites_path": "../resources/query/sites.txt"
 }

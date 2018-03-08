@@ -1,4 +1,3 @@
-import json
 from abc import ABC, abstractmethod
 
 
@@ -7,11 +6,15 @@ class AbstractWriter(ABC):
         self._path = path
 
     def __enter__(self):
-        self._file = open(self._path, "wt", encoding="utf8", newline='')
+        if self._path:
+            self._file = open(self._path, "wt", encoding="utf8", newline='')
+        else:
+            self._file = None
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._file.close()
+        if self._path:
+            self._file.close()
 
     def write(self, content):
         self._write(content)
@@ -21,11 +24,16 @@ class AbstractWriter(ABC):
         pass
 
 
-class JSONWriter(AbstractWriter):
-    """
-    Saves the content to file as a JSON object
-    """
+class StdOutFileWriter(AbstractWriter):
+    def __init__(self, path, print=True):
+        super().__init__(path)
+        self.stdout = print
+
+    def write(self, content):
+        if self.stdout:
+            print(content)
+        if self._file:
+            self._write(content)
 
     def _write(self, content):
-        json_content = json.dumps(content, ensure_ascii=False)
-        self._file.write(json_content + "\n")
+        self._file.write(content + "\n")

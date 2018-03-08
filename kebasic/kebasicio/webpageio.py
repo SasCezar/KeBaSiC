@@ -54,7 +54,7 @@ class WekaWebPageReader(AbstractWebPageReader):
                 parent_category_id = line[0]
                 category_id = line[1]
                 url = line[2]
-                text = line[3]
+                text = line[3] if len(line) > 3 else None
                 webpage = {"url": url, "text": text, "parent_category_id": parent_category_id,
                            "category_id": category_id}
                 yield webpage

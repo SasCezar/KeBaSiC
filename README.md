@@ -22,7 +22,13 @@ The tool also requires installing the following programs:
 1. Edit the [config.json](kebasic/config.json) file with the input and the output files
 2. In the [composed.py](kebasic/executions/composed.py) file change the reader and the writer class according to the desired input/output (see [kebasicio](kebasic.kebasicio) module for all the possible IO and interfaces)
 3. Start CoreNLP server with ```java -Xmx12g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -serverProperties StanfordCoreNLP-spanish.properties -timeout 60000```
-4. Run ```python application.py```
+4. Run ```python application.py -input_path="../data/test.json" [-out_path="../output/keywords_extraction/results_test.json" -std_out -log -log_path="../log]```
+
+Where the arguments in the square brackets are optional. The arguments are:
+* out_path: The path where the results will be saved, if is not specified there will be no saved results.
+* std_out: Enables the print of the results on standard output, if not specified, no result will be printed on standard output
+* log: Enables the logging, if non specified the logging will not be enabled
+* log_path: Defines the path where the logs will be saved, if not defined the log will only be printed on standard output
 
 NOTES:
 
