@@ -133,3 +133,8 @@ class Clean4SQL(AbstractCleaner):
 class StopWordsCleaner(CommonWords):
     def __init__(self, words_path):
         super().__init__(words_path)
+
+
+class LocationsCleaner(CommonWords):
+    def __init__(self, words_path):
+        super().__init__(words_path)

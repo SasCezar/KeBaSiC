@@ -8,6 +8,7 @@
     "textprocessing.cleaner.WordsWithNumbersCleaner",
     "textprocessing.cleaner.NonPunctuationSymbolsCleaner",
     "textprocessing.cleaner.CommonWords",
+    "textprocessing.cleaner.LocationsCleaner",
     "textprocessing.cleaner.StopWordsCleaner",
     "textprocessing.cleaner.PunctuationSpacesCleaner",
     "textprocessing.cleaner.Clean4SQL",
@@ -17,6 +18,9 @@
   "preprocessing_parameters": {
     "textprocessing.cleaner.CommonWords": {
       "words_path": "../resources/common_words.txt"
+    },
+    "textprocessing.cleaner.LocationsCleaner": {
+      "words_path": "../resources/location_names.txt"
     },
     "textprocessing.cleaner.StopWordsCleaner": {
       "words_path": "../resources/ES/stopwords/stopwords.txt"
