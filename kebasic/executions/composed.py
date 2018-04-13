@@ -1,11 +1,15 @@
 import json
 import logging
 
+from weka.core import jvm
+
+from classification.weka_classifier import WEKAClassifier
 from domain.webpagebuilder import WebPageBuilder
 from executions.basic import TextCleaningPipeline, FeatureExtractionPipeline
 from executions.datacrawling import ParallelCrawling
 from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
+from feature.penalizer import ScorePenalizer
 from feature.resultsjoin import SumScores, InsertScores
 from kebasicio.webpageio import BingResultsWebPageReader, WekaWebPageReader, JSONWebPageReader
 from kebasicio.weka import WekaWebPageTrainingCSV
@@ -27,15 +31,25 @@ class KeywordsExecution(AbstractExecutor):
         path = self._configs['input_path']
         reader = JSONWebPageReader(path)  # Edit the class according to the structure of the input file
         webpages = reader.read()
-        writer = StdOutFileWriter  # Edit the class according to the desired output
+        writer = StdOutFileWriter
         builder = WebPageBuilder()
 
+        jvm.start(packages=True)
+        wekaclass = WEKAClassifier(self._configs['lvl1_model'])
+        wekaclass2 = WEKAClassifier(self._configs['lvl2_model'])
         out_filename = self._configs['out_path']
         with writer(out_filename, self._configs['std_out']) as outf:
             for json_webpage in webpages:
                 try:
+
                     webpage = builder.build(**json_webpage)
                     webpage.text = cleaner.process(webpage.text)
+                    cleaned_meta = []
+                    for tag in webpage.meta_tags:
+                        cleaned_meta.append(cleaner.process(tag))
+
+                    webpage.meta_tags = cleaned_meta
+
                     result = feature.process(webpage)
                     if not result:
                         continue
@@ -46,16 +60,22 @@ class KeywordsExecution(AbstractExecutor):
                     combined_scores = scores_normalizer.normalize(scores_merger.merge(result['keywords']))
                     result['keywords']['combined'] = InsertScores().insert(combined_scores,
                                                                            result['keywords']['site_keywords'])
+
+                    result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'],
+                                                                           result['keywords']['meta_tags'])
                     result['keywords'] = result['keywords']['combined']
+                    result['keywords'] = ScorePenalizer().penalize(result['keywords'],
+                                                                   [cleaner.process(x) for x in webpage.links_text])
                     logging.info("Keyword extracted: {}".format(len(result['keywords'])))
-                    result['parent_category_id'] = webpage.parent_category_id
-                    result['category_id'] = webpage.category_id
+                    result['parent_category_id'] = wekaclass.classify(webpage.text)
+                    result['category_id'] = wekaclass2.classify(webpage.text)
 
                     string_result = json.dumps(result, ensure_ascii=False)
                     outf.write(string_result)
                 except Exception:
                     logging.exception("Keyword extraction")
                     continue
+        jvm.stop()
 
 
 class CrawlingExecution(AbstractExecutor):

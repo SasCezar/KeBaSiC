@@ -54,3 +54,6 @@ pinterest
 follower
 followers
 about
+contact us
+mail to
+mailto

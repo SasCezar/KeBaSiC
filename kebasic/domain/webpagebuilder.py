@@ -62,7 +62,7 @@ class WebPageBuilder(object):
         logging.debug("Downloading webpage: {}".format(url))
         response = requests.get(url, timeout=10,
                                 headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)],
-                                         'Accept-Language': 'es'})
+                                         'Accept-Language': 'es'}, verify=False)
 
         webpage = response.content
 
@@ -77,13 +77,36 @@ class WebPageBuilder(object):
         soup = BeautifulSoup(html_source, HTML_PARSER)
         soup = self._filter_tags(soup)
         result[TEXT] = self._extract_text(soup) if TEXT not in kwargs else kwargs[TEXT]
-        # result[TEXT] = self._extract_text(soup)
         result[META_KEYWORDS] = self._extract_meta_keywords(soup) if META_KEYWORDS not in kwargs else kwargs[
             META_KEYWORDS]
         result[META_DESCRIPTION] = self._extract_meta_description(soup) if META_DESCRIPTION not in kwargs else kwargs[
             META_DESCRIPTION]
 
+        metatags = self._extract_metatags(soup)
+        result['meta_tags'] = metatags
+        result['links_text'] = self.extract_links_text(soup)
         return result
+
+    def _extract_metatags(self, soup):
+        result = set()
+        name_metatags = soup.find_all("meta", attrs={"name": re.compile(r"(.*description|.*title)", re.IGNORECASE)})
+        property_metatags = soup.find_all("meta",
+                                          attrs={"property": re.compile(r"(.*description|.*title)", re.IGNORECASE)})
+        for tag in itertools.chain(name_metatags, property_metatags):
+            content = tag.get(CONTENT, None)
+            result.add(content)
+        return self._remove_overlapping(result)
+
+    def _remove_overlapping(self, items):
+        result = items
+        for a, b in itertools.combinations(items, 2):
+            if a == b:
+                continue
+            if a in b and a in result:
+                result.remove(a)
+            if b in a and b in result:
+                result.remove(b)
+        return list(result)
 
     @staticmethod
     def _tag_visible(element):
@@ -158,3 +181,14 @@ class WebPageBuilder(object):
 
         soup.renderContents()
         return soup
+
+    @staticmethod
+    def extract_links_text(soup):
+        links = soup.find_all('a')
+        result = set()
+        for link in links:
+            text = link.text.strip()
+            if text:
+                result.add(text)
+
+        return result

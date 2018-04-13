@@ -18,11 +18,13 @@ The tool also requires installing the following programs:
     Place the language specific jar and properties file in the server folder.
 2. TreeTagger from <a href="http://www.cis.uni-muenchen.de/%7Eschmid/tools/TreeTagger/">http://www.cis.uni-muenchen.de/%7Eschmid/tools/TreeTagger/</a>
 
+3. WEKA from https://www.cs.waikato.ac.nz/ml/weka/downloading.html, and install the LibSVM package from WEKA's package managere.
+
 ## Usage
 1. Edit the [config.json](kebasic/config.json) file with the input and the output files
 2. In the [composed.py](kebasic/executions/composed.py) file change the reader and the writer class according to the desired input/output (see [kebasicio](kebasic.kebasicio) module for all the possible IO and interfaces)
 3. Start CoreNLP server with ```java -Xmx12g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -serverProperties StanfordCoreNLP-spanish.properties -timeout 60000```
-4. Run ```python application.py -input_path="../data/test.json" [-out_path="../output/keywords_extraction/results_test.json" -std_out -log -log_path="../log]```
+4. Run ```python application.py -input_path="../data/test.json" [-out_path="../output/keywords_extraction/results_test.json" -std_out -log -log_path="../log"]```
 
 Where the arguments in the square brackets are optional. The arguments are:
 * out_path: The path where the results will be saved, if is not specified there will be no saved results.
@@ -51,4 +53,18 @@ Contains the scrapy code for crawling webpages
 ### kebasic.textprocessing
 Contains the different algorithms for cleaning and processing of the text
 ### kebasic.utils
-Contains various code used for heterogeneous task 
+Contains various code used for heterogeneous task
+
+## Resources
+In this section are presented the editable resources in order to allow the customization of the tool.
+These files can be language dependant or independent. The language specific files are placed in the language folder.
+### Stopwords
+The file stopwords contains common words of the specific language. This file can be modified to remove unwanted words to be extracted as keywords.
+
+NOTE: The tool uses stopwords as separator of keywords, so the words present in this file will not imply that the word will not be present in the results.
+
+### Commonwords 
+The common words file contains undesired and words that are common on websites (e.g Facebook/share/login and more). These words will be removed before preprocessing with other algorithms. These words will not be present in the keywords.
+
+### Location Names
+This files contains the names of possible location that are undesired.

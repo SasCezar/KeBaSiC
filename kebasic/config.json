@@ -109,10 +109,9 @@
       "stopwords": "../resources/ES/stopwords/stopwords.txt"
     }
   },
-  // Classifiers
-  "classifiers": [],
-  "classifiers_parameters": {
-  },
+  "lvl1_model": "../resources/ES/model/svm_train_h1.model",
+  "lvl2_model": "../resources/ES/model/svm_train_h2.model",
+
   // Taxonomy
   "taxonomy_path": "../resources/ES/taxonomy/taxonomy.csv",
   "taxonomy_translate_from": "en",
