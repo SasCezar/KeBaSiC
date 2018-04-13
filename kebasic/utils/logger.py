@@ -4,7 +4,12 @@ import os
 LOGGING_STRING_FORMAT = "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
 
 
-def initialize_logger(output_dir):
+def initialize_logger(output_dir, enable):
+    if not enable:
+        logger = logging.getLogger()
+        logger.setLevel(1000)
+        return
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 

@@ -21,8 +21,7 @@ if __name__ == "__main__":
 
     configs.update(vars(args))
 
-    if configs['log']:
-        initialize_logger(configs['log_path'])
+    initialize_logger(configs['log_path'], configs['log'])
 
     KeywordsExecution(configs).run()
     # CrawlingExecution(configs).run()

@@ -62,7 +62,7 @@ class WebPageBuilder(object):
         logging.debug("Downloading webpage: {}".format(url))
         response = requests.get(url, timeout=10,
                                 headers={'User-Agent': USER_AGENTS[random.randint(0, USER_AGENTS_LEN - 1)],
-                                         'Accept-Language': 'es'}, verify=False)
+                                         'Accept-Language': 'es'})
 
         webpage = response.content
 
