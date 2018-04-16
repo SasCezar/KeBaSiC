@@ -11,9 +11,7 @@
     "textprocessing.cleaner.LocationsCleaner",
     "textprocessing.cleaner.StopWordsCleaner",
     "textprocessing.cleaner.PunctuationSpacesCleaner",
-    "textprocessing.cleaner.Clean4SQL",
     "textprocessing.cleaner.MultipleSpacesCleaner"
-    //"textprocessing.stemmer.Stemmer"
   ],
   "preprocessing_parameters": {
     "textprocessing.cleaner.CommonWords": {

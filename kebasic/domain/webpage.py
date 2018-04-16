@@ -38,9 +38,17 @@ class WebPage(object):
     def meta_keywords(self):
         return self._meta_keywords
 
+    @meta_keywords.setter
+    def meta_keywords(self, value):
+        self._meta_keywords = value
+
     @property
     def meta_description(self):
         return self._meta_description
+
+    @meta_description.setter
+    def meta_description(self, value):
+        self._meta_description = value
 
     @property
     def text(self):

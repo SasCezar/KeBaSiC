@@ -11,8 +11,7 @@ from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
 from feature.penalizer import ScorePenalizer
 from feature.resultsjoin import SumScores, InsertScores
-from kebasicio.webpageio import BingResultsWebPageReader, WekaWebPageReader, JSONWebPageReader
-from kebasicio.weka import WekaWebPageTrainingCSV
+from kebasicio.webpageio import BingResultsWebPageReader, JSONWebPageReader
 from kebasicio.writer import StdOutFileWriter
 from utils.taxonomy import read_jot_taxonomy
 
@@ -41,10 +40,14 @@ class KeywordsExecution(AbstractExecutor):
         with writer(out_filename, self._configs['std_out']) as outf:
             for json_webpage in webpages:
                 try:
-
                     webpage = builder.build(**json_webpage)
                     webpage.text = cleaner.process(webpage.text)
                     cleaned_meta = []
+                    if webpage.meta_keywords:
+                        webpage.meta_keywords = cleaner.process(webpage.meta_keywords)
+
+                    if webpage.meta_description:
+                        webpage.meta_description = cleaner.process(webpage.meta_description)
                     for tag in webpage.meta_tags:
                         cleaned_meta.append(cleaner.process(tag))
 
@@ -72,8 +75,10 @@ class KeywordsExecution(AbstractExecutor):
 
                     string_result = json.dumps(result, ensure_ascii=False)
                     outf.write(string_result)
-                except Exception:
+                except Exception as e:
+                    logging.error(e)
                     continue
+
         jvm.stop()
 
 
@@ -98,25 +103,27 @@ class CrawlingExecution(AbstractExecutor):
 class ReformatExecution(AbstractExecutor):
     def run(self):
         # path = "../output/scraper/GoogleScraper_bing_JOTKeywords_25_pages_language_3.json"
-        path = "../data/test_set.csv"
-        reader = WekaWebPageReader(path)
+        path = "../data/test.json"
+        reader = JSONWebPageReader(path)
         webpages = reader.read()
-        writer = WekaWebPageTrainingCSV
-        out_path = "../test_set_stemmed.csv"
+
+        out_path = "../data/test_set.json"
         i = 0
         seen = set()
         builder = WebPageBuilder()
         cleaner = TextCleaningPipeline(self._configs)
-        with writer(out_path) as outf:
-            outf.write_header()
+        with open(out_path, "wt", encoding="utf8") as outf:
             for webpage in webpages:
-                webpage.pop('text', None)
-                built = builder.build(**webpage)
-                webpage = built.to_dict()
-                if webpage['url'] in seen:
+                try:
+                    built = builder.build(**webpage)
+                    webpage = built.to_dict()
+                    if webpage['url'] in seen:
+                        continue
+                    str_webpage = json.dumps(webpage, ensure_ascii=False)
+                    outf.write(str_webpage + "\n")
+                    seen.add(webpage['url'])
+                    i += 1
+                    logging.info("Completed {} rows".format(i))
+                    #     webpage['text'] = cleaner.process(webpage['text'])
+                except:
                     continue
-                seen.add(webpage['url'])
-                i += 1
-                logging.info("Completed {} rows".format(i))
-                webpage['text'] = cleaner.process(webpage['text'])
-                outf.write(webpage)

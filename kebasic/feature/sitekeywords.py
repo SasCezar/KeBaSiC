@@ -12,7 +12,8 @@ class SiteKeywordsExtractor(AbstractKeywordExtractor):
         self._filterlist = self._stopwords + self._commonwords
 
     def _extract_keywords(self, text, score=0):
-        keywords = [(self._clean(keyword.strip()), score) for keyword in re.split(r"[,.]", text) if keyword.strip()]
+        keywords = [(self._clean(keyword.strip()), score) for keyword in re.split("[" + string.punctuation + "]", text)
+                    if keyword.strip()]
         return keywords
 
     def run(self, text, score=1):
