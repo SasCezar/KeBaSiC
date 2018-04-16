@@ -2,6 +2,7 @@ import logging
 import re
 import string
 from abc import ABC, abstractmethod
+from itertools import groupby
 
 import nltk
 import treetaggerwrapper
@@ -122,14 +123,13 @@ class AbstractKeywordExtractor(ABC):
 
             score = sum([scores[kw.lower()] for kw in keywords_tuple])
             score = scores[merged_keyword[0].lower()] if merged_keyword[0].lower() in scores and not score else score
-            result.append((merged_keyword[0], score))
+            result.append((self._remove_duplicates(merged_keyword[0]), score))
 
         if self._keep_all:
             used_keywords = set(keyword for kwtuple in seen for keyword in kwtuple)
 
             for key in keys:
                 result.append((key, scores[key.lower()])) if key not in used_keywords else None
-
         return result
 
     def _text_lemmatization(self, text):
@@ -177,3 +177,7 @@ class AbstractKeywordExtractor(ABC):
             lemmed_keyword += " " + lemmed
 
         return lemmed_keyword.strip()
+
+    @staticmethod
+    def _remove_duplicates(keyword):
+        return " ".join([x[0] for x in groupby(keyword.split())])
