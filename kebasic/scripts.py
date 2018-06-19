@@ -1,6 +1,6 @@
 import argparse
 
-from classification.compute_training_category_classification import train_classifier
+from classification.classifier_training import train_classifier
 from executions.composed import DatasetCrawlingExecution
 from utils.config import load_configs
 from utils.querygeneration import generate_queries
