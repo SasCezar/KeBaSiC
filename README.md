@@ -21,6 +21,7 @@ The tool also requires installing the following programs:
 3. WEKA from https://www.cs.waikato.ac.nz/ml/weka/downloading.html, and install the LibSVM package from WEKA's package managere.
 
 ## Usage
+### Keyword Extraction
 1. Edit the [config.json](kebasic/config.json) file with the input and the output files
 2. In the [composed.py](kebasic/executions/composed.py) file change the reader and the writer class according to the desired input/output (see [kebasicio](kebasic.kebasicio) module for all the possible IO and interfaces)
 3. Start CoreNLP server with ```java -Xmx12g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -serverProperties StanfordCoreNLP-spanish.properties -timeout 60000```
@@ -36,6 +37,40 @@ NOTES:
 
 1. CoreNLP server requires at least 8GB of RAM; higher is better for allowing to process larger webpages.
 2. Set CoreNLP timeout to at least a minute in order to allow the processing of large webpages
+### Dataset Creation
+1. Create the queries by running the scripts file with the following command:
+
+    ```python scripts.py query --template "../resources/ES/query/templates/bing.txt" --keys "../resources/ES/query/keywords.txt" --out "result_query.txt"```
+
+2. Exploit Bing for searching relevant web links to the queries using: https://github.com/NikolaiT/GoogleScraper. 
+Run:
+
+	```GoogleScraper -m http --keyword-file keywords.txt --num-workers 10 --proxy-file proxies.txt --search-engines "bing" --output-filename output.json```
+	
+3 - Collect the webpages, prerocess them and generate the files for the model training. For the best result check if the following classes are in the preprocessing:
+      
+         
+            "textprocessing.cleaner.MailCleaner",
+            "textprocessing.cleaner.URLCleaner",
+            "textprocessing.cleaner.WordsWithNumbersCleaner",
+            "textprocessing.cleaner.NonPunctuationSymbolsCleaner",
+            "textprocessing.cleaner.CommonWords",
+            "textprocessing.cleaner.LocationsCleaner",
+            "textprocessing.cleaner.StopWordsCleaner",
+            "textprocessing.cleaner.PunctuationSpacesCleaner",
+            "textprocessing.cleaner.MultipleSpacesCleaner",
+            "textprocessing.cleaner.Clean4SQL",
+            "textprocessing.cleaner.PunctuationCleaner",
+            "textprocessing.stemmer.Stemmer"
+        
+The run:
+
+	python scripts.py dataset --input "../data/GoogleScraper_test_results.json" --out "../data/train_dataset" --workers 8
+
+### Classification Training:
+Train the model:
+
+    python scripts.py train --input "../data/train_dataset_lvl1.csv" --out "../data/model_lvl1_test.model"
 
 
 ## Modules Description

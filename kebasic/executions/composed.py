@@ -1,6 +1,8 @@
+import csv
 import json
 import logging
 
+import pandas
 from weka.core import jvm
 
 from classification.weka_classifier import WEKAClassifier
@@ -12,7 +14,9 @@ from feature.normalization import MaxScaling
 from feature.penalizer import ScorePenalizer
 from feature.resultsjoin import SumScores, InsertScores
 from kebasicio.webpageio import BingResultsWebPageReader, JSONWebPageReader
+from kebasicio.weka import WekaWebPageTrainingCSV
 from kebasicio.writer import StdOutFileWriter
+from textprocessing.cleaner import PunctuationCleaner
 from utils.taxonomy import read_jot_taxonomy
 
 
@@ -32,7 +36,7 @@ class KeywordsExecution(AbstractExecutor):
         webpages = reader.read()
         writer = StdOutFileWriter
         builder = WebPageBuilder()
-
+        punctuation_cleaner = PunctuationCleaner()
         jvm.start(packages=True)
         wekaclass = WEKAClassifier(self._configs['lvl1_model'], language=self._configs['language'])
         wekaclass2 = WEKAClassifier(self._configs['lvl2_model'], language=self._configs['language'])
@@ -53,6 +57,14 @@ class KeywordsExecution(AbstractExecutor):
 
                     webpage.meta_tags = cleaned_meta
 
+                    cleaned_headers = []
+                    for tag in webpage.headers:
+                        cleaned = punctuation_cleaner.run(cleaner.process(tag))
+                        if cleaned:
+                            cleaned_headers.append(cleaned)
+
+                    webpage.headers = cleaned_headers
+
                     result = feature.process(webpage)
                     if not result:
                         continue
@@ -66,6 +78,9 @@ class KeywordsExecution(AbstractExecutor):
 
                     result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'],
                                                                            result['keywords']['meta_tags'])
+
+                    # result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'],
+                    #                                                        result['keywords']['headers'])
                     result['keywords'] = result['keywords']['combined']
                     result['keywords'] = ScorePenalizer().penalize(result['keywords'],
                                                                    [cleaner.process(x) for x in webpage.links_text])
@@ -82,48 +97,106 @@ class KeywordsExecution(AbstractExecutor):
         jvm.stop()
 
 
-class CrawlingExecution(AbstractExecutor):
+class DatasetCrawlingExecution(AbstractExecutor):
     def run(self):
-        taxonomy = read_jot_taxonomy("../resources/JOT/updated_taxonomy_EN.csv", "../resources/JOT/keys_mapping.txt",
+        taxonomy = read_jot_taxonomy("../resources/JOT/keys_mapping.txt",
                                      "../resources/JOT/business_type _to_google_category.csv")
+        filename = self._configs['input']
         reader = BingResultsWebPageReader
         pages = list(
-            reader("../data/GoogleScraper_bing_JOTKeywords_25_pages_language.json", taxonomy).read())
+            reader(filename, taxonomy).read())
 
         logging.info("Loaded {}".format(len(pages)))
-        crawler = ParallelCrawling({}, 25)
+        crawler = ParallelCrawling({}, self._configs["workers"])
         webpages = crawler.run(pages)
+        out_path = self._configs['output']
         print("Crawled webpages {}".format(len(webpages)))
-        with open("../output/scraper/GoogleScraper_bing_JOTKeywords_25_pages_language_3.json", "wt",
-                  encoding="utf8") as jsonout:
+        with open(out_path + ".json", "wt", encoding="utf8") as jsonout:
             for webpage in webpages:
                 jsonout.write(json.dumps(webpage.to_dict(), ensure_ascii=False) + "\n")
 
-
-class ReformatExecution(AbstractExecutor):
-    def run(self):
-        # path = "../output/scraper/GoogleScraper_bing_JOTKeywords_25_pages_language_3.json"
-        path = "../data/test.json"
-        reader = JSONWebPageReader(path)
+        reader = JSONWebPageReader(out_path + ".json")
         webpages = reader.read()
 
-        out_path = "../data/test_set.json"
         i = 0
         seen = set()
         builder = WebPageBuilder()
         cleaner = TextCleaningPipeline(self._configs)
-        with open(out_path, "wt", encoding="utf8") as outf:
+        dict_h1, dict_h2, inv_dict_h1, inv_dict_h2, dict_parent_category = readTaxonomy(
+            "../resources/JOT/training_taxonomy.csv")
+        with open(out_path + "_lvl1.csv", "wt", encoding="utf8", newline="") as out1, \
+                open(out_path + "_lvl2.csv", "wt", encoding="utf8", newline="") as out2:
+            writer1 = csv.writer(out1, quoting=csv.QUOTE_NONE)
+            writer2 = csv.writer(out2, quoting=csv.QUOTE_NONE)
             for webpage in webpages:
                 try:
                     built = builder.build(**webpage)
                     webpage = built.to_dict()
                     if webpage['url'] in seen:
                         continue
-                    str_webpage = json.dumps(webpage, ensure_ascii=False)
-                    outf.write(str_webpage + "\n")
                     seen.add(webpage['url'])
                     i += 1
                     logging.info("Completed {} rows".format(i))
-                    #     webpage['text'] = cleaner.process(webpage['text'])
+                    webpage['text'] = cleaner.process(webpage['text'])
+                    if webpage['text']:
+                        # writer1.writerow([webpage['parent_category_id'].lower().strip(), webpage['text']])
+                        row1 = [int(inv_dict_h1[webpage['parent_category_id'].lower().strip()]), webpage['parent_category_id'].lower().strip(), webpage['text']]
+                        writer1.writerow(row1)
+                        row2 = [int(inv_dict_h2[webpage['category_id'].lower().strip()]), webpage['category_id'].lower().strip(), webpage['text']]
+                        writer2.writerow(row2)
+                        # writer2.writerow([webpage['category_id'].lower().strip(), webpage['text']])
+                except:
+                    continue
+
+
+def readTaxonomy(taxonomy_path):
+    #    taxonomy_path = "../taxonomy.csv"
+    taxonomy = pandas.read_csv(taxonomy_path, sep=',')
+    tax_h1 = taxonomy[pandas.isnull(taxonomy).any(axis=1)]
+    tax_h1 = tax_h1[['id', 'lvl1']]
+    tax_h1["id"] = tax_h1["id"].apply(str)
+    tax_h1 = tax_h1.set_index('id')
+    dict_h1 = tax_h1.to_dict()
+
+    tax_h2_all = taxonomy.dropna()
+    tax_h2 = tax_h2_all[['id', 'lvl2']]
+    tax_h2["id"] = tax_h2["id"].apply(str)
+    tax_h2 = tax_h2.set_index('id')
+    dict_h2 = tax_h2.to_dict()
+
+    inv_dict_h1 = {v: k for k, v in dict_h1["lvl1"].items()}
+    inv_dict_h2 = {v: k for k, v in dict_h2["lvl2"].items()}
+
+    tax_h2_all["lvl1"] = tax_h2_all["lvl1"].apply(lambda x: inv_dict_h1[x])
+    tax_h2_all["lvl2"] = tax_h2_all["lvl2"].apply(lambda x: inv_dict_h2[x])
+
+    dict_parent_category = dict(zip(tax_h2_all["lvl2"], tax_h2_all["lvl1"]))
+
+    return dict_h1, dict_h2, inv_dict_h1, inv_dict_h2, dict_parent_category
+
+
+class ReformatExecution(AbstractExecutor):
+    def run(self):
+        path = "../output/scraper/GoogleScraper_test_results.json.json"
+        reader = JSONWebPageReader(path)
+        webpages = reader.read()
+
+        out_path = "../data/train_set.json"
+        i = 0
+        seen = set()
+        builder = WebPageBuilder()
+        cleaner = TextCleaningPipeline(self._configs)
+        with WekaWebPageTrainingCSV(out_path) as outf:
+            for webpage in webpages:
+                try:
+                    built = builder.build(**webpage)
+                    webpage = built.to_dict()
+                    if webpage['url'] in seen:
+                        continue
+                    seen.add(webpage['url'])
+                    i += 1
+                    logging.info("Completed {} rows".format(i))
+                    webpage['text'] = cleaner.process(webpage['text'])
+                    outf.write(webpage)
                 except:
                     continue

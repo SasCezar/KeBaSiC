@@ -20,7 +20,7 @@ def read_dict_csv(file_path):
     return r
 
 
-def generate_queries(template_path, out_path, keywords_path=None, sites_path=None):
+def generate_queries(template_path, out_path, keywords_path=None):
     """
     Generates a file containing the queries that will be used to scrape a search engine
 
@@ -32,8 +32,7 @@ def generate_queries(template_path, out_path, keywords_path=None, sites_path=Non
     """
     query_generator = QueryGenerator(template_path)
     keywords = read_dict_csv(keywords_path)
-    sites = read_dict_csv(sites_path)
-    queries = query_generator.generate_queries(keywords=keywords, sites=sites)
+    queries = query_generator.generate_queries(keywords=keywords)
     query_generator.save_queries(out_path, queries)
 
 
@@ -62,27 +61,20 @@ class QueryGenerator(object):
 
         return site_templates, query_templates
 
-    def generate_queries(self, keywords=None, sites=None):
+    def generate_queries(self, keywords=None):
         """
         Given two list of strings, returns a list of unique queries based on the class templates
 
         :param keywords:
-        :param sites:
         :return:
         """
         if keywords is None:
             keywords = []
-        if sites is None:
-            sites = []
 
         queries = set()
         for keyword in keywords:
             keyword_queries = self._generate_query(keyword, self._query_templates)
             queries |= keyword_queries
-
-        for site in sites:
-            sites_query = self._generate_query(site, self._site_templates)
-            queries |= sites_query
 
         return list(queries)
 
@@ -125,9 +117,8 @@ def main():
     template_path = config["template_path"]
     query_out_path = config["query_out_path"]
     keywords_path = "utils/keys.txt"
-    sites_path = None
 
-    generate_queries(template_path, query_out_path, keywords_path, sites_path)
+    generate_queries(template_path, query_out_path, keywords_path)
 
 
 if __name__ == "__main__":

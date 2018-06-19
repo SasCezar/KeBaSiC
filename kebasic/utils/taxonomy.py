@@ -109,17 +109,8 @@ def read_businnes_type_mapping(business_type_mapping_path):
         next(inf)
         for line in inf:
             splitted = line.split(",")
-            lvl1 = splitted[0]
-            lvl2 = splitted[1]
-            id = splitted[2]
-
-            parent_category = mapping[lvl1.lower()]['category_id'] if lvl1.lower() in mapping and mapping[
-                lvl1.lower()] else ''
-            parent_category_id = mapping[lvl1.lower()]['parent_category_id'] if lvl1.lower() in mapping and mapping[
-                lvl1.lower()] else '0'
-
-            category = lvl2 if lvl2.strip() else lvl1
-            category_id = id
+            lvl1 = splitted[0].strip()
+            lvl2 = splitted[1].strip()
 
             result = {'parent_category': lvl1, 'parent_category_id': lvl1,
                       'category': lvl2, 'category_id': lvl2}
@@ -130,8 +121,7 @@ def read_businnes_type_mapping(business_type_mapping_path):
     return mapping
 
 
-def read_jot_taxonomy(google_taxonomy_path, query_keys_mapping_path, business_type_mapping_path):
-    google_taxonomy = read_taxonomy(google_taxonomy_path)
+def read_jot_taxonomy(query_keys_mapping_path, business_type_mapping_path):
     query_keys_mapping = read_keys_mapping(query_keys_mapping_path)
     business_type_mapping = read_businnes_type_mapping(business_type_mapping_path)
 

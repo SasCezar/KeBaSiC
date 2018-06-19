@@ -70,6 +70,7 @@ class WebPageBuilder(object):
 
         metatags = self._extract_metatags(soup)
         result['meta_tags'] = metatags
+        result['headers'] = self.extract_headers(soup)
         result['links_text'] = self.extract_links_text(soup)
         return result
 
@@ -81,7 +82,7 @@ class WebPageBuilder(object):
         for tag in itertools.chain(name_metatags, property_metatags):
             content = tag.get(CONTENT, None)
             result.add(content)
-        return self._remove_overlapping(result)
+        return list(result)
 
     def _remove_overlapping(self, items):
         result = items
@@ -174,6 +175,17 @@ class WebPageBuilder(object):
         result = set()
         for link in links:
             text = link.text.strip()
+            if text:
+                result.add(text)
+
+        return result
+
+    @staticmethod
+    def extract_headers(soup):
+        headers = soup.find_all(re.compile('^h[1-3]$'))
+        result = set()
+        for header in headers:
+            text = header.text.strip()
             if text:
                 result.add(text)
 

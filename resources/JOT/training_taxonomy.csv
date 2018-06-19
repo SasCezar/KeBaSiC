@@ -1,0 +1,65 @@
+id,lvl1,lvl2
+0,empresa inmobiliaria,
+1,empresa inmobiliaria,alquiler de inmuebles
+2,empresa inmobiliaria,mudanzas
+3,empresa inmobiliaria,venta de inmuebles
+4,empresas de abogacia,
+5,empresas de abogacia,empresas de abogacia
+6,empresas de comercializacion,
+7,empresas de comercializacion,tiendas de ropa
+8,empresas de comercializacion,zapateria
+9,empresas de construccion,
+10,empresas de construccion,ascensores
+11,empresas de construccion,cerrajería
+12,empresas de construccion,obra menor
+13,empresas de construccion,puertas automaticas
+14,empresas de construccion,reformas
+15,empresas de construccion,tecnicos
+16,empresas de educacion,
+17,empresas de educacion,academias
+18,empresas de educacion,guarderia infantil
+19,empresas de estetica,
+20,empresas de estetica,manicura
+21,empresas de estetica,maquillaje y cosmetica
+22,empresas de estetica,peluquerias
+23,empresas de estetica,perfumes y fragancias
+24,empresas de finanzas,
+25,empresas de finanzas,asesoramiento a empresas
+26,empresas de finanzas,banca
+27,empresas de finanzas,seguros
+28,empresas de limpieza,
+29,empresas de limpieza,desifeccion y plagas
+30,empresas de limpieza,industrial
+31,empresas de ocasion extraordinaria,
+32,empresas de ocasion extraordinaria,funeraria
+33,empresas de packaging,
+34,empresas de packaging,empresas de packaging
+35,empresas de regalos,
+36,empresas de regalos,floristeria
+37,empresas de restauracion,
+38,empresas de restauracion,bar
+39,empresas de restauracion,bodegas y vino
+40,empresas de restauracion,cervecería
+41,empresas de restauracion,restaurante
+42,empresas de salud,
+43,empresas de salud,cirugia estetica
+44,empresas de salud,dietetica y nutricion
+45,empresas de salud,fisioterapia
+46,empresas de salud,odontologia
+47,empresas de salud,psicologia
+48,empresas de seguridad ,
+49,empresas de seguridad ,alarmas
+50,empresas de vehiculos,
+51,empresas de vehiculos,alquiler de autocares
+52,empresas de vehiculos,alquiler de coches
+53,empresas de vehiculos,autocaravanas
+54,empresas de vehiculos,bicicletas
+55,empresas de vehiculos,desguaces de vehiculos
+56,empresas de vehiculos,taller de vehiculos
+57,empresas de vehiculos,venta de coches
+58,empresas de viajes,
+59,empresas de viajes,alojamiento
+60,empresas mascotas,
+61,empresas mascotas,veterinario
+62,empresas de energía,
+63,empresas de energía,empresas de energía

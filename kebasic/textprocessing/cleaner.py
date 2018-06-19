@@ -76,7 +76,7 @@ class NonPunctuationSymbolsCleaner(AbstractCleaner):
 
     def __init__(self):
         super().__init__()
-        self.re_match = re.compile(r"""[^!"&':;?,\.\w\d ]+""")
+        self.re_match = re.compile(r"""[^!\"&':;?,.\w\d ]+""")
 
 
 class DigitsCleaner(AbstractCleaner):
@@ -115,12 +115,12 @@ class PunctuationSpacesCleaner(AbstractCleaner):
     """
     Removes spaces between words and punctuation, it also removes duplicate punctuation preferring the first one.
 
-    Example: "This is fixed , also this!!!!! and this .,."  -->  This is fixed, also this! and this."
+    Example: "This is fixed , also this!!!!! and this .,."  -->  "This is fixed, also this! and this."
     """
 
     def __init__(self):
         super().__init__()
-        self.re_match = re.compile(r"""(\s*(?P<punctuation>[!¡\"&':;¿?,\.]+)){2,}""")
+        self.re_match = re.compile(r"""(\s*(?P<punctuation>[!¡\"&':;¿?,\.])){2,}""")
         self.sub = lambda x: x.group("punctuation").strip()[0]
 
 
@@ -138,3 +138,9 @@ class StopWordsCleaner(CommonWords):
 class LocationsCleaner(CommonWords):
     def __init__(self, words_path):
         super().__init__(words_path)
+
+
+class PunctuationCleaner(AbstractCleaner):
+    def __init__(self):
+        super().__init__()
+        self.re_match = re.compile(r"[!¡\"&':;¿?,\.]+")

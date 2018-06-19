@@ -1,10 +1,13 @@
 import re
 import string
 
-from feature.keywordextractor import AbstractKeywordExtractor, load_stop_words
+from feature.keywordextractor import load_stop_words, AbstractKeywordExtractor
 
 
-class SiteKeywordsExtractor(AbstractKeywordExtractor):
+class HeadersKeywordsExtractor(AbstractKeywordExtractor):
+    """
+    TODO Edit with logic of Headers as keyword
+    """
     def __init__(self, language=None, stopwords=None, commonwords=None, lemmize=1, limit=50, keep_all=0):
         super().__init__(language=language, stopwords=stopwords, lemmize=lemmize, limit=limit, keep_all=keep_all)
         self._remove = {char: None for char in string.punctuation}

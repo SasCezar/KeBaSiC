@@ -9,9 +9,12 @@
     "textprocessing.cleaner.NonPunctuationSymbolsCleaner",
     "textprocessing.cleaner.CommonWords",
     "textprocessing.cleaner.LocationsCleaner",
-    "textprocessing.cleaner.StopWordsCleaner",
+    // "textprocessing.cleaner.StopWordsCleaner",
     "textprocessing.cleaner.PunctuationSpacesCleaner",
     "textprocessing.cleaner.MultipleSpacesCleaner"
+    //"textprocessing.cleaner.Clean4SQL",
+    //"textprocessing.cleaner.PunctuationCleaner",
+    //"textprocessing.stemmer.Stemmer"
   ],
   "preprocessing_parameters": {
     "textprocessing.cleaner.CommonWords": {

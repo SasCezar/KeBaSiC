@@ -7,9 +7,6 @@ class AbstractNormalizer(ABC):
     """
     name = "AbstractNormalizer"
 
-    def __init__(self, limit=50):
-        self._limit = limit
-
     @abstractmethod
     def normalize(self, keywords):
         """
@@ -38,8 +35,6 @@ class MaxScaling(AbstractNormalizer):
             scaled_score = score / max_score if max_score else 0
             rescaled_keywords.append((keyword, scaled_score))
 
-        if self._limit:
-            rescaled_keywords = rescaled_keywords[:self._limit]
         return rescaled_keywords
 
 
@@ -57,6 +52,4 @@ class SumScaling(AbstractNormalizer):
             scaled_score = score / sum(scores) if sum(scores) else 0
             rescaled_keywords.append((keyword, scaled_score))
 
-        if self._limit:
-            rescaled_keywords = rescaled_keywords[:self._limit]
         return rescaled_keywords

@@ -7,15 +7,15 @@ from utils.taxonomy import read_jot_taxonomy
 
 
 def main():
-    taxonomy = read_jot_taxonomy("../resources/JOT/updated_taxonomy_EN.csv", "../resources/JOT/keys_mapping.txt",
+    taxonomy = read_jot_taxonomy("../resources/JOT/keys_mapping.txt",
                                  "../resources/JOT/business_type _to_google_category.csv")
 
     reader = BingResultsWebPageReader
     pages = list(
-        reader("../data/GoogleScraper_bing_JOTKeywords_25_pages_language.json", taxonomy).read())
+        reader("../data/GoogleScraper_test_results.json", taxonomy).read())
 
     webpages = list(
-        JSONWebPageReader("../output/scraper/GoogleScraper_bing_JOTKeywords_25_pages_language_1.json").read())
+        JSONWebPageReader("../output/scraper/GoogleScraper_test_results.json").read())
 
     cats = {}
     for page in pages:
@@ -71,19 +71,6 @@ def main2():
                 mapped_cat["category"] = mapped_cat["parent_category"]
             result.append([mapped_cat['parent_category'], mapped_cat["category"], url, text])
 
-    test_path = ''
-
-    # with open(test_path, "rt", encoding="utf8") as inf:
-    #     next(inf)
-    #     reader = csv.reader(inf)
-    #     for url, jot_cat, cat_id, _, _, _, _, _,_ in reader:
-    #         if cat_id not in mapping:
-    #             print(cat_id + " url " + url)
-    #             continue
-    #
-    #         mapped_cat = mapping[cat_id]
-    #         result.append([mapped_cat['parent_category'], mapped_cat["category"], url])
-
     with open("remapped_test_set.csv", "wt", encoding="utf8", newline='') as outf:
         writer = csv.writer(outf)
         for res in result:
@@ -91,20 +78,18 @@ def main2():
 
 
 def main3():
-    with open("C:\\Users\\sasce\\PycharmProjects\KeBaSiC\GoogleScraper_bing_JOTKeywords_25_pages_language_fixed_v2.csv",
+    with open("../../GoogleScraper_bing_JOTKeywords_25_pages_language_fixed_v2.csv",
               "rt", encoding="utf8") as inf, \
-            open("C:\\Users\sasce\PycharmProjects\KeBaSiC\GoogleScraper_bing_JOTKeywords_25_pages_language_v2.csv",
-                 "wt",
-                 encoding="utf8", newline="") as outf:
+            open("../../GoogleScraper_bing_JOTKeywords_25_pages_language_v2.csv",
+                 "wt", encoding="utf8", newline="") as outf:
         reader = csv.reader(inf)
         writer = csv.writer(outf, quoting=csv.QUOTE_ALL)
         for parent, cat, url, text in reader:
             if not cat:
                 cat = parent
-
             writer.writerow([parent, cat, url, text])
 
 
 if __name__ == '__main__':
     os.chdir("..")
-    main3()
+    main()

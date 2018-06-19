@@ -1,0 +1,3 @@
+lvl1, lvl2
+justicia, abogados
+medicina, dentista

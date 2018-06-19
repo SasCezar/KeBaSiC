@@ -42,6 +42,7 @@ class FeatureExtractionPipeline(AbstractPipeline):
         meta_tags = [self.site_keywords_extractor.run(x) for x in webpage.meta_tags]
         features['meta_tags'] = [item for sublist in meta_tags for item in sublist]
         result['keywords'] = features
+        # result['headers'] = webpage.headers
 
         return result
 
