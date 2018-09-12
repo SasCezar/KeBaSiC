@@ -2,6 +2,9 @@ import argparse
 import os
 
 from executions.composed import KeywordsExecution
+from executions.composed import DatasetCrawlingExecution
+from executions.composed import ReformatExecution
+
 from utils import config
 from utils.logger import initialize_logger
 
@@ -24,5 +27,5 @@ if __name__ == "__main__":
     initialize_logger(configs['log_path'], configs['log'])
 
     KeywordsExecution(configs).run()
-    # DatasetCrawlingExecution(configs).run()
-    # ReformatExecution(configs).run()
+    #DatasetCrawlingExecution(configs).run()
+    #ReformatExecution(configs).run()

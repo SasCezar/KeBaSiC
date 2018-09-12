@@ -75,7 +75,6 @@ class CSVCatalogactionReader(AbstractWebPageReader):
             for line in reader:
                 url = line[0]
                 category = line[2]
-
                 category = self._ontology[category]
                 webpage = {"url": url}
                 webpage.update(category)

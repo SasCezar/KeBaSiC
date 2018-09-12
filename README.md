@@ -18,13 +18,13 @@ The tool also requires installing the following programs:
     Place the language specific jar and properties file in the server folder.
 2. TreeTagger from <a href="http://www.cis.uni-muenchen.de/%7Eschmid/tools/TreeTagger/">http://www.cis.uni-muenchen.de/%7Eschmid/tools/TreeTagger/</a>
 
-3. WEKA from https://www.cs.waikato.ac.nz/ml/weka/downloading.html, and install the LibSVM package from WEKA's package managere.
+3. WEKA from https://www.cs.waikato.ac.nz/ml/weka/downloading.html, and install the LibSVM package from WEKA's package manager.
 
 ## Usage
 ### Keyword Extraction
 1. Edit the [config.json](kebasic/config.json) file with the input and the output files
 2. In the [composed.py](kebasic/executions/composed.py) file change the reader and the writer class according to the desired input/output (see [kebasicio](kebasic.kebasicio) module for all the possible IO and interfaces)
-3. Start CoreNLP server with ```java -Xmx12g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -serverProperties StanfordCoreNLP-spanish.properties -timeout 60000```
+3. Start CoreNLP server with ```java -Xmx5g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -serverProperties StanfordCoreNLP-spanish.properties -timeout 60000```
 4. Run ```python application.py -input_path="../data/test.json" [-out_path="../output/keywords_extraction/results_test.json" -std_out -log -log_path="../log"]```
 
 Where the arguments in the square brackets are optional. The arguments are:

@@ -76,8 +76,7 @@ class KeywordsExecution(AbstractExecutor):
                     result['keywords']['combined'] = InsertScores().insert(combined_scores,
                                                                            result['keywords']['site_keywords'])
 
-                    result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'],
-                                                                           result['keywords']['meta_tags'])
+                    #result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'], result['keywords']['meta_tags'])
 
                     # result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'],
                     #                                                        result['keywords']['headers'])
@@ -85,7 +84,8 @@ class KeywordsExecution(AbstractExecutor):
                     result['keywords'] = ScorePenalizer().penalize(result['keywords'],
                                                                    [cleaner.process(x) for x in webpage.links_text])
                     logging.info("Keyword extracted: {}".format(len(result['keywords'])))
-                    result['parent_category_id'] = wekaclass.classify(webpage.text)
+
+                    result['categories'] = wekaclass.classify(webpage.text)
                     result['category_id'] = wekaclass2.classify(webpage.text)
 
                     string_result = json.dumps(result, ensure_ascii=False)

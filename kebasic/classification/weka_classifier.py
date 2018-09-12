@@ -37,9 +37,19 @@ class WEKAClassifier(AbstractClassifier):
         filtered_input = self._filter_model.filter(input_file)
         filtered_input.class_is_first()
         evl = Evaluation(filtered_input)
-        prediction_output = PredictionOutput(classname="weka.classifiers.evaluation.output.prediction.CSV")
+        prediction_output = PredictionOutput(classname="weka.classifiers.evaluation.output.prediction.CSV", options=["-distribution"])
         evl.test_model(self._classifier, filtered_input, output=prediction_output)
-        prediction = str(prediction_output).split(",")[2].split(":")[1]
+
+        result = {}
+        for i in range(len(evl.header.class_attribute.values)):
+            if '*' in str(prediction_output).split(",")[4:][i]:
+                x = str(prediction_output).split(",")[4:][i][1:]
+            else:
+                x = str(prediction_output).split(",")[4:][i]
+            result[evl.header.class_attribute.values[i]] = x
+
+        prediction = [[k, result[k]] for k in sorted(result, key=result.get, reverse=True)]
+
         self._delete_file()
         return prediction
 

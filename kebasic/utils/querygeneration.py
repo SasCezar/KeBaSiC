@@ -98,6 +98,7 @@ class QueryGenerator(object):
 
     @staticmethod
     def save_queries(out_path, queries):
+        print(queries)
         """
         Saves the queries to file
 
