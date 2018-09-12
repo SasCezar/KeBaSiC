@@ -8,6 +8,7 @@ import networkx as nx
 from stanfordcorenlp import StanfordCoreNLP
 
 from feature.keywordextractor import AbstractKeywordExtractor
+from utils.object_builder import ObjectBuilder
 
 
 def filter_for_tags(tagged, tags=None):
@@ -139,16 +140,18 @@ class TextRank(AbstractKeywordExtractor):
     A NLTK based implementation of TextRank as defined in: "TextRank: Bringing Order into Texts" by Mihalcea et al. (2004)
     """
 
-    def __init__(self, language, filter_pos_tags=None, core_nlp="http://127.0.0.1:9000", lemmize=False, limit=50,
+    def __init__(self, language, pos_tagger_class, pos_tagger_parameters, filter_pos_tags=None, lemmize=False, limit=50,
                  keep_all=0):
         super().__init__(language, lemmize=lemmize, stopwords=None, limit=limit, keep_all=keep_all)
+        self.pos_tagger, _ = ObjectBuilder().build(pos_tagger_class, pos_tagger_parameters)
         self._filter_tags = filter_pos_tags
+        '''
         if "http" in core_nlp:
             server, port = core_nlp.rsplit(":", maxsplit=1)
             self.nlp = StanfordCoreNLP(server, port=int(port), lang=LANG_CODES[language])
         else:
             self.nlp = StanfordCoreNLP(core_nlp, lang=LANG_CODES[language])
-
+        '''
     def run(self, text):
         """
         Return a set list of keyword sorted by score.
@@ -163,11 +166,7 @@ class TextRank(AbstractKeywordExtractor):
         return sorted_keywords
 
     def _extract_keywords(self, text):
-        try:
-            tagged = self.nlp.pos_tag(text)
-        except JSONDecodeError:
-            logging.info("JSONDecodeError")
-            return []
+        tagged = self.pos_tagger.tag(text)
 
         tagged = filter_for_tags(tagged, tags=self._filter_tags)
         tagged = normalize(tagged)

@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-from importlib import import_module
+from utils.object_builder import ObjectBuilder
 
 
 class AbstractExecutor(ABC):
@@ -20,6 +20,7 @@ class AbstractExecutor(ABC):
         self.algorithms = []
         self.parameters = {}
         self.callables = []
+        self.object_builder = ObjectBuilder()
 
     @abstractmethod
     def run(self):
@@ -42,13 +43,9 @@ class AbstractExecutor(ABC):
         for algorithm in self.algorithms:
             logging.info("Loading {}".format(algorithm))
             algorithm_parameters = self.parameters.get(algorithm, {})
-            algorithm_instance, algorithm_name = self.object_instancer(algorithm, algorithm_parameters)
+            algorithm_instance, algorithm_name = self.object_builder.build(algorithm, algorithm_parameters)
             self.callables.append((algorithm_name, algorithm_instance))
 
-    def object_instancer(self, algorithm, algorithm_parameters):
-        algorithm_name, algorithm_object = self._import_class(algorithm)
-        algorithm_instance = algorithm_object(**algorithm_parameters)
-        return algorithm_instance, algorithm_name
 
     def _initialize(self):
         """
@@ -63,19 +60,6 @@ class AbstractExecutor(ABC):
             self.__setattr__(key, value) if key in self._allowed else None
 
         return self
-
-    @staticmethod
-    def _import_class(module):
-        """
-        Imports the class from the specified module needed for the execution
-        :param module:
-        :return:
-        """
-        module_name = ".".join(module.split('.')[:-1])
-        my_module = import_module("{}".format(module_name))
-        class_name = module.split('.')[-1]
-        model = getattr(my_module, class_name)
-        return class_name, model
 
 
 class AbstractPipeline(AbstractExecutor):
