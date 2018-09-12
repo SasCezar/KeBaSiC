@@ -1,5 +1,5 @@
 {
-  "language": "spanish",
+  "language": "italian",
 
   // Preprocessing
   "preprocessing_algorithms": [
@@ -24,15 +24,15 @@
       "words_path": "../resources/location_names.txt"
     },
     "textprocessing.cleaner.StopWordsCleaner": {
-      "words_path": "../resources/ES/stopwords/stopwords.txt"
+      "words_path": "../resources/IT/stopwords/stopwords.txt"
     },
     "textprocessing.stemmer.Stemmer": {
-      "language": "spanish"
+      "language": "italian"
     }
   },
   "SiteKeywordsExtractor": {
-    "language": "spanish",
-    "stopwords": "../resources/ES/stopwords/stopwords.txt",
+    "language": "italian",
+    "stopwords": "../resources/IT/stopwords/stopwords.txt",
     "lemmize": true
   },
 
@@ -48,8 +48,8 @@
   ],
   "extractor_parameters": {
     "feature.rake.RAKE": {
-      "language": "spanish",
-      "stopwords": "../resources/ES/stopwords/stopwords.txt",
+      "language": "italian",
+      "stopwords": "../resources/IT/stopwords/stopwords.txt",
       "keyword_separator": ".aeiouy",
       "lemmize": true,
       "min_char_length": 3,
@@ -60,8 +60,8 @@
       "min_phrase_freq_adj": 2
     },
     "feature.rake.MergingRAKE": {
-      "language": "spanish",
-      "stopwords": "../resources/ES/stopwords/stopwords.txt",
+      "language": "italian",
+      "stopwords": "../resources/IT/stopwords/stopwords.txt",
       "keyword_separator": ".aeiouy",
       "lemmize": true,
       "min_char_length": 3,
@@ -72,56 +72,50 @@
       "min_phrase_freq_adj": 2
     },
     "feature.textrank.TextRank": {
-      "language": "spanish",
+      "language": "italian",
       "lemmize": true,
       "filter_pos_tags": [
-        "nc00000",
-        "nc0n000",
-        "nc0p000",
-        "nc0s000",
-        "np00000"
+        "S",
+        "SP"
       ]
     },
     "feature.textrank.MergingTextRank": {
-      "language": "spanish",
+      "language": "italian",
       "lemmize": true,
-      "pos_tagger_class": "feature.pos_taggers.StanfordPOSTagger",
-      "pos_tagger_parameters": {"language": "spanish", "server": "http://127.0.0.1:9000"},
+      "pos_tagger_class": "feature.pos_taggers.TINTTagger",
+      "pos_tagger_parameters": {"language": "italian", "tint_exec_path": "/home/frodo/Scrivania/"},
       "filter_pos_tags": [
-        "nc00000",
-        "nc0n000",
-        "nc0p000",
-        "nc0s000",
-        "np00000"
+        "S",
+        "SP"
       ]
     },
     "feature.termfreq.TermFrequencies": {
-      "language": "spanish",
+      "language": "italian",
       "lemmize": true,
-      "stopwords": "../resources/ES/stopwords/stopwords.txt",
+      "stopwords": "../resources/IT/stopwords/stopwords.txt",
       "min_count": 2
     },
     "feature.termfreq.MergingTermFrequencies": {
-      "language": "spanish",
+      "language": "italian",
       "lemmize": true,
-      "stopwords": "../resources/ES/stopwords/stopwords.txt",
+      "stopwords": "../resources/IT/stopwords/stopwords.txt",
       "min_count": 2
     },
     "feature.simplerake.SimpleRAKE": {
-      "language": "spanish",
-      "stopwords": "../resources/ES/stopwords/stopwords.txt"
+      "language": "italian",
+      "stopwords": "../resources/IT/stopwords/stopwords.txt"
     }
   },
-  "lvl1_model": "../resources/ES/model/svm_train_h1.model",
-  "lvl2_model": "../resources/ES/model/svm_train_h2.model",
+  "lvl1_model": "../resources/IT/model/svm_train_h1.model",
+  "lvl2_model": "../resources/IT/model/svm_train_h2.model",
 
   // Taxonomy
-  "taxonomy_path": "../resources/ES/taxonomy/taxonomy.csv",
+  "taxonomy_path": "../resources/IT/taxonomy/taxonomy.csv",
   "taxonomy_translate_from": "en",
   "taxonomy_translate_to": "es",
   // Crawling
-  "template_path": "../resources/ES/query/templates/bing.txt",
-  "query_out_path": "../resources/ES/query/bing.txt",
-  "keywords_path": "../resources/query/keywords.txt",
-  "sites_path": "../resources/query/sites.txt"
+  "template_path": "../resources/IT/query/templates/bing.txt",
+  "query_out_path": "../resources/IT/query/bing.txt"
+  //"keywords_path": "../resources/query/keywords.txt",
+  //"sites_path": "../resources/query/sites.txt"
 }
