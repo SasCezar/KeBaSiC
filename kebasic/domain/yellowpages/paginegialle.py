@@ -44,7 +44,7 @@ def create_results(results_to_be_parsed):
 
 
 def scraping(keyword, location):
-
+    keyword = keyword.replace(" ", "%20")
     if location is not '':
         url = 'https://www.paginegialle.it/ricerca/'+keyword+'/'+ location+'?'
     else:
@@ -58,7 +58,7 @@ def scraping(keyword, location):
 
     risultati=create_results(results_to_be_parsed)
 
-    with open("C:/users/marco/desktop/paginegialle.json", "w") as f:
+    with open("/srv/shiny-server/kebasic/KeBaSiC/paginas.json", "w") as f:
         f.write(json.dumps(risultati, ensure_ascii=True))
 
 

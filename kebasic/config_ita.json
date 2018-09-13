@@ -83,7 +83,7 @@
       "language": "italian",
       "lemmize": true,
       "pos_tagger_class": "feature.pos_taggers.TINTTagger",
-      "pos_tagger_parameters": {"language": "italian", "tint_exec_path": "/home/frodo/Scrivania/"},
+      "pos_tagger_parameters": {"language": "italian", "tint_exec_path": "/home/frodo/Scrivania/tint/"},
       "filter_pos_tags": [
         "S",
         "SP"

@@ -133,15 +133,12 @@ def parse_listing(keyword, place, geolocator):
 if __name__ == "__main__":
 
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('keyword', help='Search Keyword')
-    argparser.add_argument('place', help='Place Name')
+    argparser.add_argument('-keywords', help='Search Keyword')
+    #argparser.add_argument('place', help='Place Name')
 
     args = argparser.parse_args()
-    keyword = args.keyword
-    place = args.place
-
     geolocator = Nominatim(user_agent="KebTest")
-    scraped_data = parse_listing(keyword, place, geolocator)
+    scraped_data = parse_listing(vars(args)['keywords'], "USA", geolocator)
     '''
     if scraped_data:
         print("Writing scraped data to %s-%s-yellowpages-scraped-data.csv" % (keyword, place))
@@ -154,5 +151,5 @@ if __name__ == "__main__":
                 writer.writerow(data)
     '''
     if scraped_data:
-        with open("C:/users/marco/desktop/paginegialle.json", "w") as f:
+        with open("/srv/shiny-server/kebasic/KeBaSiC/paginas.json", "w") as f:
             f.write(json.dumps(scraped_data, ensure_ascii=True))
