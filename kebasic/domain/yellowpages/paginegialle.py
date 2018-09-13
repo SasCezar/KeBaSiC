@@ -4,7 +4,7 @@ import urllib3
 import re
 import json
 from bs4 import BeautifulSoup
-
+import os
 
 def create_results(results_to_be_parsed):
 
@@ -44,7 +44,7 @@ def create_results(results_to_be_parsed):
 
 
 def scraping(keyword, location):
-    keyword = keyword.replace(" ", "%20")
+
     if location is not '':
         url = 'https://www.paginegialle.it/ricerca/'+keyword+'/'+ location+'?'
     else:
@@ -67,7 +67,19 @@ def main():
     parser.add_argument("-keywords", default="")
     parser.add_argument("-location", default="")
     args = parser.parse_args()
-    scraping(vars(args)['keywords'], vars(args)['location'])
+
+    keywords = vars(args)['keywords']
+
+    stopwords = []
+    with open("/srv/shiny-server/kebasic/KeBaSiC/resources/IT/stopwords/stopwords_it_en.txt", 'r') as f:
+        for line in f:
+            stopwords.append(line.strip())
+
+    keywords = keywords.split(" ")
+    keywords = [x for x in keywords if x not in stopwords]
+    keyword = "%20".join(keywords)
+
+    scraping(keyword, vars(args)['location'])
 
 main()
 

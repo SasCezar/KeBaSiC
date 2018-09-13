@@ -138,6 +138,18 @@ if __name__ == "__main__":
 
     args = argparser.parse_args()
     geolocator = Nominatim(user_agent="KebTest")
+
+    keywords = vars(args)['keywords']
+
+    stopwords = []
+    with open("/srv/shiny-server/kebasic/KeBaSiC/resources/EN/stopwords/stopwords.txt", 'r') as f:
+        for line in f:
+            stopwords.append(line.strip())
+
+    keywords = keywords.split(" ")
+    keywords = [x for x in keywords if x not in stopwords]
+    keyword = "%20".join(keywords)
+
     scraped_data = parse_listing(vars(args)['keywords'], "USA", geolocator)
     '''
     if scraped_data:

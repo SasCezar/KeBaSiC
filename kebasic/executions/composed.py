@@ -38,8 +38,8 @@ class KeywordsExecution(AbstractExecutor):
         builder = WebPageBuilder()
         punctuation_cleaner = PunctuationCleaner()
         jvm.start(packages=True)
-        wekaclass = WEKAClassifier(self._configs['lvl1_model'], language=self._configs['language'])
-        wekaclass2 = WEKAClassifier(self._configs['lvl2_model'], language=self._configs['language'])
+        #wekaclass = WEKAClassifier(self._configs['lvl1_model'], language=self._configs['language'])
+        #wekaclass2 = WEKAClassifier(self._configs['lvl2_model'], language=self._configs['language'])
         out_filename = self._configs['out_path']
         with writer(out_filename, self._configs['std_out']) as outf:
             for json_webpage in webpages:
@@ -91,7 +91,8 @@ class KeywordsExecution(AbstractExecutor):
                     string_result = json.dumps(result, ensure_ascii=False)
                     outf.write(string_result)
                 except Exception as e:
-                    logging.error(e)
+                    #logging.error(e)
+                    print(e)
                     continue
 
         jvm.stop()
