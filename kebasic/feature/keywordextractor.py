@@ -27,7 +27,8 @@ def load_stop_words(stopwords):
 
 
 LANGS = {"spanish": "es",
-         "english": "en"}
+         "english": "en",
+         "italian": "it"}
 
 logging.getLogger('TreeTagger').setLevel(logging.CRITICAL)
 

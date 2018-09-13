@@ -44,9 +44,10 @@ class TINTTagger(AbstractPOSTagger):
 
     def tag(self, text):
         self._create_file(text)
-        bashCommand = "./tint.sh -f json -i {} -o {}".format(self._in_file, self._out_file)
-        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, cwd=self._tint_exec)
+        bashCommand = self._tint_exec + "./tint.sh -f json -i {} -o {}".format(self._in_file, self._out_file)
+        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
+        process.terminate()
         self._remove_file(self._in_file)
         result = self._read_results(self._out_file)
         self._remove_file(self._out_file)
