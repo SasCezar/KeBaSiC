@@ -104,7 +104,6 @@ class CommonWords(AbstractCleaner):
 
         pattern = []
         for word in words:
-            word = word.strip()
             pattern.append(r"\b" + word.strip() + r"\b")
 
         pattern = "(" + "|".join(pattern) + ")"

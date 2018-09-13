@@ -38,8 +38,8 @@ class StanfordPOSTagger(AbstractPOSTagger):
 class TINTTagger(AbstractPOSTagger):
     def __init__(self, language, tint_exec_path):
         self._tint_exec = tint_exec_path
-        self._in_file = ""
-        self._out_file = ""
+        self._in_file = "/home/frodo/Scrivania/tint/tint_in.txt"
+        self._out_file = "/home/frodo/Scrivania/tint/tint_out.json"
         super().__init__(language)
 
     def tag(self, text):
@@ -64,7 +64,7 @@ class TINTTagger(AbstractPOSTagger):
 
     def _read_results(self, path):
         with open(path, "rt", encoding="utf8") as tint_output:
-            sentences = json.loads(tint_output)['sentences']
+            sentences = json.load(tint_output)['sentences']
 
         result = []
         for sentence in sentences:

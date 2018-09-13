@@ -103,8 +103,7 @@ class AbstractKeywordExtractor(ABC):
 
         result = []
         scores = {k.lower(): score for k, score in keywords}
-        keys = scores.keys()
-
+        keys = [r"\b" + word + r"\b" for word in scores.keys()]
         keywords_pattern = "|".join(keys)
         pattern = self._merging_template.format(keys=keywords_pattern, stop=self._stopwords_pattern)
         merged_keywords = re.findall(pattern, text, re.IGNORECASE)
