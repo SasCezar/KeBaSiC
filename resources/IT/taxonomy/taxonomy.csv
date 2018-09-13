@@ -1,0 +1,65 @@
+id,lvl1,lvl2
+0,società immobiliare,
+1,società immobiliare,affitto di beni immobili
+2,società immobiliare,traslochi
+3,società immobiliare,vendita di beni immobili
+4,società di patrocinio,
+5,società di patrocinio,società di patrocinio
+6,società di marketing,
+7,società di marketing,negozi di abbigliamento
+8,società di marketing,negozio di scarpe
+9,società di costruzioni,
+10,società di costruzioni,ascensori
+11,società di costruzioni,fabbro
+12,società di costruzioni,lavoro minore
+13,società di costruzioni,porte automatiche
+14,società di costruzioni,riforme
+15,società di costruzioni,tecnico
+16,società di istruzione,
+17,società di istruzione,accademie
+18,società di istruzione,nido
+19,aziende estetiche,
+20,aziende estetiche,manicure
+21,aziende estetiche,trucco e cosmetici
+22,aziende estetiche,Peluquerias
+23,aziende estetiche,profumi e profumi
+24,società finanziarie,
+25,società finanziarie,consulenza aziendale
+26,società finanziarie,bancario
+27,società finanziarie,assicurazione
+28,imprese di pulizia,
+29,imprese di pulizia,disfunzioni e parassiti
+30,imprese di pulizia,industriale
+31,aziende straordinarie,
+32,aziende straordinarie,mortuario
+33,aziende di imballaggio,
+34,aziende di imballaggio,aziende di imballaggio
+35,aziende del regalo,
+36,aziende del regalo,Floristeria
+37,aziende di restauro,
+38,aziende di restauro,bar
+39,aziende di restauro,cantine e vino
+40,aziende di restauro,fabbrica di birra
+41,aziende di restauro,ristorante
+42,aziende sanitarie,
+43,aziende sanitarie,chirurgia estetica
+44,aziende sanitarie,dietetica e nutrizione
+45,aziende sanitarie,fisioterapia
+46,aziende sanitarie,odontologia
+47,aziende sanitarie,psicologia
+48,società di sicurezza,
+49,società di sicurezza,allarmi
+50,società di veicoli,
+51,società di veicoli,noleggio pullman
+52,società di veicoli,noleggio auto
+53,società di veicoli,camper
+54,società di veicoli,biciclette
+55,società di veicoli,rottami dei veicoli
+56,società di veicoli,officina del veicolo
+57,società di veicoli,vendita di automobili
+58,compagnie di viaggio,
+59,compagnie di viaggio,alloggio
+60,compagnie di animali domestici,
+61,compagnie di animali domestici,veterinario
+62,aziende energetiche,
+63,aziende energetiche,aziende energetiche
