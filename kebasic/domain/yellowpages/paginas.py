@@ -1,23 +1,51 @@
 from selenium import webdriver
+from pyvirtualdisplay import Display
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from geopy.geocoders import Nominatim
+
 import json
 import argparse
-from geopy.geocoders import Nominatim
-#from pyvirtualdisplay import Display
+import collections
+import os
 
+
+
+def linux_conf():
+    outfile = "/srv/shiny-server/kebasic/KeBaSiC/paginas.json"
+    chromedriverpath="/srv/shiny-server/kebasic/KeBaSiC/chromedriver"
+
+    return outfile, chromedriverpath
+
+def windows_conf():
+    outfile = "D:/Documenti/kebasic/KeBaSiC/paginas.json"
+    chromedriverpath="D:/Documenti/kebasic/KeBaSiC/chromedriver.exe"
+
+    return outfile, chromedriverpath
 
 def ir_paginas_amarillas_web(cadena, city, geolocator):
-    #display = Display(visible=0, size=(900,600))
-    #  #display.start()
+    
+    
+    display = Display(visible=0, size=(1024, 768))
+    display.start()
+
+    #outfile, chromedriverpath = windows_conf()
+    outfile, chromedriverpath = linux_conf()
 
     options = webdriver.ChromeOptions()
-    options.add_argument("headless")
+    #options.add_argument("--headless")
+    options.add_argument("--no-sandbox");    
+    options.add_argument("--disable-dev-shm-usage"); 
 
-    chromedriverpath=r'C:\Users\marco\Desktop\KeBaSiC\chromedriver.exe'
-    driver = webdriver.Chrome(executable_path=chromedriverpath, options=options)
-
+    os.environ["webdriver.chrome.driver"] = chromedriverpath
+    
+    driver = webdriver.Chrome(executable_path=chromedriverpath, chrome_options=options)
+    
+    
     #Página a la que queremos acceder
     driver.get("https://www.paginasamarillas.es/")
     lista_datos = []
@@ -54,7 +82,7 @@ def ir_paginas_amarillas_web(cadena, city, geolocator):
     risultati['competitors'] = []
 
     for resultado in resultados:
-        if i<=10:
+        if i<10:
             try:
                 tmp = {}
                 el = resultado.find_element_by_class_name("box")
@@ -69,30 +97,30 @@ def ir_paginas_amarillas_web(cadena, city, geolocator):
                 else:
                     tmp['lat'] = ''
                     tmp['long'] = ''
-
-                risultati['competitors'].append(tmp)
+                ordered_tmp = collections.OrderedDict(sorted(tmp.items()))
+                risultati['competitors'].append(ordered_tmp)
                 i += 1
 
             except:
                 i+=1
 
+    
 
-    with open("C:/users/marco/desktop/paginas.json", "w") as f:
+
+    with open(outfile, "w") as f:
         f.write(json.dumps(risultati, ensure_ascii=True))
 
 
     driver.close()
+    display.stop()
     return lista_datos
 
 def main():
-    '''
     parser = argparse.ArgumentParser()
     parser.add_argument("-keywords", default="")
-    parser.add_argument("-location", default="")
+    #parser.add_argument("-location", default="")
     args = parser.parse_args()
     geolocator = Nominatim(user_agent="KebTest")
-    ir_paginas_amarillas_web(vars(args)['keywords'],vars(args)['location'],geolocator)
-    '''
-    ir_paginas_amarillas_web(vars(args)['keywords'], vars(args)['location'], geolocator)
+    ir_paginas_amarillas_web(vars(args)['keywords'],"", geolocator)
     #return(ir_paginas_amarillas_web('derecho',''))
 main()
