@@ -198,6 +198,7 @@ class TextRank(AbstractKeywordExtractor):
         textlist = re.findall(r"(\w+)", text, re.UNICODE)
         merged = postprocessing_key_phrases([k[0] for k in keywords], textlist)
         calculated_page_rank = dict(keywords)
+        #inserire il boost qui
         keyword_candidates = mean_scores(calculated_page_rank, merged)
 
         return keyword_candidates

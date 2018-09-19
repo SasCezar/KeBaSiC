@@ -5,7 +5,7 @@ class WebPage(object):
 
     def __init__(self, url, html, title=None, text=None, meta_keywords=None, meta_description=None, category=None,
                  parent_category=None, category_id=None, parent_category_id=None, meta_tags=None, links_text=None,
-                 headers=None):
+                 headers=None, emph_text=None):
         """
         :param url:
         :param html:
@@ -22,6 +22,7 @@ class WebPage(object):
         self._parent_category = parent_category
         self._meta_tags = meta_tags
         self._links_text = links_text
+        self._emph_text = emph_text
         self._headers = headers
 
     @property
@@ -39,6 +40,10 @@ class WebPage(object):
     @property
     def meta_keywords(self):
         return self._meta_keywords
+
+    @property
+    def emph_text(self):
+        return self._emph_text
 
     @meta_keywords.setter
     def meta_keywords(self, value):
@@ -119,3 +124,7 @@ class WebPage(object):
     @headers.setter
     def headers(self, value):
         self._headers = value
+
+    @emph_text.setter
+    def emph_text(self, value):
+        self._emph_text = value

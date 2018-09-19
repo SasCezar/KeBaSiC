@@ -72,6 +72,9 @@ class WebPageBuilder(object):
         result['meta_tags'] = metatags
         result['headers'] = self.extract_headers(soup)
         result['links_text'] = self.extract_links_text(soup)
+        result['emph_text'] = self.extract_emph_tags(soup)
+
+
         return result
 
     def _extract_metatags(self, soup):
@@ -182,6 +185,7 @@ class WebPageBuilder(object):
 
     @staticmethod
     def extract_headers(soup):
+        #TODO cambiare il metodo per mappare gli "h" con il relativo testo
         headers = soup.find_all(re.compile('^h[1-3]$'))
         result = set()
         for header in headers:
@@ -189,4 +193,29 @@ class WebPageBuilder(object):
             if text:
                 result.add(text)
 
+        print(result)
+
+        return result
+
+    @staticmethod
+    def extract_emph_tags(soup):
+        ems = soup.find_all(re.compile('em'))
+        result = set()
+        for e in ems:
+            text = e.text.strip()
+            if text:
+                result.add(text)
+        strongs = soup.find_all(re.compile('strong'))
+
+        for el in strongs:
+            text = el.text.strip()
+            if text:
+                result.add(text)
+        bold = soup.find_all('b')
+        for el in bold:
+            text = el.text.strip()
+            if text:
+                result.add(text)
+
+        print(result)
         return result

@@ -11,7 +11,7 @@ from executions.basic import TextCleaningPipeline, FeatureExtractionPipeline
 from executions.datacrawling import ParallelCrawling
 from executions.executor import AbstractExecutor
 from feature.normalization import MaxScaling
-from feature.penalizer import ScorePenalizer
+from feature.scoreboosting import ScorePenalizer
 from feature.resultsjoin import SumScores, InsertScores
 from kebasicio.webpageio import BingResultsWebPageReader, JSONWebPageReader
 from kebasicio.weka import WekaWebPageTrainingCSV
@@ -65,6 +65,15 @@ class KeywordsExecution(AbstractExecutor):
 
                     webpage.headers = cleaned_headers
 
+
+                    cleaned_text_tag = []
+                    for tag in webpage.emph_text:
+                        cleaned = punctuation_cleaner.run(cleaner.process(tag))
+                        if cleaned:
+                            cleaned_text_tag.append(cleaned)
+                    
+                    webpage.emph_text = cleaned_text_tag
+
                     result = feature.process(webpage)
                     if not result:
                         continue
@@ -73,16 +82,20 @@ class KeywordsExecution(AbstractExecutor):
                         keywords[algorithm] = scores_normalizer.normalize(result['keywords'][algorithm])
 
                     combined_scores = scores_normalizer.normalize(scores_merger.merge(result['keywords']))
+
+                    print(combined_scores)
                     result['keywords']['combined'] = InsertScores().insert(combined_scores,
                                                                            result['keywords']['site_keywords'])
 
+                    print(webpage.emph_text)
+                    result['keywords']['combined'] = ScorePenalizer().boost(result['keywords']['combined'],[cleaner.process(x) for x in webpage.emph_text])
+                    print(result['keywords']['combined'])
                     #result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'], result['keywords']['meta_tags'])
 
                     # result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'],
                     #                                                        result['keywords']['headers'])
-                    result['keywords'] = result['keywords']['combined']
-                    result['keywords'] = ScorePenalizer().penalize(result['keywords'],
-                                                                   [cleaner.process(x) for x in webpage.links_text])
+                    #result['keywords'] = result['keywords']['combined']
+                    #result['keywords'] = ScorePenalizer().penalize(result['keywords'],[cleaner.process(x) for x in webpage.links_text])
                     logging.info("Keyword extracted: {}".format(len(result['keywords'])))
 
                     #result['categories'] = wekaclass.classify(webpage.text)

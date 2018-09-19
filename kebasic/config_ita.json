@@ -33,7 +33,7 @@
   "SiteKeywordsExtractor": {
     "language": "italian",
     "stopwords": "../resources/IT/stopwords/stopwords_it_en.txt",
-    "lemmize": true
+    "lemmize": false
   },
 
   // Feature Extraction
@@ -51,7 +51,7 @@
       "language": "italian",
       "stopwords": "../resources/IT/stopwords/stopwords_it_en.txt",
       "keyword_separator": ".aeiouy",
-      "lemmize": true,
+      "lemmize": false,
       "min_char_length": 3,
       "max_words_length": 2,
       "min_keyword_frequency": 2,
@@ -63,7 +63,7 @@
       "language": "italian",
       "stopwords": "../resources/IT/stopwords/stopwords_it_en.txt",
       "keyword_separator": ".aeiouy",
-      "lemmize": true,
+      "lemmize": false,
       "min_char_length": 3,
       "max_words_length": 2,
       "min_keyword_frequency": 2,
@@ -73,7 +73,7 @@
     },
     "feature.textrank.TextRank": {
       "language": "italian",
-      "lemmize": true,
+      "lemmize": false,
       "filter_pos_tags": [
         "S",
         "SP"
@@ -81,7 +81,7 @@
     },
     "feature.textrank.MergingTextRank": {
       "language": "italian",
-      "lemmize": true,
+      "lemmize": false,
       "pos_tagger_class": "feature.pos_taggers.TINTTagger",
       "pos_tagger_parameters": {"language": "italian", "tint_exec_path": "/home/frodo/Scrivania/tint/"},
       "filter_pos_tags": [
@@ -91,13 +91,13 @@
     },
     "feature.termfreq.TermFrequencies": {
       "language": "italian",
-      "lemmize": true,
+      "lemmize": false,
       "stopwords": "../resources/IT/stopwords/stopwords_it_en.txt",
       "min_count": 2
     },
     "feature.termfreq.MergingTermFrequencies": {
       "language": "italian",
-      "lemmize": true,
+      "lemmize": false,
       "stopwords": "../resources/IT/stopwords/stopwords_it_en.txt",
       "min_count": 2
     },

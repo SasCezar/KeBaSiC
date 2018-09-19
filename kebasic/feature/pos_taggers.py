@@ -69,6 +69,7 @@ class TINTTagger(AbstractPOSTagger):
         result = []
         for sentence in sentences:
             for token in sentence['tokens']:
-                result.append((token['word'],token['pos']))
+                if token['pos'] != 'V':
+                    result.append((token['word'],token['pos']))
 
         return result
