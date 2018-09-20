@@ -37,6 +37,18 @@ def clean_keywords(keywords):
     return keywords
 
 
+def classify(self, text):
+    jvm.start(packages=True)
+    wekaclass = WEKAClassifier(self._configs['lvl1_model'], language=self._configs['language'])
+    wekaclass2 = WEKAClassifier(self._configs['lvl2_model'], language=self._configs['language'])
+
+    categories = wekaclass.classify(text)
+    categori_id = wekaclass2.classify(text)
+
+    jvm.stop()
+
+    return categories, categori_id
+
 
 class KeywordsExecution(AbstractExecutor):
     """
@@ -55,9 +67,7 @@ class KeywordsExecution(AbstractExecutor):
         writer = StdOutFileWriter
         builder = WebPageBuilder()
         punctuation_cleaner = PunctuationCleaner()
-        jvm.start(packages=True)
-        #wekaclass = WEKAClassifier(self._configs['lvl1_model'], language=self._configs['language'])
-        #wekaclass2 = WEKAClassifier(self._configs['lvl2_model'], language=self._configs['language'])
+
         out_filename = self._configs['out_path']
         with writer(out_filename, self._configs['std_out']) as outf:
             for json_webpage in webpages:
@@ -70,6 +80,7 @@ class KeywordsExecution(AbstractExecutor):
 
                     if webpage.meta_description:
                         webpage.meta_description = cleaner.process(webpage.meta_description)
+
                     for tag in webpage.meta_tags:
                         cleaned_meta.append(cleaner.process(tag))
 
@@ -96,7 +107,9 @@ class KeywordsExecution(AbstractExecutor):
                     if not result:
                         continue
 
-                    #result['keywords'] è un oggetto in cui, per ogni algolritmo, restituisce una lista di coppie parola-punteggio
+                    #-----------------------------------------------------------------------------------------------------------------
+                    #- result['keywords'] è un oggetto in cui, per ogni algolritmo, restituisce una lista di coppie parola-punteggio -
+                    #-----------------------------------------------------------------------------------------------------------------
 
                     #print("Pre boost\n", result['keywords']['MergingTextRank'], '\n', result['keywords']['MergingTermFrequencies'])
 
@@ -127,8 +140,9 @@ class KeywordsExecution(AbstractExecutor):
                     #result['keywords'] = ScorePenalizer().penalize(result['keywords'],[cleaner.process(x) for x in webpage.links_text])
                     logging.info("Keyword extracted: {}".format(len(result['keywords'])))
 
-                    #result['categories'] = wekaclass.classify(webpage.text)
-                    #result['category_id'] = wekaclass2.classify(webpage.text)
+                    # ------ CLASSIFICATION --------------------
+                    #result['categories'], result['category_id'] = classify(self, webpage.text)
+
 
                     string_result = json.dumps(result, ensure_ascii=False)
                     outf.write(string_result)
@@ -136,8 +150,6 @@ class KeywordsExecution(AbstractExecutor):
                     #logging.error(e)
                     print(e)
                     continue
-
-        jvm.stop()
 
 
 class DatasetCrawlingExecution(AbstractExecutor):
