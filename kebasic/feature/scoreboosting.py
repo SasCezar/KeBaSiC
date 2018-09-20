@@ -13,16 +13,22 @@ class ScorePenalizer(ABC):
 
         return sorted(result, key=lambda x: (-x[1], x[0]))
 
-    '''
     @staticmethod
-    def boost(keywords, penalizers, f=lambda x: x * 5):
-        result = []
-        for keyword in keywords:
-            if any([x for x in penalizers if x.lower() in keyword[0].lower()]):
+    def boostBoldKey(keywords, words):
+        result = {}
+        for i in range(len(words)):
+            words[i] = words[i].lower()
 
-                result.append((keyword[0], f(keyword[1])))
+        for algoritm in keywords.keys():
+            tmp = []
+            if keywords[algoritm] is not None:
+                for keyword in keywords[algoritm]:
+                    if(keyword[0].lower() in words):
+                        tmp.append((keyword[0], keyword[1]*5.0))
+                    else:
+                        tmp.append((keyword[0], keyword[1]))
+                result[algoritm] = tmp
             else:
-                result.append(keyword)
+                result[algoritm] = keywords[algoritm]
 
-        return sorted(result, key=lambda x: (-x[1], x[0]))
-    '''
+        return result

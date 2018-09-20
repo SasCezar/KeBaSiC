@@ -20,6 +20,24 @@ from textprocessing.cleaner import PunctuationCleaner
 from utils.taxonomy import read_jot_taxonomy
 
 
+def clean_keywords(keywords):
+    for algo in keywords.keys():
+        if keywords[algo] is not None:
+            tmp = []
+            for keyword in keywords[algo]:
+                tmp.append(keyword[0].lower())
+
+            new_result = []
+            for el in tmp:
+                for keyword in keywords[algo]:
+                    if el not in keyword[0].lower():
+                        new_result.append(keyword)
+            keywords[algo] = new_result
+
+    return keywords
+
+
+
 class KeywordsExecution(AbstractExecutor):
     """
     Implements an execution for keywords extraction
@@ -77,6 +95,17 @@ class KeywordsExecution(AbstractExecutor):
                     result = feature.process(webpage)
                     if not result:
                         continue
+
+                    #result['keywords'] è un oggetto in cui, per ogni algolritmo, restituisce una lista di coppie parola-punteggio
+
+                    #print("Pre boost\n", result['keywords']['MergingTextRank'], '\n', result['keywords']['MergingTermFrequencies'])
+
+                    result['keywords'] = clean_keywords(result['keywords'])
+
+                    result['keywords'] = ScorePenalizer().boostBoldKey(result['keywords'], cleaned_text_tag)
+
+                    #print("Post boost\n", result['keywords']['MergingTextRank'],'\n',result['keywords']['MergingTermFrequencies'],'\n\n\n')
+
                     for algorithm in result['keywords']:
                         keywords = result['keywords']
                         keywords[algorithm] = scores_normalizer.normalize(result['keywords'][algorithm])
@@ -87,8 +116,8 @@ class KeywordsExecution(AbstractExecutor):
                     result['keywords']['combined'] = InsertScores().insert(combined_scores,
                                                                            result['keywords']['site_keywords'])
 
-                    print(webpage.emph_text)
-                    result['keywords']['combined'] = ScorePenalizer().boost(result['keywords']['combined'],[cleaner.process(x) for x in webpage.emph_text])
+                    #print(webpage.emph_text)
+                    #result['keywords']['combined'] = ScorePenalizer().boostBoldKey(result['keywords']['combined'],[cleaner.process(x) for x in webpage.emph_text])
                     print(result['keywords']['combined'])
                     #result['keywords']['combined'] = InsertScores().insert(result['keywords']['combined'], result['keywords']['meta_tags'])
 

@@ -158,6 +158,7 @@ class TextRank(AbstractKeywordExtractor):
 
         :param text: A string.
         """
+        text = text.lower()
         keyword_candidates = self._extract_keywords(text)
         keywords = self._filter(keyword_candidates)
         merged_keywords = self._merge_keywords(keywords, text)
@@ -206,6 +207,7 @@ class TextRank(AbstractKeywordExtractor):
 
 class MergingTextRank(TextRank):
     def run(self, text):
+        text = text.lower()
         keywords = self._extract_keywords(text)
         if not keywords:
             return []

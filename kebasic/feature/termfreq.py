@@ -33,6 +33,7 @@ class MergingTermFrequencies(TermFrequencies):
     def run(self, text):
         lemmed_text = self._text_lemmatization(text) if self._lemmize else text
         keywords = self._extract_keywords(lemmed_text)
+
         if not keywords:
             return []
         filtered_keywords = self._filter(keywords)
