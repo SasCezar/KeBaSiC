@@ -6,6 +6,6 @@ nltk==3.2.4
 stanfordcorenlp==3.7.0.2
 editdistance==0.4
 treetaggerwrapper==2.2.4
-requests==2.18.4
+requests==2.20.0
 beautifulsoup4==4.6.0
 scikit_learn==0.19.1
