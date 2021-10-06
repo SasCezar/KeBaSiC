@@ -1,6 +1,6 @@
 python-weka-wrapper3==0.1.4
 networkx==2.0
-Scrapy==1.4.0
+Scrapy==1.8.1
 jsmin==2.2.2
 nltk==3.4.5
 stanfordcorenlp==3.7.0.2
